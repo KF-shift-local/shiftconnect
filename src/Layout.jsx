@@ -24,6 +24,7 @@ import {
   Users,
   Star
 } from 'lucide-react';
+import NotificationBell from '@/components/notifications/NotificationBell';
 
 export default function Layout({ children, currentPageName }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -105,6 +106,7 @@ export default function Layout({ children, currentPageName }) {
 
             {/* User Menu */}
             <div className="flex items-center gap-3">
+              {user && <NotificationBell userEmail={user.email} />}
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>

@@ -19,6 +19,7 @@ import JobCard from '@/components/common/JobCard';
 
 const JOB_TYPES = ['Server', 'Bartender', 'Line Cook', 'Prep Cook', 'Host/Hostess', 'Busser', 'Dishwasher', 'Barista', 'Food Runner', 'Kitchen Manager', 'Other'];
 const EMPLOYMENT_TYPES = ['temporary', 'seasonal', 'part-time', 'full-time', 'on-call'];
+const CUISINE_TYPES = ['American', 'Italian', 'Mexican', 'Chinese', 'Japanese', 'Thai', 'Indian', 'Mediterranean', 'French', 'Korean', 'Seafood', 'Steakhouse', 'BBQ', 'Fine Dining', 'Cafe/Bakery', 'Other'];
 
 export default function Jobs() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -28,8 +29,11 @@ export default function Jobs() {
   const [filters, setFilters] = useState({
     jobTypes: [],
     employmentTypes: [],
-    minPay: 0,
-    urgentOnly: false
+    cuisineTypes: [],
+    payRange: [0, 50],
+    distance: 25,
+    urgentOnly: false,
+    transitOnly: false
   });
 
   const { data: jobs = [], isLoading } = useQuery({
@@ -69,8 +73,19 @@ export default function Jobs() {
         return false;
       }
 
-      // Minimum pay
-      if (filters.minPay > 0 && (!job.hourly_rate_min || job.hourly_rate_min < filters.minPay)) {
+      // Cuisine types (from restaurant)
+      if (filters.cuisineTypes.length > 0) {
+        // We'd need to fetch restaurant data for this, simplified for now
+        // In a real implementation, you'd join with restaurant data
+      }
+
+      // Pay range
+      if (job.hourly_rate_min && (job.hourly_rate_min < filters.payRange[0] || job.hourly_rate_min > filters.payRange[1])) {
+        return false;
+      }
+
+      // Transit accessible
+      if (filters.transitOnly && !job.transit_accessible) {
         return false;
       }
 
@@ -101,12 +116,24 @@ export default function Jobs() {
     }));
   };
 
+  const toggleCuisineType = (type) => {
+    setFilters(prev => ({
+      ...prev,
+      cuisineTypes: prev.cuisineTypes.includes(type)
+        ? prev.cuisineTypes.filter(t => t !== type)
+        : [...prev.cuisineTypes, type]
+    }));
+  };
+
   const clearFilters = () => {
     setFilters({
       jobTypes: [],
       employmentTypes: [],
-      minPay: 0,
-      urgentOnly: false
+      cuisineTypes: [],
+      payRange: [0, 50],
+      distance: 25,
+      urgentOnly: false,
+      transitOnly: false
     });
     setSearchQuery('');
     setLocation('');
@@ -115,8 +142,11 @@ export default function Jobs() {
   const activeFilterCount = 
     filters.jobTypes.length + 
     filters.employmentTypes.length + 
-    (filters.minPay > 0 ? 1 : 0) + 
-    (filters.urgentOnly ? 1 : 0);
+    filters.cuisineTypes.length +
+    (filters.payRange[0] > 0 || filters.payRange[1] < 50 ? 1 : 0) + 
+    (filters.distance < 25 ? 1 : 0) +
+    (filters.urgentOnly ? 1 : 0) +
+    (filters.transitOnly ? 1 : 0);
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -176,7 +206,7 @@ export default function Jobs() {
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                   {/* Job Types */}
                   <div>
                     <h4 className="font-medium text-slate-700 mb-3">Position Type</h4>
@@ -209,20 +239,56 @@ export default function Jobs() {
                     </div>
                   </div>
 
-                  {/* Pay & Urgency */}
+                  {/* Restaurant Type */}
+                  <div>
+                    <h4 className="font-medium text-slate-700 mb-3">Restaurant Type</h4>
+                    <div className="space-y-2 max-h-48 overflow-y-auto">
+                      {CUISINE_TYPES.map((type) => (
+                        <label key={type} className="flex items-center gap-2 cursor-pointer">
+                          <Checkbox
+                            checked={filters.cuisineTypes.includes(type)}
+                            onCheckedChange={() => toggleCuisineType(type)}
+                          />
+                          <span className="text-sm text-slate-600">{type}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Pay, Distance & Other */}
                   <div className="space-y-6">
                     <div>
                       <h4 className="font-medium text-slate-700 mb-3">
-                        Minimum Pay: ${filters.minPay}/hr
+                        Pay Range: ${filters.payRange[0]}-${filters.payRange[1]}/hr
                       </h4>
                       <Slider
-                        value={[filters.minPay]}
-                        onValueChange={([value]) => setFilters(prev => ({ ...prev, minPay: value }))}
+                        value={filters.payRange}
+                        onValueChange={(value) => setFilters(prev => ({ ...prev, payRange: value }))}
                         max={50}
                         step={1}
+                        minStepsBetweenThumbs={1}
                         className="w-full"
                       />
                     </div>
+                    <div>
+                      <h4 className="font-medium text-slate-700 mb-3">
+                        Max Distance: {filters.distance} miles
+                      </h4>
+                      <Slider
+                        value={[filters.distance]}
+                        onValueChange={([value]) => setFilters(prev => ({ ...prev, distance: value }))}
+                        max={50}
+                        step={5}
+                        className="w-full"
+                      />
+                    </div>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <Checkbox
+                        checked={filters.transitOnly}
+                        onCheckedChange={(checked) => setFilters(prev => ({ ...prev, transitOnly: checked }))}
+                      />
+                      <span className="text-sm text-slate-600">Public transit accessible</span>
+                    </label>
                     <label className="flex items-center gap-2 cursor-pointer">
                       <Checkbox
                         checked={filters.urgentOnly}

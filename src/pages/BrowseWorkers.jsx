@@ -27,7 +27,8 @@ export default function BrowseWorkers() {
   const [filters, setFilters] = useState({
     jobTypes: [],
     availableDays: [],
-    maxRate: 50,
+    payRange: [0, 50],
+    distance: 25,
     hasExperience: false
   });
 
@@ -71,8 +72,8 @@ export default function BrowseWorkers() {
         if (!hasMatchingDay) return false;
       }
 
-      // Max rate
-      if (worker.hourly_rate_min && worker.hourly_rate_min > filters.maxRate) {
+      // Pay range
+      if (worker.hourly_rate_min && (worker.hourly_rate_min < filters.payRange[0] || worker.hourly_rate_min > filters.payRange[1])) {
         return false;
       }
 
@@ -107,7 +108,8 @@ export default function BrowseWorkers() {
     setFilters({
       jobTypes: [],
       availableDays: [],
-      maxRate: 50,
+      payRange: [0, 50],
+      distance: 25,
       hasExperience: false
     });
     setSearchQuery('');
@@ -117,7 +119,8 @@ export default function BrowseWorkers() {
   const activeFilterCount = 
     filters.jobTypes.length + 
     filters.availableDays.length + 
-    (filters.maxRate < 50 ? 1 : 0) + 
+    (filters.payRange[0] > 0 || filters.payRange[1] < 50 ? 1 : 0) +
+    (filters.distance < 25 ? 1 : 0) +
     (filters.hasExperience ? 1 : 0);
 
   return (
@@ -216,17 +219,29 @@ export default function BrowseWorkers() {
                     </div>
                   </div>
 
-                  {/* Rate & Experience */}
+                  {/* Pay Range, Distance & Experience */}
                   <div className="space-y-6">
                     <div>
                       <h4 className="font-medium text-slate-700 mb-3">
-                        Max Rate: ${filters.maxRate}/hr
+                        Pay Range: ${filters.payRange[0]}-${filters.payRange[1]}/hr
                       </h4>
                       <Slider
-                        value={[filters.maxRate]}
-                        onValueChange={([value]) => setFilters(prev => ({ ...prev, maxRate: value }))}
+                        value={filters.payRange}
+                        onValueChange={(value) => setFilters(prev => ({ ...prev, payRange: value }))}
                         max={50}
                         step={1}
+                        minStepsBetweenThumbs={1}
+                      />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-slate-700 mb-3">
+                        Max Distance: {filters.distance} miles
+                      </h4>
+                      <Slider
+                        value={[filters.distance]}
+                        onValueChange={([value]) => setFilters(prev => ({ ...prev, distance: value }))}
+                        max={50}
+                        step={5}
                       />
                     </div>
                     <label className="flex items-center gap-2 cursor-pointer">
