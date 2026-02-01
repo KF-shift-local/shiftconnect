@@ -47,42 +47,42 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import Home from './pages/Home';
-import Jobs from './pages/Jobs';
-import JobDetails from './pages/JobDetails';
-import WorkerOnboarding from './pages/WorkerOnboarding';
-import RestaurantOnboarding from './pages/RestaurantOnboarding';
-import WorkerDashboard from './pages/WorkerDashboard';
-import RestaurantDashboard from './pages/RestaurantDashboard';
-import PostJob from './pages/PostJob';
-import ManageApplications from './pages/ManageApplications';
-import WriteReview from './pages/WriteReview';
-import WorkerProfile from './pages/WorkerProfile';
 import BrowseWorkers from './pages/BrowseWorkers';
-import MyApplications from './pages/MyApplications';
 import EditWorkerProfile from './pages/EditWorkerProfile';
-import RestaurantProfile from './pages/RestaurantProfile';
+import Home from './pages/Home';
+import JobDetails from './pages/JobDetails';
 import JobMap from './pages/JobMap';
+import Jobs from './pages/Jobs';
+import ManageApplications from './pages/ManageApplications';
+import MyApplications from './pages/MyApplications';
+import PostJob from './pages/PostJob';
+import RestaurantDashboard from './pages/RestaurantDashboard';
+import RestaurantOnboarding from './pages/RestaurantOnboarding';
+import RestaurantProfile from './pages/RestaurantProfile';
+import WorkerDashboard from './pages/WorkerDashboard';
+import WorkerOnboarding from './pages/WorkerOnboarding';
+import WorkerProfile from './pages/WorkerProfile';
+import WriteReview from './pages/WriteReview';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Home": Home,
-    "Jobs": Jobs,
-    "JobDetails": JobDetails,
-    "WorkerOnboarding": WorkerOnboarding,
-    "RestaurantOnboarding": RestaurantOnboarding,
-    "WorkerDashboard": WorkerDashboard,
-    "RestaurantDashboard": RestaurantDashboard,
-    "PostJob": PostJob,
-    "ManageApplications": ManageApplications,
-    "WriteReview": WriteReview,
-    "WorkerProfile": WorkerProfile,
     "BrowseWorkers": BrowseWorkers,
-    "MyApplications": MyApplications,
     "EditWorkerProfile": EditWorkerProfile,
-    "RestaurantProfile": RestaurantProfile,
+    "Home": Home,
+    "JobDetails": JobDetails,
     "JobMap": JobMap,
+    "Jobs": Jobs,
+    "ManageApplications": ManageApplications,
+    "MyApplications": MyApplications,
+    "PostJob": PostJob,
+    "RestaurantDashboard": RestaurantDashboard,
+    "RestaurantOnboarding": RestaurantOnboarding,
+    "RestaurantProfile": RestaurantProfile,
+    "WorkerDashboard": WorkerDashboard,
+    "WorkerOnboarding": WorkerOnboarding,
+    "WorkerProfile": WorkerProfile,
+    "WriteReview": WriteReview,
 }
 
 export const pagesConfig = {
