@@ -25,6 +25,20 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState('');
 
+  const { data: user } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: () => base44.auth.me().catch(() => null)
+  });
+
+  const { data: restaurant } = useQuery({
+    queryKey: ['restaurant', user?.email],
+    queryFn: async () => {
+      const restaurants = await base44.entities.Restaurant.filter({ created_by: user.email });
+      return restaurants[0];
+    },
+    enabled: !!user?.email
+  });
+
   const { data: featuredJobs = [] } = useQuery({
     queryKey: ['featuredJobs'],
     queryFn: () => base44.entities.JobPosting.filter({ status: 'active' }, '-created_date', 6)
@@ -218,9 +232,9 @@ export default function Home() {
               <p className="text-slate-300 mb-6 leading-relaxed">
                 Post your staffing needs and find qualified workers ready to help when you need them most.
               </p>
-              <Link to={createPageUrl('RestaurantOnboarding')}>
+              <Link to={createPageUrl(restaurant ? 'PostJob' : 'RestaurantOnboarding')}>
                 <Button className="bg-white text-slate-800 hover:bg-slate-100">
-                  Post a Job
+                  {restaurant ? 'Post a Job' : (user ? 'Create Restaurant Profile' : 'Create Profile')}
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Link>
