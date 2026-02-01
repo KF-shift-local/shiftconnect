@@ -35,6 +35,7 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import StarRating from '@/components/ui/StarRating';
+import ScheduleComparison from '@/components/calendar/ScheduleComparison';
 
 export default function JobDetails() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -324,6 +325,15 @@ export default function JobDetails() {
                   )}
                 </CardContent>
               </Card>
+            )}
+
+            {/* Schedule Comparison */}
+            {workerProfile && job.schedule && (
+              <ScheduleComparison
+                workerAvailability={workerProfile.availability}
+                jobSchedule={job.schedule}
+                jobTitle={job.title}
+              />
             )}
 
             {/* Description */}
