@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { MapPin, Clock, DollarSign, Calendar, Zap } from 'lucide-react';
+import { MapPin, Clock, DollarSign, Calendar, Zap, Train } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function JobCard({ job }) {
@@ -62,6 +62,12 @@ export default function JobCard({ job }) {
               <Badge variant="outline" className="bg-white">
                 {job.job_type}
               </Badge>
+              {job.transit_accessible && (
+                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                  <Train className="w-3 h-3 mr-1" />
+                  Transit
+                </Badge>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-3 text-sm text-slate-600">

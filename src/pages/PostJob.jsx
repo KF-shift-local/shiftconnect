@@ -90,7 +90,9 @@ export default function PostJob() {
     certifications_required: [],
     benefits: [],
     positions_available: 1,
-    urgency: 'normal'
+    urgency: 'normal',
+    transit_accessible: false,
+    transit_info: ''
   });
   const [newRequirement, setNewRequirement] = useState('');
   const [newCertification, setNewCertification] = useState('');
@@ -303,6 +305,27 @@ export default function PostJob() {
                     </Badge>
                   ))}
                 </div>
+              </div>
+
+              <div className="space-y-3">
+                <Label>Public Transportation</Label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={formData.transit_accessible}
+                    onChange={(e) => setFormData({ ...formData, transit_accessible: e.target.checked })}
+                    className="w-4 h-4 rounded border-slate-300"
+                  />
+                  <span className="text-sm text-slate-600">Accessible by public transit</span>
+                </div>
+                {formData.transit_accessible && (
+                  <Input
+                    value={formData.transit_info}
+                    onChange={(e) => setFormData({ ...formData, transit_info: e.target.value })}
+                    placeholder="e.g. Bus lines 15, 22 / 2 blocks from Metro station"
+                    className="border-slate-200"
+                  />
+                )}
               </div>
             </CardContent>
           </Card>
