@@ -50,12 +50,20 @@
 import Home from './pages/Home';
 import Jobs from './pages/Jobs';
 import JobDetails from './pages/JobDetails';
+import WorkerOnboarding from './pages/WorkerOnboarding';
+import RestaurantOnboarding from './pages/RestaurantOnboarding';
+import WorkerDashboard from './pages/WorkerDashboard';
+import RestaurantDashboard from './pages/RestaurantDashboard';
 
 
 export const PAGES = {
     "Home": Home,
     "Jobs": Jobs,
     "JobDetails": JobDetails,
+    "WorkerOnboarding": WorkerOnboarding,
+    "RestaurantOnboarding": RestaurantOnboarding,
+    "WorkerDashboard": WorkerDashboard,
+    "RestaurantDashboard": RestaurantDashboard,
 }
 
 export const pagesConfig = {
