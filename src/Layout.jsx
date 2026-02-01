@@ -25,6 +25,7 @@ import {
   Star
 } from 'lucide-react';
 import NotificationBell from '@/components/notifications/NotificationBell';
+import HelpWidget from '@/components/help/HelpWidget';
 
 export default function Layout({ children, currentPageName }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -251,6 +252,9 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Main Content */}
       <main>{children}</main>
+
+      {/* Help Widget */}
+      <HelpWidget />
 
       {/* Footer */}
       <footer className="bg-white border-t border-slate-200 mt-auto">
