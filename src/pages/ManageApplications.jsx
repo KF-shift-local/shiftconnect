@@ -93,6 +93,34 @@ export default function ManageApplications() {
       if (notes) updateData.restaurant_notes = notes;
       if (status === 'accepted') updateData.hired_date = new Date().toISOString().split('T')[0];
       if (status === 'completed') updateData.completed_date = new Date().toISOString().split('T')[0];
+      
+      const app = applications.find(a => a.id === id);
+      
+      // Create notification for worker
+      if (app) {
+        const statusMessages = {
+          reviewing: `Your application for ${app.job_title} is being reviewed`,
+          interview: `Interview scheduled for ${app.job_title} at ${app.restaurant_name}`,
+          offered: `Congratulations! You've been offered the ${app.job_title} position`,
+          accepted: `You've been hired for ${app.job_title}! 🎉`,
+          declined: `Update on your application for ${app.job_title}`,
+          completed: `Please review your experience at ${app.restaurant_name}`
+        };
+        
+        if (statusMessages[status]) {
+          await base44.entities.Notification.create({
+            recipient_email: app.created_by,
+            recipient_type: 'worker',
+            title: 'Application Status Update',
+            message: statusMessages[status],
+            type: 'application_update',
+            link_url: `/MyApplications`,
+            priority: ['offered', 'accepted'].includes(status) ? 'high' : 'medium',
+            related_entity_id: id
+          });
+        }
+      }
+      
       return base44.entities.Application.update(id, updateData);
     },
     onSuccess: () => {

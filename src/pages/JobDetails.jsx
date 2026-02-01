@@ -29,7 +29,9 @@ import {
   Bookmark,
   Loader2,
   Briefcase,
-  Users
+  Users,
+  Train,
+  Info
 } from 'lucide-react';
 import { format } from 'date-fns';
 import StarRating from '@/components/ui/StarRating';
@@ -88,7 +90,7 @@ export default function JobDetails() {
 
   const applyMutation = useMutation({
     mutationFn: async () => {
-      return base44.entities.Application.create({
+      const application = await base44.entities.Application.create({
         job_id: jobId,
         job_title: job.title,
         worker_id: workerProfile.id,
@@ -100,6 +102,20 @@ export default function JobDetails() {
         available_start_date: availableDate,
         status: 'pending'
       });
+      
+      // Create notification for restaurant owner
+      await base44.entities.Notification.create({
+        recipient_email: job.created_by,
+        recipient_type: 'restaurant',
+        title: 'New Application Received',
+        message: `${workerProfile.full_name} applied for ${job.title}`,
+        type: 'application_received',
+        link_url: `/ManageApplications`,
+        priority: job.urgency === 'immediate' ? 'high' : 'medium',
+        related_entity_id: application.id
+      });
+      
+      return application;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['existingApplication']);
@@ -462,6 +478,23 @@ export default function JobDetails() {
                 )}
               </CardContent>
             </Card>
+
+            {/* Transit Info */}
+            {job.transit_accessible && (
+              <Card className="border-blue-200 bg-blue-50/30">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-3">
+                    <Train className="w-5 h-5 text-blue-600 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-blue-900 mb-1">Public Transit Accessible</p>
+                      {job.transit_info && (
+                        <p className="text-sm text-blue-700">{job.transit_info}</p>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Restaurant Info */}
             {restaurant && (
