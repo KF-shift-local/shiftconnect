@@ -38,6 +38,7 @@ import {
 import { format } from 'date-fns';
 import StarRating from '@/components/ui/StarRating';
 import MessagingPanel from '@/components/applications/MessagingPanel';
+import ScheduleComparison from '@/components/calendar/ScheduleComparison';
 
 const STATUS_OPTIONS = [
   { value: 'pending', label: 'Pending', color: 'bg-amber-100 text-amber-700' },
@@ -96,6 +97,10 @@ export default function ManageApplications() {
     queryFn: () => base44.entities.JobPosting.filter({ restaurant_id: restaurant.id }),
     enabled: !!restaurant?.id
   });
+
+  const getJobForApplication = (jobId) => {
+    return jobs.find(j => j.id === jobId);
+  };
 
   const { data: workerProfiles = [] } = useQuery({
     queryKey: ['workerProfiles', applications],
@@ -482,38 +487,50 @@ export default function ManageApplications() {
             <DialogHeader>
               <DialogTitle>Manage Application</DialogTitle>
             </DialogHeader>
-            {selectedApp && (
-              <div className="space-y-6 pt-4">
-                <div className="flex items-center gap-4">
-                  {selectedApp.worker_photo ? (
-                    <img
-                      src={selectedApp.worker_photo}
-                      alt={selectedApp.worker_name}
-                      className="w-16 h-16 rounded-xl object-cover"
+            {selectedApp && (() => {
+              const worker = getWorkerProfile(selectedApp.worker_id);
+              const job = getJobForApplication(selectedApp.job_id);
+              
+              return (
+                <div className="space-y-6 pt-4">
+                  <div className="flex items-center gap-4">
+                    {selectedApp.worker_photo ? (
+                      <img
+                        src={selectedApp.worker_photo}
+                        alt={selectedApp.worker_name}
+                        className="w-16 h-16 rounded-xl object-cover"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-200 flex items-center justify-center">
+                        <span className="text-2xl font-bold text-emerald-600">
+                          {selectedApp.worker_name?.charAt(0)}
+                        </span>
+                      </div>
+                    )}
+                    <div>
+                      <h3 className="font-semibold text-slate-900">{selectedApp.worker_name}</h3>
+                      <p className="text-sm text-slate-500">{selectedApp.job_title}</p>
+                    </div>
+                  </div>
+
+                  {worker && job && (
+                    <ScheduleComparison
+                      workerAvailability={worker.availability}
+                      jobSchedule={job.schedule}
+                      jobTitle={job.title}
                     />
-                  ) : (
-                    <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-200 flex items-center justify-center">
-                      <span className="text-2xl font-bold text-emerald-600">
-                        {selectedApp.worker_name?.charAt(0)}
-                      </span>
+                  )}
+
+                  {selectedApp.custom_answers && Object.keys(selectedApp.custom_answers).length > 0 && (
+                    <div className="bg-slate-50 rounded-lg p-4">
+                      <p className="text-sm font-medium text-slate-700 mb-2">Custom Answers:</p>
+                      {Object.entries(selectedApp.custom_answers).map(([key, value]) => (
+                        <div key={key} className="text-sm text-slate-600 mb-1">
+                          <span className="font-medium">Q:</span> {value}
+                        </div>
+                      ))}
                     </div>
                   )}
-                  <div>
-                    <h3 className="font-semibold text-slate-900">{selectedApp.worker_name}</h3>
-                    <p className="text-sm text-slate-500">{selectedApp.job_title}</p>
-                  </div>
-                </div>
-
-                {selectedApp.custom_answers && Object.keys(selectedApp.custom_answers).length > 0 && (
-                  <div className="bg-slate-50 rounded-lg p-4">
-                    <p className="text-sm font-medium text-slate-700 mb-2">Custom Answers:</p>
-                    {Object.entries(selectedApp.custom_answers).map(([key, value]) => (
-                      <div key={key} className="text-sm text-slate-600 mb-1">
-                        <span className="font-medium">Q:</span> {value}
-                      </div>
-                    ))}
-                  </div>
-                )}
 
                 <div>
                   <label className="text-sm font-medium text-slate-700 mb-2 block">
@@ -606,7 +623,8 @@ export default function ManageApplications() {
                   </Button>
                 </div>
               </div>
-            )}
+            );
+          })()}
           </DialogContent>
         </Dialog>
 

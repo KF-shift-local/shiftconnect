@@ -462,7 +462,10 @@ export default function PostJob() {
               </div>
 
               <div className="space-y-3">
-                <Label>Days Needed</Label>
+                <Label>Days Needed *</Label>
+                <p className="text-sm text-slate-500">
+                  Select which days you need workers for this position
+                </p>
                 <div className="flex flex-wrap gap-2">
                   {DAYS.map((day) => (
                     <Badge
@@ -479,6 +482,9 @@ export default function PostJob() {
                     </Badge>
                   ))}
                 </div>
+                <p className="text-xs text-slate-500 mt-2">
+                  Workers will see this schedule when applying and it will be compared with their availability
+                </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
