@@ -63,6 +63,7 @@ import WorkerDashboard from './pages/WorkerDashboard';
 import WorkerOnboarding from './pages/WorkerOnboarding';
 import WorkerProfile from './pages/WorkerProfile';
 import WriteReview from './pages/WriteReview';
+import ApplicationQuestions from './pages/ApplicationQuestions';
 import __Layout from './Layout.jsx';
 
 
@@ -83,6 +84,7 @@ export const PAGES = {
     "WorkerOnboarding": WorkerOnboarding,
     "WorkerProfile": WorkerProfile,
     "WriteReview": WriteReview,
+    "ApplicationQuestions": ApplicationQuestions,
 }
 
 export const pagesConfig = {

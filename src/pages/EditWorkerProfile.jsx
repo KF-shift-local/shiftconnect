@@ -64,7 +64,6 @@ export default function EditWorkerProfile() {
         work_authorization_status: profile.work_authorization_status || '',
         work_authorization_document_url: profile.work_authorization_document_url || '',
         work_authorization_expiry: profile.work_authorization_expiry || '',
-        i9_document_url: profile.i9_document_url || '',
         experience: profile.experience || [],
         skills: profile.skills || [],
         certifications: profile.certifications || [],
@@ -348,32 +347,6 @@ export default function EditWorkerProfile() {
                         </div>
                       </>
                     )}
-                    <div className="space-y-2 col-span-2">
-                      <Label>I-9 Form (Optional)</Label>
-                      <label className="flex items-center justify-center h-9 px-3 border border-slate-200 rounded-md cursor-pointer hover:bg-slate-50">
-                        <input
-                          type="file"
-                          accept=".pdf"
-                          onChange={async (e) => {
-                            const file = e.target.files[0];
-                            if (!file) return;
-                            setUploading(true);
-                            const { file_url } = await base44.integrations.Core.UploadFile({ file });
-                            setFormData(prev => ({ ...prev, i9_document_url: file_url }));
-                            setUploading(false);
-                          }}
-                          className="hidden"
-                        />
-                        {uploading ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : formData.i9_document_url ? (
-                          <span className="text-emerald-600 text-sm">✓ I-9 Uploaded</span>
-                        ) : (
-                          <span className="text-slate-600 text-sm">Upload I-9 Form (PDF)</span>
-                        )}
-                      </label>
-                      <p className="text-xs text-slate-500">Employment Eligibility Verification form</p>
-                    </div>
                   </div>
                 </div>
               </CardContent>
