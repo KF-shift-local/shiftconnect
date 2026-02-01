@@ -49,12 +49,14 @@
  */
 import ApplicationQuestions from './pages/ApplicationQuestions';
 import BrowseWorkers from './pages/BrowseWorkers';
+import Calendar from './pages/Calendar';
 import EditWorkerProfile from './pages/EditWorkerProfile';
 import Home from './pages/Home';
 import JobDetails from './pages/JobDetails';
 import JobMap from './pages/JobMap';
 import Jobs from './pages/Jobs';
 import ManageApplications from './pages/ManageApplications';
+import Messages from './pages/Messages';
 import MyApplications from './pages/MyApplications';
 import PostJob from './pages/PostJob';
 import RestaurantDashboard from './pages/RestaurantDashboard';
@@ -64,20 +66,20 @@ import WorkerDashboard from './pages/WorkerDashboard';
 import WorkerOnboarding from './pages/WorkerOnboarding';
 import WorkerProfile from './pages/WorkerProfile';
 import WriteReview from './pages/WriteReview';
-import Messages from './pages/Messages';
-import Calendar from './pages/Calendar';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "ApplicationQuestions": ApplicationQuestions,
     "BrowseWorkers": BrowseWorkers,
+    "Calendar": Calendar,
     "EditWorkerProfile": EditWorkerProfile,
     "Home": Home,
     "JobDetails": JobDetails,
     "JobMap": JobMap,
     "Jobs": Jobs,
     "ManageApplications": ManageApplications,
+    "Messages": Messages,
     "MyApplications": MyApplications,
     "PostJob": PostJob,
     "RestaurantDashboard": RestaurantDashboard,
@@ -87,8 +89,6 @@ export const PAGES = {
     "WorkerOnboarding": WorkerOnboarding,
     "WorkerProfile": WorkerProfile,
     "WriteReview": WriteReview,
-    "Messages": Messages,
-    "Calendar": Calendar,
 }
 
 export const pagesConfig = {

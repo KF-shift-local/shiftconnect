@@ -36,6 +36,7 @@ import {
 import { format } from 'date-fns';
 import StarRating from '@/components/ui/StarRating';
 import ScheduleComparison from '@/components/calendar/ScheduleComparison';
+import AvailabilityCalendar from '@/components/calendar/AvailabilityCalendar';
 
 export default function JobDetails() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -295,36 +296,12 @@ export default function JobDetails() {
               </CardContent>
             </Card>
 
-            {/* Schedule */}
+            {/* Schedule Calendar */}
             {scheduleDays.length > 0 && (
-              <Card className="border-slate-200">
-                <CardHeader>
-                  <CardTitle className="text-lg">Work Schedule</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    {['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].map((day) => (
-                      <div
-                        key={day}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium capitalize ${
-                          scheduleDays.includes(day)
-                            ? 'bg-emerald-100 text-emerald-700'
-                            : 'bg-slate-100 text-slate-400'
-                        }`}
-                      >
-                        {day}
-                      </div>
-                    ))}
-                  </div>
-                  {job.start_date && (
-                    <p className="mt-4 text-sm text-slate-600">
-                      <span className="font-medium">Start Date:</span>{' '}
-                      {format(new Date(job.start_date), 'MMMM d, yyyy')}
-                      {job.end_date && ` - ${format(new Date(job.end_date), 'MMMM d, yyyy')}`}
-                    </p>
-                  )}
-                </CardContent>
-              </Card>
+              <AvailabilityCalendar
+                jobPostings={[job]}
+                type="restaurant"
+              />
             )}
 
             {/* Schedule Comparison */}
