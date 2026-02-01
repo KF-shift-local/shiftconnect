@@ -58,6 +58,9 @@ import PostJob from './pages/PostJob';
 import ManageApplications from './pages/ManageApplications';
 import WriteReview from './pages/WriteReview';
 import WorkerProfile from './pages/WorkerProfile';
+import BrowseWorkers from './pages/BrowseWorkers';
+import MyApplications from './pages/MyApplications';
+import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
@@ -72,9 +75,12 @@ export const PAGES = {
     "ManageApplications": ManageApplications,
     "WriteReview": WriteReview,
     "WorkerProfile": WorkerProfile,
+    "BrowseWorkers": BrowseWorkers,
+    "MyApplications": MyApplications,
 }
 
 export const pagesConfig = {
     mainPage: "Home",
     Pages: PAGES,
+    Layout: __Layout,
 };
