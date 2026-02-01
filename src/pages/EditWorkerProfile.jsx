@@ -61,6 +61,9 @@ export default function EditWorkerProfile() {
         headline: profile.headline || '',
         bio: profile.bio || '',
         resume_url: profile.resume_url || '',
+        work_authorization_status: profile.work_authorization_status || '',
+        work_authorization_document_url: profile.work_authorization_document_url || '',
+        work_authorization_expiry: profile.work_authorization_expiry || '',
         experience: profile.experience || [],
         skills: profile.skills || [],
         certifications: profile.certifications || [],
@@ -285,6 +288,65 @@ export default function EditWorkerProfile() {
                         {type}
                       </Badge>
                     ))}
+                  </div>
+                </div>
+
+                {/* Work Authorization */}
+                <div className="space-y-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                  <h4 className="font-medium text-slate-900">Work Authorization</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2 col-span-2">
+                      <Label>Authorization Status</Label>
+                      <select
+                        value={formData.work_authorization_status}
+                        onChange={(e) => setFormData({ ...formData, work_authorization_status: e.target.value })}
+                        className="w-full h-9 px-3 py-1 rounded-md border border-slate-200 bg-white text-sm"
+                      >
+                        <option value="">Select status</option>
+                        <option value="us_citizen">U.S. Citizen</option>
+                        <option value="permanent_resident">Permanent Resident</option>
+                        <option value="work_visa">Work Visa</option>
+                        <option value="ead">Employment Authorization Document (EAD)</option>
+                      </select>
+                    </div>
+                    {formData.work_authorization_status && formData.work_authorization_status !== 'us_citizen' && (
+                      <>
+                        <div className="space-y-2">
+                          <Label>Expiration Date</Label>
+                          <Input
+                            type="date"
+                            value={formData.work_authorization_expiry}
+                            onChange={(e) => setFormData({ ...formData, work_authorization_expiry: e.target.value })}
+                            className="border-slate-200"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Upload Document</Label>
+                          <label className="flex items-center justify-center h-9 px-3 border border-slate-200 rounded-md cursor-pointer hover:bg-slate-50">
+                            <input
+                              type="file"
+                              accept=".pdf,.jpg,.jpeg,.png"
+                              onChange={async (e) => {
+                                const file = e.target.files[0];
+                                if (!file) return;
+                                setUploading(true);
+                                const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                                setFormData(prev => ({ ...prev, work_authorization_document_url: file_url }));
+                                setUploading(false);
+                              }}
+                              className="hidden"
+                            />
+                            {uploading ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : formData.work_authorization_document_url ? (
+                              <span className="text-emerald-600 text-sm">✓ Uploaded</span>
+                            ) : (
+                              <span className="text-slate-600 text-sm">Choose file</span>
+                            )}
+                          </label>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               </CardContent>
