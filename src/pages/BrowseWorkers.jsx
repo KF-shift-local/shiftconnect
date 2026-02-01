@@ -104,6 +104,15 @@ export default function BrowseWorkers() {
     }));
   };
 
+  const toggleTimeOfDay = (time) => {
+    setFilters(prev => ({
+      ...prev,
+      timeOfDay: prev.timeOfDay.includes(time)
+        ? prev.timeOfDay.filter(t => t !== time)
+        : [...prev.timeOfDay, time]
+    }));
+  };
+
   const clearFilters = () => {
     setFilters({
       jobTypes: [],

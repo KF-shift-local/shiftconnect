@@ -20,6 +20,7 @@ import JobCard from '@/components/common/JobCard';
 const JOB_TYPES = ['Server', 'Bartender', 'Line Cook', 'Prep Cook', 'Host/Hostess', 'Busser', 'Dishwasher', 'Barista', 'Food Runner', 'Kitchen Manager', 'Other'];
 const EMPLOYMENT_TYPES = ['temporary', 'seasonal', 'part-time', 'full-time', 'on-call'];
 const CUISINE_TYPES = ['American', 'Italian', 'Mexican', 'Chinese', 'Japanese', 'Thai', 'Indian', 'Mediterranean', 'French', 'Korean', 'Seafood', 'Steakhouse', 'BBQ', 'Fine Dining', 'Cafe/Bakery', 'Other'];
+const SHIFT_TYPES = ['morning', 'afternoon', 'evening', 'night', 'flexible'];
 
 export default function Jobs() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -30,6 +31,7 @@ export default function Jobs() {
     jobTypes: [],
     employmentTypes: [],
     cuisineTypes: [],
+    shiftTypes: [],
     payRange: [0, 50],
     distance: 25,
     urgentOnly: false,
@@ -70,6 +72,11 @@ export default function Jobs() {
 
       // Employment types
       if (filters.employmentTypes.length > 0 && !filters.employmentTypes.includes(job.employment_type)) {
+        return false;
+      }
+
+      // Shift types
+      if (filters.shiftTypes.length > 0 && !filters.shiftTypes.includes(job.shift_type)) {
         return false;
       }
 
@@ -125,11 +132,21 @@ export default function Jobs() {
     }));
   };
 
+  const toggleShiftType = (type) => {
+    setFilters(prev => ({
+      ...prev,
+      shiftTypes: prev.shiftTypes.includes(type)
+        ? prev.shiftTypes.filter(t => t !== type)
+        : [...prev.shiftTypes, type]
+    }));
+  };
+
   const clearFilters = () => {
     setFilters({
       jobTypes: [],
       employmentTypes: [],
       cuisineTypes: [],
+      shiftTypes: [],
       payRange: [0, 50],
       distance: 25,
       urgentOnly: false,
@@ -143,6 +160,7 @@ export default function Jobs() {
     filters.jobTypes.length + 
     filters.employmentTypes.length + 
     filters.cuisineTypes.length +
+    filters.shiftTypes.length +
     (filters.payRange[0] > 0 || filters.payRange[1] < 50 ? 1 : 0) + 
     (filters.distance < 25 ? 1 : 0) +
     (filters.urgentOnly ? 1 : 0) +
@@ -206,7 +224,7 @@ export default function Jobs() {
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
                   {/* Job Types */}
                   <div>
                     <h4 className="font-medium text-slate-700 mb-3">Position Type</h4>
@@ -232,6 +250,22 @@ export default function Jobs() {
                           <Checkbox
                             checked={filters.employmentTypes.includes(type)}
                             onCheckedChange={() => toggleEmploymentType(type)}
+                          />
+                          <span className="text-sm text-slate-600 capitalize">{type}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Shift Times */}
+                  <div>
+                    <h4 className="font-medium text-slate-700 mb-3">Time of Day</h4>
+                    <div className="space-y-2">
+                      {SHIFT_TYPES.map((type) => (
+                        <label key={type} className="flex items-center gap-2 cursor-pointer">
+                          <Checkbox
+                            checked={filters.shiftTypes.includes(type)}
+                            onCheckedChange={() => toggleShiftType(type)}
                           />
                           <span className="text-sm text-slate-600 capitalize">{type}</span>
                         </label>
