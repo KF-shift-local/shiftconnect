@@ -62,11 +62,11 @@ import PostJob from './pages/PostJob';
 import RestaurantDashboard from './pages/RestaurantDashboard';
 import RestaurantOnboarding from './pages/RestaurantOnboarding';
 import RestaurantProfile from './pages/RestaurantProfile';
+import Settings from './pages/Settings';
 import WorkerDashboard from './pages/WorkerDashboard';
 import WorkerOnboarding from './pages/WorkerOnboarding';
 import WorkerProfile from './pages/WorkerProfile';
 import WriteReview from './pages/WriteReview';
-import Settings from './pages/Settings';
 import __Layout from './Layout.jsx';
 
 
@@ -86,11 +86,11 @@ export const PAGES = {
     "RestaurantDashboard": RestaurantDashboard,
     "RestaurantOnboarding": RestaurantOnboarding,
     "RestaurantProfile": RestaurantProfile,
+    "Settings": Settings,
     "WorkerDashboard": WorkerDashboard,
     "WorkerOnboarding": WorkerOnboarding,
     "WorkerProfile": WorkerProfile,
     "WriteReview": WriteReview,
-    "Settings": Settings,
 }
 
 export const pagesConfig = {
