@@ -149,6 +149,10 @@ export default function Layout({ children, currentPageName }) {
                           <Briefcase className="w-4 h-4 mr-2" />
                           Post a Job
                         </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate(createPageUrl('ApplicationQuestions'))}>
+                          <FileText className="w-4 h-4 mr-2" />
+                          Application Questions
+                        </DropdownMenuItem>
                         <DropdownMenuSeparator />
                       </>
                     )}
