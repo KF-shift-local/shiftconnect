@@ -24,6 +24,7 @@ import { format } from 'date-fns';
 import StarRating from '@/components/ui/StarRating';
 import JobCard from '@/components/common/JobCard';
 import StartConversationButton from '@/components/messaging/StartConversationButton';
+import AvailabilityCalendar from '@/components/calendar/AvailabilityCalendar';
 
 export default function RestaurantProfile() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -263,6 +264,14 @@ export default function RestaurantProfile() {
 
           {/* Sidebar */}
           <div className="space-y-6">
+            {/* Hiring Calendar */}
+            {jobs.length > 0 && (
+              <AvailabilityCalendar 
+                jobPostings={jobs}
+                type="restaurant"
+              />
+            )}
+            
             {/* Contact */}
             <Card className="border-slate-200">
               <CardHeader>

@@ -23,6 +23,7 @@ import {
 import { format } from 'date-fns';
 import StarRating from '@/components/ui/StarRating';
 import StartConversationButton from '@/components/messaging/StartConversationButton';
+import AvailabilityCalendar from '@/components/calendar/AvailabilityCalendar';
 
 export default function WorkerProfile() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -290,12 +291,18 @@ export default function WorkerProfile() {
               </Card>
             )}
 
-            {/* Availability */}
+            {/* Availability Calendar */}
+            <AvailabilityCalendar 
+              availability={worker.availability}
+              type="worker"
+            />
+            
+            {/* Weekly Availability */}
             <Card className="border-slate-200">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Clock className="w-5 h-5 text-emerald-600" />
-                  Availability
+                  Weekly Schedule
                 </CardTitle>
               </CardHeader>
               <CardContent>
