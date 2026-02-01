@@ -209,6 +209,10 @@ export default function Layout({ children, currentPageName }) {
                         <DropdownMenuSeparator />
                       </>
                     )}
+                    <DropdownMenuItem onClick={() => navigate(createPageUrl('Settings'))}>
+                      <Settings className="w-4 h-4 mr-2" />
+                      Account Settings
+                    </DropdownMenuItem>
                     {workerProfile && !restaurant && user?.role !== 'admin' && (
                       <>
                         <DropdownMenuSeparator />
