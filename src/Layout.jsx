@@ -170,6 +170,16 @@ export default function Layout({ children, currentPageName }) {
                         <DropdownMenuSeparator />
                       </>
                     )}
+                    {workerProfile && !restaurant && user?.role !== 'admin' && (
+                      <>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
+                    {restaurant && !workerProfile && user?.role !== 'admin' && (
+                      <>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
                     <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                       <LogOut className="w-4 h-4 mr-2" />
                       Sign Out
