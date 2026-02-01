@@ -23,7 +23,8 @@ import {
         FileText,
         Users,
         Star,
-        MessageCircle
+        MessageCircle,
+        Calendar as CalendarIcon
       } from 'lucide-react';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import HelpWidget from '@/components/help/HelpWidget';
@@ -105,16 +106,28 @@ export default function Layout({ children, currentPageName }) {
                 </Link>
               )}
               {(workerProfile || restaurant) && (
-                <Link 
-                  to={createPageUrl('Messages')}
-                  className={`text-sm font-medium transition-colors ${
-                    currentPageName === 'Messages' 
-                      ? 'text-emerald-600' 
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  Messages
-                </Link>
+                <>
+                  <Link 
+                    to={createPageUrl('Messages')}
+                    className={`text-sm font-medium transition-colors ${
+                      currentPageName === 'Messages' 
+                        ? 'text-emerald-600' 
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    Messages
+                  </Link>
+                  <Link 
+                    to={createPageUrl('Calendar')}
+                    className={`text-sm font-medium transition-colors ${
+                      currentPageName === 'Calendar' 
+                        ? 'text-emerald-600' 
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    Calendar
+                  </Link>
+                </>
               )}
             </nav>
 
@@ -154,6 +167,10 @@ export default function Layout({ children, currentPageName }) {
                         <DropdownMenuItem onClick={() => navigate(createPageUrl('Messages'))}>
                           <MessageCircle className="w-4 h-4 mr-2" />
                           Messages
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate(createPageUrl('Calendar'))}>
+                          <CalendarIcon className="w-4 h-4 mr-2" />
+                          Calendar
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                       </>
@@ -260,13 +277,22 @@ export default function Layout({ children, currentPageName }) {
                 </Link>
               )}
               {(workerProfile || restaurant) && (
-                <Link
-                  to={createPageUrl('Messages')}
-                  className="block px-4 py-2 text-slate-700 hover:bg-slate-50 rounded-lg"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Messages
-                </Link>
+                <>
+                  <Link
+                    to={createPageUrl('Messages')}
+                    className="block px-4 py-2 text-slate-700 hover:bg-slate-50 rounded-lg"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Messages
+                  </Link>
+                  <Link
+                    to={createPageUrl('Calendar')}
+                    className="block px-4 py-2 text-slate-700 hover:bg-slate-50 rounded-lg"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Calendar
+                  </Link>
+                </>
               )}
               {workerProfile && (
                 <Link

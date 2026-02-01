@@ -65,6 +65,7 @@ import WorkerOnboarding from './pages/WorkerOnboarding';
 import WorkerProfile from './pages/WorkerProfile';
 import WriteReview from './pages/WriteReview';
 import Messages from './pages/Messages';
+import Calendar from './pages/Calendar';
 import __Layout from './Layout.jsx';
 
 
@@ -87,6 +88,7 @@ export const PAGES = {
     "WorkerProfile": WorkerProfile,
     "WriteReview": WriteReview,
     "Messages": Messages,
+    "Calendar": Calendar,
 }
 
 export const pagesConfig = {
