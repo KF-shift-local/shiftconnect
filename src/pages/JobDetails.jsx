@@ -42,6 +42,7 @@ export default function JobDetails() {
   const [applyOpen, setApplyOpen] = useState(false);
   const [coverMessage, setCoverMessage] = useState('');
   const [availableDate, setAvailableDate] = useState('');
+  const [customAnswers, setCustomAnswers] = useState({});
   const queryClient = useQueryClient();
 
   const { data: job, isLoading: jobLoading } = useQuery({
@@ -88,6 +89,15 @@ export default function JobDetails() {
     enabled: !!jobId && !!workerProfile?.id
   });
 
+  const { data: customQuestions = [] } = useQuery({
+    queryKey: ['applicationQuestions', job?.restaurant_id],
+    queryFn: () => base44.entities.ApplicationQuestion.filter({ 
+      restaurant_id: job.restaurant_id,
+      is_active: true 
+    }, 'order'),
+    enabled: !!job?.restaurant_id
+  });
+
   const applyMutation = useMutation({
     mutationFn: async () => {
       const application = await base44.entities.Application.create({
@@ -100,6 +110,7 @@ export default function JobDetails() {
         restaurant_name: job.restaurant_name,
         cover_message: coverMessage,
         available_start_date: availableDate,
+        custom_answers: customAnswers,
         status: 'pending'
       });
       
@@ -122,6 +133,7 @@ export default function JobDetails() {
       setApplyOpen(false);
       setCoverMessage('');
       setAvailableDate('');
+      setCustomAnswers({});
     }
   });
 
@@ -424,7 +436,7 @@ export default function JobDetails() {
                         <DialogHeader>
                           <DialogTitle>Apply for {job.title}</DialogTitle>
                         </DialogHeader>
-                        <div className="space-y-4 pt-4">
+                        <div className="space-y-4 pt-4 max-h-[60vh] overflow-y-auto pr-2">
                           <div className="space-y-2">
                             <Label>Cover Message</Label>
                             <Textarea
@@ -442,6 +454,56 @@ export default function JobDetails() {
                               onChange={(e) => setAvailableDate(e.target.value)}
                             />
                           </div>
+
+                          {customQuestions.map((question) => (
+                            <div key={question.id} className="space-y-2">
+                              <Label>
+                                {question.question_text}
+                                {question.required && <span className="text-red-500 ml-1">*</span>}
+                              </Label>
+                              {question.question_type === 'text' && (
+                                <Input
+                                  value={customAnswers[question.id] || ''}
+                                  onChange={(e) => setCustomAnswers({...customAnswers, [question.id]: e.target.value})}
+                                  required={question.required}
+                                />
+                              )}
+                              {question.question_type === 'textarea' && (
+                                <Textarea
+                                  value={customAnswers[question.id] || ''}
+                                  onChange={(e) => setCustomAnswers({...customAnswers, [question.id]: e.target.value})}
+                                  className="min-h-[80px]"
+                                  required={question.required}
+                                />
+                              )}
+                              {question.question_type === 'yes_no' && (
+                                <select
+                                  value={customAnswers[question.id] || ''}
+                                  onChange={(e) => setCustomAnswers({...customAnswers, [question.id]: e.target.value})}
+                                  className="w-full h-9 px-3 py-1 rounded-md border border-slate-200 bg-white text-sm"
+                                  required={question.required}
+                                >
+                                  <option value="">Select...</option>
+                                  <option value="yes">Yes</option>
+                                  <option value="no">No</option>
+                                </select>
+                              )}
+                              {question.question_type === 'multiple_choice' && (
+                                <select
+                                  value={customAnswers[question.id] || ''}
+                                  onChange={(e) => setCustomAnswers({...customAnswers, [question.id]: e.target.value})}
+                                  className="w-full h-9 px-3 py-1 rounded-md border border-slate-200 bg-white text-sm"
+                                  required={question.required}
+                                >
+                                  <option value="">Select...</option>
+                                  {question.options?.map((option, idx) => (
+                                    <option key={idx} value={option}>{option}</option>
+                                  ))}
+                                </select>
+                              )}
+                            </div>
+                          ))}
+
                           <Button
                             className="w-full bg-emerald-600 hover:bg-emerald-700"
                             onClick={() => applyMutation.mutate()}
