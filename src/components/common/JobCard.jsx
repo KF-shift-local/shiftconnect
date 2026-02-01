@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { MapPin, Clock, DollarSign, Calendar, Zap, Train } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { MapPin, Clock, DollarSign, Calendar, Zap, Train, Map } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function JobCard({ job }) {
@@ -102,9 +103,24 @@ export default function JobCard({ job }) {
             <span className="text-xs text-slate-500">
               {job.duration_type?.replace('-', ' ')}
             </span>
-            <span className="text-xs font-medium text-emerald-600 group-hover:translate-x-1 transition-transform">
-              View Details →
-            </span>
+            <div className="flex items-center gap-2">
+              <Link 
+                to={createPageUrl(`JobMap?id=${job.id}`)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-7 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                >
+                  <Map className="w-3 h-3 mr-1" />
+                  Map
+                </Button>
+              </Link>
+              <span className="text-xs font-medium text-emerald-600 group-hover:translate-x-1 transition-transform">
+                View Details →
+              </span>
+            </div>
           </div>
         </CardContent>
       </Card>

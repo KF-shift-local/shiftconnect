@@ -214,6 +214,12 @@ export default function JobDetails() {
             </div>
 
             <div className="flex gap-2">
+              <Link to={createPageUrl(`JobMap?id=${jobId}`)}>
+                <Button variant="outline" className="gap-2">
+                  <MapPin className="w-4 h-4" />
+                  Map View
+                </Button>
+              </Link>
               <Button variant="outline" size="icon">
                 <Bookmark className="w-4 h-4" />
               </Button>

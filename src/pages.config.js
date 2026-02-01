@@ -62,6 +62,7 @@ import BrowseWorkers from './pages/BrowseWorkers';
 import MyApplications from './pages/MyApplications';
 import EditWorkerProfile from './pages/EditWorkerProfile';
 import RestaurantProfile from './pages/RestaurantProfile';
+import JobMap from './pages/JobMap';
 import __Layout from './Layout.jsx';
 
 
@@ -81,6 +82,7 @@ export const PAGES = {
     "MyApplications": MyApplications,
     "EditWorkerProfile": EditWorkerProfile,
     "RestaurantProfile": RestaurantProfile,
+    "JobMap": JobMap,
 }
 
 export const pagesConfig = {
