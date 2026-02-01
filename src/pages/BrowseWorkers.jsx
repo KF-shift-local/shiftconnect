@@ -19,6 +19,12 @@ import WorkerCard from '@/components/common/WorkerCard';
 
 const JOB_TYPES = ['Server', 'Bartender', 'Line Cook', 'Prep Cook', 'Host/Hostess', 'Busser', 'Dishwasher', 'Barista', 'Food Runner', 'Kitchen Manager'];
 const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+const TIME_OF_DAY = [
+  { label: 'Morning', value: 'morning', hours: '6am-12pm' },
+  { label: 'Afternoon', value: 'afternoon', hours: '12pm-5pm' },
+  { label: 'Evening', value: 'evening', hours: '5pm-9pm' },
+  { label: 'Night', value: 'night', hours: '9pm-2am' }
+];
 
 export default function BrowseWorkers() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -27,6 +33,7 @@ export default function BrowseWorkers() {
   const [filters, setFilters] = useState({
     jobTypes: [],
     availableDays: [],
+    timeOfDay: [],
     payRange: [0, 50],
     distance: 25,
     hasExperience: false
@@ -70,6 +77,24 @@ export default function BrowseWorkers() {
           worker.availability?.[day]?.available
         );
         if (!hasMatchingDay) return false;
+      }
+
+      // Time of day
+      if (filters.timeOfDay.length > 0 && worker.availability) {
+        const hasTimeMatch = filters.timeOfDay.some(timeSlot => {
+          return Object.values(worker.availability).some(day => {
+            if (!day.available || !day.start || !day.end) return false;
+            const startHour = parseInt(day.start.split(':')[0]);
+            const endHour = parseInt(day.end.split(':')[0]);
+            
+            if (timeSlot === 'morning') return startHour <= 12 && endHour > 6;
+            if (timeSlot === 'afternoon') return startHour <= 17 && endHour > 12;
+            if (timeSlot === 'evening') return startHour <= 21 && endHour > 17;
+            if (timeSlot === 'night') return startHour <= 26 && endHour > 21;
+            return false;
+          });
+        });
+        if (!hasTimeMatch) return false;
       }
 
       // Pay range
@@ -117,6 +142,7 @@ export default function BrowseWorkers() {
     setFilters({
       jobTypes: [],
       availableDays: [],
+      timeOfDay: [],
       payRange: [0, 50],
       distance: 25,
       hasExperience: false
@@ -127,7 +153,8 @@ export default function BrowseWorkers() {
 
   const activeFilterCount = 
     filters.jobTypes.length + 
-    filters.availableDays.length + 
+    filters.availableDays.length +
+    filters.timeOfDay.length +
     (filters.payRange[0] > 0 || filters.payRange[1] < 50 ? 1 : 0) +
     (filters.distance < 25 ? 1 : 0) +
     (filters.hasExperience ? 1 : 0);
@@ -190,7 +217,7 @@ export default function BrowseWorkers() {
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                   {/* Position Types */}
                   <div>
                     <h4 className="font-medium text-slate-700 mb-3">Position Type</h4>
@@ -225,6 +252,23 @@ export default function BrowseWorkers() {
                           {day.slice(0, 3)}
                         </Badge>
                       ))}
+                    </div>
+                    <div className="mt-4">
+                      <h4 className="font-medium text-slate-700 mb-3">Time of Day</h4>
+                      <div className="space-y-2">
+                        {TIME_OF_DAY.map((time) => (
+                          <label key={time.value} className="flex items-center gap-2 cursor-pointer">
+                            <Checkbox
+                              checked={filters.timeOfDay.includes(time.value)}
+                              onCheckedChange={() => toggleTimeOfDay(time.value)}
+                            />
+                            <div className="text-sm">
+                              <span className="text-slate-600">{time.label}</span>
+                              <span className="text-slate-400 text-xs ml-1">({time.hours})</span>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
                     </div>
                   </div>
 
