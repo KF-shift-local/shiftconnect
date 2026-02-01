@@ -17,15 +17,31 @@ import {
   Calendar,
   CheckCircle,
   Loader2,
-  Briefcase
+  Briefcase,
+  MessageCircle
 } from 'lucide-react';
 import { format } from 'date-fns';
 import StarRating from '@/components/ui/StarRating';
 import JobCard from '@/components/common/JobCard';
+import StartConversationButton from '@/components/messaging/StartConversationButton';
 
 export default function RestaurantProfile() {
   const urlParams = new URLSearchParams(window.location.search);
   const restaurantId = urlParams.get('id');
+
+  const { data: user } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: () => base44.auth.me().catch(() => null)
+  });
+
+  const { data: workerProfile } = useQuery({
+    queryKey: ['workerProfile', user?.email],
+    queryFn: async () => {
+      const profiles = await base44.entities.WorkerProfile.filter({ created_by: user.email });
+      return profiles[0];
+    },
+    enabled: !!user?.email
+  });
 
   const { data: restaurant, isLoading } = useQuery({
     queryKey: ['restaurant', restaurantId],
@@ -161,6 +177,18 @@ export default function RestaurantProfile() {
                 </span>
               )}
             </div>
+
+            {user && workerProfile && (
+              <div className="mt-4">
+                <StartConversationButton
+                  workerProfile={workerProfile}
+                  restaurant={restaurant}
+                  currentUser={user}
+                  currentUserType="worker"
+                  className="bg-emerald-600 hover:bg-emerald-700"
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
