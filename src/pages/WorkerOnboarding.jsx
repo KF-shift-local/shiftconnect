@@ -73,6 +73,15 @@ export default function WorkerOnboarding() {
     enabled: !!user?.email
   });
 
+  const { data: existingRestaurant } = useQuery({
+    queryKey: ['restaurant', user?.email],
+    queryFn: async () => {
+      const restaurants = await base44.entities.Restaurant.filter({ created_by: user.email });
+      return restaurants[0];
+    },
+    enabled: !!user?.email
+  });
+
   useEffect(() => {
     if (user) {
       setFormData(prev => ({
@@ -87,6 +96,12 @@ export default function WorkerOnboarding() {
       navigate(createPageUrl('WorkerDashboard'));
     }
   }, [existingProfile, navigate]);
+
+  useEffect(() => {
+    if (existingRestaurant && user?.role !== 'admin') {
+      navigate(createPageUrl('RestaurantDashboard'));
+    }
+  }, [existingRestaurant, user, navigate]);
 
   const saveMutation = useMutation({
     mutationFn: async () => {

@@ -47,6 +47,7 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
+import ApplicationQuestions from './pages/ApplicationQuestions';
 import BrowseWorkers from './pages/BrowseWorkers';
 import EditWorkerProfile from './pages/EditWorkerProfile';
 import Home from './pages/Home';
@@ -63,11 +64,11 @@ import WorkerDashboard from './pages/WorkerDashboard';
 import WorkerOnboarding from './pages/WorkerOnboarding';
 import WorkerProfile from './pages/WorkerProfile';
 import WriteReview from './pages/WriteReview';
-import ApplicationQuestions from './pages/ApplicationQuestions';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "ApplicationQuestions": ApplicationQuestions,
     "BrowseWorkers": BrowseWorkers,
     "EditWorkerProfile": EditWorkerProfile,
     "Home": Home,
@@ -84,7 +85,6 @@ export const PAGES = {
     "WorkerOnboarding": WorkerOnboarding,
     "WorkerProfile": WorkerProfile,
     "WriteReview": WriteReview,
-    "ApplicationQuestions": ApplicationQuestions,
 }
 
 export const pagesConfig = {
