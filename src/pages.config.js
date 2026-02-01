@@ -54,6 +54,10 @@ import WorkerOnboarding from './pages/WorkerOnboarding';
 import RestaurantOnboarding from './pages/RestaurantOnboarding';
 import WorkerDashboard from './pages/WorkerDashboard';
 import RestaurantDashboard from './pages/RestaurantDashboard';
+import PostJob from './pages/PostJob';
+import ManageApplications from './pages/ManageApplications';
+import WriteReview from './pages/WriteReview';
+import WorkerProfile from './pages/WorkerProfile';
 
 
 export const PAGES = {
@@ -64,6 +68,10 @@ export const PAGES = {
     "RestaurantOnboarding": RestaurantOnboarding,
     "WorkerDashboard": WorkerDashboard,
     "RestaurantDashboard": RestaurantDashboard,
+    "PostJob": PostJob,
+    "ManageApplications": ManageApplications,
+    "WriteReview": WriteReview,
+    "WorkerProfile": WorkerProfile,
 }
 
 export const pagesConfig = {
