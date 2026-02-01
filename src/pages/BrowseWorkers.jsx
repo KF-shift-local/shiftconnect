@@ -180,7 +180,7 @@ export default function BrowseWorkers() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Restaurant Action Card */}
-      {user && !restaurant && (
+      {!restaurant && (
         <div className="bg-gradient-to-r from-emerald-600 to-teal-600 border-b border-emerald-700">
           <div className="max-w-6xl mx-auto px-4 py-6">
             <Card className="border-0 bg-white/95 backdrop-blur-sm shadow-xl">
@@ -196,7 +196,33 @@ export default function BrowseWorkers() {
                 </div>
                 <Link to={createPageUrl('RestaurantOnboarding')}>
                   <Button className="bg-emerald-600 hover:bg-emerald-700 whitespace-nowrap">
-                    Create Restaurant Profile
+                    {user ? 'Create Restaurant Profile' : 'Create Profile'}
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      )}
+      
+      {restaurant && (
+        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 border-b border-emerald-700">
+          <div className="max-w-6xl mx-auto px-4 py-6">
+            <Card className="border-0 bg-white/95 backdrop-blur-sm shadow-xl">
+              <CardContent className="p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center flex-shrink-0">
+                    <Building2 className="w-7 h-7 text-emerald-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-slate-900 mb-1">Found the perfect candidate?</h3>
+                    <p className="text-slate-600">Post a job to start receiving applications from qualified workers.</p>
+                  </div>
+                </div>
+                <Link to={createPageUrl('PostJob')}>
+                  <Button className="bg-emerald-600 hover:bg-emerald-700 whitespace-nowrap">
+                    Post A Job
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </Link>
