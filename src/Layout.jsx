@@ -12,18 +12,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { 
-  Menu, 
-  X, 
-  ChefHat,
-  User,
-  Building2,
-  Briefcase,
-  LogOut,
-  Settings,
-  FileText,
-  Users,
-  Star
-} from 'lucide-react';
+        Menu, 
+        X, 
+        ChefHat,
+        User,
+        Building2,
+        Briefcase,
+        LogOut,
+        Settings,
+        FileText,
+        Users,
+        Star,
+        MessageCircle
+      } from 'lucide-react';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import HelpWidget from '@/components/help/HelpWidget';
 
@@ -103,6 +104,18 @@ export default function Layout({ children, currentPageName }) {
                   Find Workers
                 </Link>
               )}
+              {(workerProfile || restaurant) && (
+                <Link 
+                  to={createPageUrl('Messages')}
+                  className={`text-sm font-medium transition-colors ${
+                    currentPageName === 'Messages' 
+                      ? 'text-emerald-600' 
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Messages
+                </Link>
+              )}
             </nav>
 
             {/* User Menu */}
@@ -132,6 +145,15 @@ export default function Layout({ children, currentPageName }) {
                         <DropdownMenuItem onClick={() => navigate(createPageUrl('MyApplications'))}>
                           <FileText className="w-4 h-4 mr-2" />
                           My Applications
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
+                    {(workerProfile || restaurant) && (
+                      <>
+                        <DropdownMenuItem onClick={() => navigate(createPageUrl('Messages'))}>
+                          <MessageCircle className="w-4 h-4 mr-2" />
+                          Messages
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                       </>
@@ -235,6 +257,15 @@ export default function Layout({ children, currentPageName }) {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Find Workers
+                </Link>
+              )}
+              {(workerProfile || restaurant) && (
+                <Link
+                  to={createPageUrl('Messages')}
+                  className="block px-4 py-2 text-slate-700 hover:bg-slate-50 rounded-lg"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Messages
                 </Link>
               )}
               {workerProfile && (
