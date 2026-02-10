@@ -138,10 +138,10 @@ export default function RestaurantDashboard() {
                   Post a Job
                 </Button>
               </Link>
-              <Link to={createPageUrl('Settings')}>
+              <Link to={createPageUrl('EditRestaurant')}>
                 <Button variant="outline">
                   <Settings className="w-4 h-4 mr-2" />
-                  Settings
+                  Edit Profile
                 </Button>
               </Link>
             </div>

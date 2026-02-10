@@ -18,7 +18,11 @@ import {
   CheckCircle,
   Loader2,
   Briefcase,
-  MessageCircle
+  MessageCircle,
+  Facebook,
+  Instagram,
+  Twitter,
+  Linkedin
 } from 'lucide-react';
 import { format } from 'date-fns';
 import StarRating from '@/components/ui/StarRating';
@@ -98,7 +102,14 @@ export default function RestaurantProfile() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Cover Photo */}
-      <div className="relative h-64 bg-gradient-to-br from-slate-800 to-slate-900">
+      <div 
+        className="relative h-64"
+        style={{ 
+          background: restaurant.brand_color 
+            ? `linear-gradient(to bottom right, ${restaurant.brand_color}dd, ${restaurant.brand_color}99)` 
+            : 'linear-gradient(to bottom right, #334155, #1e293b)'
+        }}
+      >
         {restaurant.cover_photo_url && (
           <img
             src={restaurant.cover_photo_url}
@@ -199,15 +210,22 @@ export default function RestaurantProfile() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
             {/* About */}
-            {restaurant.description && (
+            {(restaurant.description || restaurant.about_us) && (
               <Card className="border-slate-200">
                 <CardHeader>
-                  <CardTitle className="text-lg">About</CardTitle>
+                  <CardTitle className="text-lg">About Us</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-slate-600 whitespace-pre-wrap leading-relaxed">
-                    {restaurant.description}
-                  </p>
+                <CardContent className="space-y-4">
+                  {restaurant.description && (
+                    <p className="text-slate-600 leading-relaxed">
+                      {restaurant.description}
+                    </p>
+                  )}
+                  {restaurant.about_us && (
+                    <p className="text-slate-600 whitespace-pre-wrap leading-relaxed">
+                      {restaurant.about_us}
+                    </p>
+                  )}
                 </CardContent>
               </Card>
             )}
@@ -281,7 +299,7 @@ export default function RestaurantProfile() {
                 {restaurant.phone && (
                   <a 
                     href={`tel:${restaurant.phone}`}
-                    className="flex items-center gap-3 text-slate-600 hover:text-emerald-600"
+                    className="flex items-center gap-3 text-slate-600 hover:text-emerald-600 transition-colors"
                   >
                     <Phone className="w-5 h-5" />
                     <span>{restaurant.phone}</span>
@@ -290,7 +308,7 @@ export default function RestaurantProfile() {
                 {restaurant.email && (
                   <a 
                     href={`mailto:${restaurant.email}`}
-                    className="flex items-center gap-3 text-slate-600 hover:text-emerald-600"
+                    className="flex items-center gap-3 text-slate-600 hover:text-emerald-600 transition-colors"
                   >
                     <Mail className="w-5 h-5" />
                     <span>{restaurant.email}</span>
@@ -301,7 +319,7 @@ export default function RestaurantProfile() {
                     href={restaurant.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 text-slate-600 hover:text-emerald-600"
+                    className="flex items-center gap-3 text-slate-600 hover:text-emerald-600 transition-colors"
                   >
                     <Globe className="w-5 h-5" />
                     <span>Website</span>
@@ -309,6 +327,69 @@ export default function RestaurantProfile() {
                 )}
               </CardContent>
             </Card>
+
+            {/* Social Media */}
+            {restaurant.social_media && Object.values(restaurant.social_media).some(v => v) && (
+              <Card className="border-slate-200">
+                <CardHeader>
+                  <CardTitle className="text-lg">Follow Us</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-3">
+                    {restaurant.social_media.facebook && (
+                      <a
+                        href={restaurant.social_media.facebook}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 hover:bg-blue-100 transition-colors"
+                      >
+                        <Facebook className="w-5 h-5" />
+                      </a>
+                    )}
+                    {restaurant.social_media.instagram && (
+                      <a
+                        href={restaurant.social_media.instagram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-10 h-10 rounded-lg bg-pink-50 flex items-center justify-center text-pink-600 hover:bg-pink-100 transition-colors"
+                      >
+                        <Instagram className="w-5 h-5" />
+                      </a>
+                    )}
+                    {restaurant.social_media.twitter && (
+                      <a
+                        href={restaurant.social_media.twitter}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-10 h-10 rounded-lg bg-sky-50 flex items-center justify-center text-sky-600 hover:bg-sky-100 transition-colors"
+                      >
+                        <Twitter className="w-5 h-5" />
+                      </a>
+                    )}
+                    {restaurant.social_media.linkedin && (
+                      <a
+                        href={restaurant.social_media.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-700 hover:bg-blue-100 transition-colors"
+                      >
+                        <Linkedin className="w-5 h-5" />
+                      </a>
+                    )}
+                    {restaurant.social_media.tiktok && (
+                      <a
+                        href={restaurant.social_media.tiktok}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center text-slate-900 hover:bg-slate-100 transition-colors"
+                      >
+                        <Globe className="w-5 h-5" />
+                      </a>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Quick Stats */}
             <Card className="border-slate-200">
