@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Calendar as CalendarIcon, Clock, Save } from 'lucide-react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, getDay, startOfWeek, endOfWeek } from 'date-fns';
 import AvailabilityCalendar from '@/components/calendar/AvailabilityCalendar';
+import ShiftResponse from '@/components/scheduling/ShiftResponse';
 
 const TIMES = [
   '12:00 AM', '1:00 AM', '2:00 AM', '3:00 AM', '4:00 AM', '5:00 AM',
@@ -52,6 +53,17 @@ export default function CalendarPage() {
       status: 'active'
     }),
     enabled: !!restaurant?.id
+  });
+
+  const { data: shifts = [] } = useQuery({
+    queryKey: ['shifts', workerProfile?.id || restaurant?.id],
+    queryFn: () => {
+      if (workerProfile) {
+        return base44.entities.Shift.filter({ worker_id: workerProfile.id }, '-proposed_date');
+      }
+      return base44.entities.Shift.filter({ restaurant_id: restaurant.id }, '-proposed_date');
+    },
+    enabled: !!(workerProfile?.id || restaurant?.id)
   });
 
   React.useEffect(() => {
@@ -236,6 +248,20 @@ export default function CalendarPage() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Upcoming Schedules */}
+              {shifts.filter(s => s.status === 'proposed' || s.status === 'accepted').length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="font-medium text-slate-900">Upcoming Schedules</h3>
+                  {shifts
+                    .filter(s => s.status === 'proposed' || s.status === 'accepted')
+                    .slice(0, 3)
+                    .map(shift => (
+                      <ShiftResponse key={shift.id} shift={shift} userType="worker" />
+                    ))
+                  }
+                </div>
+              )}
             </div>
           )}
 
@@ -263,6 +289,32 @@ export default function CalendarPage() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Restaurant Upcoming Schedules */}
+              {shifts.filter(s => s.status === 'proposed' || s.status === 'accepted' || s.status === 'counter_proposed').length > 0 && (
+                <Card className="border-slate-200">
+                  <CardHeader>
+                    <CardTitle className="text-sm">Upcoming Schedules</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {shifts
+                      .filter(s => s.status === 'proposed' || s.status === 'accepted' || s.status === 'counter_proposed')
+                      .slice(0, 3)
+                      .map(shift => (
+                        <div key={shift.id} className="pb-3 border-b border-slate-100 last:border-0">
+                          <div className="font-medium text-slate-900">{shift.worker_name}</div>
+                          <div className="text-sm text-slate-600">
+                            {format(new Date(shift.proposed_date), 'MMM d, h:mm a')}
+                          </div>
+                          <div className="text-xs text-slate-500 mt-1">
+                            {shift.shift_type} • {shift.status}
+                          </div>
+                        </div>
+                      ))
+                    }
+                  </CardContent>
+                </Card>
+              )}
             </div>
           )}
         </div>
