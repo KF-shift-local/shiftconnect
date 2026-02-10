@@ -67,8 +67,6 @@ import WorkerDashboard from './pages/WorkerDashboard';
 import WorkerOnboarding from './pages/WorkerOnboarding';
 import WorkerProfile from './pages/WorkerProfile';
 import WriteReview from './pages/WriteReview';
-import WorkerSchedule from './pages/WorkerSchedule';
-import RestaurantScheduling from './pages/RestaurantScheduling';
 import __Layout from './Layout.jsx';
 
 
@@ -93,8 +91,6 @@ export const PAGES = {
     "WorkerOnboarding": WorkerOnboarding,
     "WorkerProfile": WorkerProfile,
     "WriteReview": WriteReview,
-    "WorkerSchedule": WorkerSchedule,
-    "RestaurantScheduling": RestaurantScheduling,
 }
 
 export const pagesConfig = {

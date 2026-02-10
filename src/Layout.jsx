@@ -117,30 +117,16 @@ export default function Layout({ children, currentPageName }) {
                   >
                     Messages
                   </Link>
-                  {workerProfile && (
-                    <Link 
-                      to={createPageUrl('WorkerSchedule')}
-                      className={`text-sm font-medium transition-colors ${
-                        currentPageName === 'WorkerSchedule' 
-                          ? 'text-emerald-600' 
-                          : 'text-slate-600 hover:text-slate-900'
-                      }`}
-                    >
-                      My Schedule
-                    </Link>
-                  )}
-                  {restaurant && (
-                    <Link 
-                      to={createPageUrl('RestaurantScheduling')}
-                      className={`text-sm font-medium transition-colors ${
-                        currentPageName === 'RestaurantScheduling' 
-                          ? 'text-emerald-600' 
-                          : 'text-slate-600 hover:text-slate-900'
-                      }`}
-                    >
-                      Scheduling
-                    </Link>
-                  )}
+                  <Link 
+                    to={createPageUrl('Calendar')}
+                    className={`text-sm font-medium transition-colors ${
+                      currentPageName === 'Calendar' 
+                        ? 'text-emerald-600' 
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    Calendar
+                  </Link>
                 </>
               )}
             </nav>
@@ -173,10 +159,6 @@ export default function Layout({ children, currentPageName }) {
                           <FileText className="w-4 h-4 mr-2" />
                           My Applications
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => navigate(createPageUrl('WorkerSchedule'))}>
-                          <CalendarIcon className="w-4 h-4 mr-2" />
-                          My Schedule
-                        </DropdownMenuItem>
                         <DropdownMenuSeparator />
                       </>
                     )}
@@ -185,6 +167,10 @@ export default function Layout({ children, currentPageName }) {
                         <DropdownMenuItem onClick={() => navigate(createPageUrl('Messages'))}>
                           <MessageCircle className="w-4 h-4 mr-2" />
                           Messages
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate(createPageUrl('Calendar'))}>
+                          <CalendarIcon className="w-4 h-4 mr-2" />
+                          Calendar
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                       </>
@@ -202,10 +188,6 @@ export default function Layout({ children, currentPageName }) {
                         <DropdownMenuItem onClick={() => navigate(createPageUrl('PostJob'))}>
                           <Briefcase className="w-4 h-4 mr-2" />
                           Post a Job
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => navigate(createPageUrl('RestaurantScheduling'))}>
-                          <CalendarIcon className="w-4 h-4 mr-2" />
-                          Scheduling
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => navigate(createPageUrl('ApplicationQuestions'))}>
                           <FileText className="w-4 h-4 mr-2" />
@@ -307,24 +289,13 @@ export default function Layout({ children, currentPageName }) {
                   >
                     Messages
                   </Link>
-                  {workerProfile && (
-                    <Link
-                      to={createPageUrl('WorkerSchedule')}
-                      className="block px-4 py-2 text-slate-700 hover:bg-slate-50 rounded-lg"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      My Schedule
-                    </Link>
-                  )}
-                  {restaurant && (
-                    <Link
-                      to={createPageUrl('RestaurantScheduling')}
-                      className="block px-4 py-2 text-slate-700 hover:bg-slate-50 rounded-lg"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Scheduling
-                    </Link>
-                  )}
+                  <Link
+                    to={createPageUrl('Calendar')}
+                    className="block px-4 py-2 text-slate-700 hover:bg-slate-50 rounded-lg"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Calendar
+                  </Link>
                 </>
               )}
               {workerProfile && (
