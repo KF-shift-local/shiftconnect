@@ -39,6 +39,8 @@ import { format } from 'date-fns';
 import StarRating from '@/components/ui/StarRating';
 import MessagingPanel from '@/components/applications/MessagingPanel';
 import ScheduleComparison from '@/components/calendar/ScheduleComparison';
+import ShiftProposal from '@/components/scheduling/ShiftProposal';
+import ShiftResponse from '@/components/scheduling/ShiftResponse';
 
 const STATUS_OPTIONS = [
   { value: 'pending', label: 'Pending', color: 'bg-amber-100 text-amber-700' },
@@ -60,6 +62,7 @@ export default function ManageApplications() {
   const [showInterview, setShowInterview] = useState(false);
   const [showEmailTemplate, setShowEmailTemplate] = useState(false);
   const [emailType, setEmailType] = useState('');
+  const [showScheduling, setShowScheduling] = useState(false);
   const [interviewData, setInterviewData] = useState({
     scheduled_date: '',
     location: '',
@@ -95,6 +98,12 @@ export default function ManageApplications() {
   const { data: jobs = [] } = useQuery({
     queryKey: ['restaurantJobs', restaurant?.id],
     queryFn: () => base44.entities.JobPosting.filter({ restaurant_id: restaurant.id }),
+    enabled: !!restaurant?.id
+  });
+
+  const { data: shifts = [] } = useQuery({
+    queryKey: ['shifts', restaurant?.id],
+    queryFn: () => base44.entities.Shift.filter({ restaurant_id: restaurant.id }, '-created_date'),
     enabled: !!restaurant?.id
   });
 
@@ -482,7 +491,7 @@ export default function ManageApplications() {
         )}
 
         {/* Application Detail Modal */}
-        <Dialog open={!!selectedApp && !showMessaging && !showInterview && !showEmailTemplate} onOpenChange={() => setSelectedApp(null)}>
+        <Dialog open={!!selectedApp && !showMessaging && !showInterview && !showEmailTemplate && !showScheduling} onOpenChange={() => setSelectedApp(null)}>
           <DialogContent className="sm:max-w-lg">
             <DialogHeader>
               <DialogTitle>Manage Application</DialogTitle>
@@ -556,14 +565,14 @@ export default function ManageApplications() {
                 </div>
 
                 <div className="space-y-2">
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => setShowInterview(true)}
-                  >
-                    <Calendar className="w-4 h-4 mr-2" />
-                    Schedule Interview
-                  </Button>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => setShowScheduling(true)}
+                >
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Propose Schedule
+                </Button>
                   <Button
                     variant="outline"
                     className="w-full"
@@ -769,6 +778,40 @@ export default function ManageApplications() {
                 Send Email
               </Button>
             </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Scheduling Modal */}
+        <Dialog open={showScheduling} onOpenChange={() => {
+          setShowScheduling(false);
+          setSelectedApp(null);
+        }}>
+          <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Schedule Management - {selectedApp?.worker_name}</DialogTitle>
+            </DialogHeader>
+            {selectedApp && (
+              <div className="space-y-6 pt-4">
+                <ShiftProposal 
+                  application={selectedApp} 
+                  restaurant={restaurant}
+                  onSuccess={() => setShowScheduling(false)}
+                />
+                
+                <div className="space-y-3">
+                  <h3 className="font-medium text-slate-900">Existing Schedules</h3>
+                  {shifts.filter(s => s.application_id === selectedApp.id).length === 0 ? (
+                    <p className="text-sm text-slate-500">No schedules proposed yet</p>
+                  ) : (
+                    shifts
+                      .filter(s => s.application_id === selectedApp.id)
+                      .map(shift => (
+                        <ShiftResponse key={shift.id} shift={shift} userType="restaurant" />
+                      ))
+                  )}
+                </div>
+              </div>
+            )}
           </DialogContent>
         </Dialog>
       </div>
