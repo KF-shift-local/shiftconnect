@@ -28,6 +28,7 @@ import {
   FileText
 } from 'lucide-react';
 import { format } from 'date-fns';
+import ShiftResponse from '@/components/scheduling/ShiftResponse';
 
 const STATUS_CONFIG = {
   pending: { label: 'Pending', color: 'bg-amber-100 text-amber-700', description: 'Waiting for restaurant review' },
@@ -68,6 +69,12 @@ export default function MyApplications() {
   const { data: existingReviews = [] } = useQuery({
     queryKey: ['myReviews', profile?.id],
     queryFn: () => base44.entities.Review.filter({ reviewer_id: profile.id }),
+    enabled: !!profile?.id
+  });
+
+  const { data: shifts = [] } = useQuery({
+    queryKey: ['workerShifts', profile?.id],
+    queryFn: () => base44.entities.Shift.filter({ worker_id: profile.id }, '-created_date'),
     enabled: !!profile?.id
   });
 
@@ -174,7 +181,7 @@ export default function MyApplications() {
 
         {/* Detail Dialog */}
         <Dialog open={!!selectedApp} onOpenChange={() => setSelectedApp(null)}>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Application Details</DialogTitle>
             </DialogHeader>
@@ -201,6 +208,19 @@ export default function MyApplications() {
                   <div>
                     <p className="text-sm font-medium text-slate-700 mb-1">Your Message</p>
                     <p className="text-sm text-slate-600">{selectedApp.cover_message}</p>
+                  </div>
+                )}
+
+                {/* Proposed Schedules */}
+                {shifts.filter(s => s.application_id === selectedApp.id).length > 0 && (
+                  <div className="space-y-3">
+                    <h3 className="font-medium text-slate-900">Proposed Schedules</h3>
+                    {shifts
+                      .filter(s => s.application_id === selectedApp.id)
+                      .map(shift => (
+                        <ShiftResponse key={shift.id} shift={shift} userType="worker" />
+                      ))
+                    }
                   </div>
                 )}
 
