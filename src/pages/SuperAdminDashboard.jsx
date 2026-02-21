@@ -614,7 +614,6 @@ export default function SuperAdminDashboard() {
               <Card>
                 <CardHeader className="pb-3">
                   <CardTitle className="text-sm font-medium text-slate-600">Pending Disputes</CardTitle>
-                </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center gap-3">
