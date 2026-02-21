@@ -28,18 +28,24 @@ import { format } from 'date-fns';
 import StarRating from '@/components/ui/StarRating';
 
 export default function RestaurantDashboard() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const adminRestaurantId = urlParams.get('restaurant_id');
+
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me()
   });
 
   const { data: restaurant, isLoading: restaurantLoading } = useQuery({
-    queryKey: ['restaurant', user?.email],
+    queryKey: ['restaurant', adminRestaurantId || user?.email],
     queryFn: async () => {
+      if (adminRestaurantId) {
+        return await base44.entities.Restaurant.filter({ id: adminRestaurantId }).then(r => r[0]);
+      }
       const restaurants = await base44.entities.Restaurant.filter({ created_by: user.email });
       return restaurants[0];
     },
-    enabled: !!user?.email
+    enabled: !!user?.email || !!adminRestaurantId
   });
 
   const { data: jobs = [] } = useQuery({
@@ -114,6 +120,11 @@ export default function RestaurantDashboard() {
       {/* Header */}
       <div className="bg-white border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-4 py-6">
+          {adminRestaurantId && user?.role === 'admin' && (
+            <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+              🔐 Admin View: Viewing {restaurant?.name}'s dashboard
+            </div>
+          )}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               {restaurant.logo_url ? (

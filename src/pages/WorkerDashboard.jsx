@@ -26,18 +26,24 @@ import StarRating from '@/components/ui/StarRating';
 import JobCard from '@/components/common/JobCard';
 
 export default function WorkerDashboard() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const adminWorkerId = urlParams.get('worker_id');
+
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me()
   });
 
   const { data: profile, isLoading: profileLoading } = useQuery({
-    queryKey: ['workerProfile', user?.email],
+    queryKey: ['workerProfile', adminWorkerId || user?.email],
     queryFn: async () => {
+      if (adminWorkerId) {
+        return await base44.entities.WorkerProfile.filter({ id: adminWorkerId }).then(p => p[0]);
+      }
       const profiles = await base44.entities.WorkerProfile.filter({ created_by: user.email });
       return profiles[0];
     },
-    enabled: !!user?.email
+    enabled: !!user?.email || !!adminWorkerId
   });
 
   const { data: applications = [] } = useQuery({
@@ -112,6 +118,11 @@ export default function WorkerDashboard() {
       {/* Header */}
       <div className="bg-white border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-4 py-6">
+          {adminWorkerId && user?.role === 'admin' && (
+            <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+              🔐 Admin View: Viewing {profile?.full_name}'s dashboard
+            </div>
+          )}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               {profile.photo_url ? (
