@@ -30,6 +30,12 @@ export default function AdminRestaurants() {
     enabled: isAdmin
   });
 
+  const { data: allJobs = [] } = useQuery({
+    queryKey: ['adminJobs'],
+    queryFn: () => base44.entities.JobPosting.list(),
+    enabled: isAdmin
+  });
+
   const verifyMutation = useMutation({
     mutationFn: ({ restaurantId, verified }) => 
       base44.entities.Restaurant.update(restaurantId, { verified }),
@@ -40,14 +46,25 @@ export default function AdminRestaurants() {
   });
 
   const banMutation = useMutation({
-    mutationFn: ({ restaurantId, status, reason }) => 
-      base44.entities.Restaurant.update(restaurantId, { 
+    mutationFn: async ({ restaurantId, status, reason }) => {
+      // Update restaurant status
+      await base44.entities.Restaurant.update(restaurantId, { 
         account_status: status,
         ban_reason: status === 'banned' ? reason : null
-      }),
+      });
+      
+      // If banning, delete all associated job postings
+      if (status === 'banned') {
+        const restaurantJobs = allJobs.filter(job => job.restaurant_id === restaurantId);
+        await Promise.all(
+          restaurantJobs.map(job => base44.entities.JobPosting.delete(job.id))
+        );
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(['adminRestaurants']);
-      toast.success('Restaurant status updated');
+      queryClient.invalidateQueries(['adminJobs']);
+      toast.success('Restaurant status updated and jobs removed');
     }
   });
 
