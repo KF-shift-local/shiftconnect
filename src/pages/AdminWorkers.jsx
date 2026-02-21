@@ -2,16 +2,18 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Search, Users, MapPin, Star, Briefcase, Loader2 } from 'lucide-react';
+import { ArrowLeft, Search, Users, MapPin, Star, Briefcase, Loader2, Ban, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function AdminWorkers() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
 
   const { data: user } = useQuery({
@@ -22,6 +24,18 @@ export default function AdminWorkers() {
   const { data: workers = [], isLoading } = useQuery({
     queryKey: ['adminWorkers'],
     queryFn: () => base44.entities.WorkerProfile.list('-created_date')
+  });
+
+  const banMutation = useMutation({
+    mutationFn: ({ workerId, status, reason }) => 
+      base44.entities.WorkerProfile.update(workerId, { 
+        account_status: status,
+        ban_reason: status === 'banned' ? reason : null
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['adminWorkers']);
+      toast.success('Worker status updated');
+    }
   });
 
   if (user && user.role !== 'admin') {
@@ -121,15 +135,54 @@ export default function AdminWorkers() {
                         <div className="text-xs text-slate-400 mt-1">
                           Joined {format(new Date(w.created_date), 'MMM d, yyyy')}
                         </div>
+                        {w.account_status === 'banned' && (
+                          <div className="flex items-center gap-2 mt-2 text-xs text-red-600">
+                            <AlertCircle className="w-3 h-3" />
+                            <span>Banned{w.ban_reason ? `: ${w.ban_reason}` : ''}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => window.open(createPageUrl(`WorkerProfile?id=${w.id}`), '_blank')}
-                    >
-                      View Profile
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      {w.account_status === 'banned' ? (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-green-600 border-green-600 hover:bg-green-50"
+                          onClick={() => banMutation.mutate({ 
+                            workerId: w.id, 
+                            status: 'active',
+                            reason: null
+                          })}
+                        >
+                          Unban
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-red-600 border-red-600 hover:bg-red-50"
+                          onClick={() => {
+                            const reason = prompt('Ban reason (optional):');
+                            banMutation.mutate({ 
+                              workerId: w.id, 
+                              status: 'banned',
+                              reason
+                            });
+                          }}
+                        >
+                          <Ban className="w-4 h-4 mr-1" />
+                          Ban
+                        </Button>
+                      )}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open(createPageUrl(`WorkerProfile?id=${w.id}`), '_blank')}
+                      >
+                        View Profile
+                      </Button>
+                    </div>
                   </div>
                 ))}
               </div>

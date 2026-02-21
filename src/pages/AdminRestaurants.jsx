@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, Search, Building2, MapPin, Star, CheckCircle, Loader2 } from 'lucide-react';
+import { ArrowLeft, Search, Building2, MapPin, Star, CheckCircle, Loader2, Ban, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 
@@ -33,6 +33,18 @@ export default function AdminRestaurants() {
     onSuccess: () => {
       queryClient.invalidateQueries(['adminRestaurants']);
       toast.success('Restaurant verification updated');
+    }
+  });
+
+  const banMutation = useMutation({
+    mutationFn: ({ restaurantId, status, reason }) => 
+      base44.entities.Restaurant.update(restaurantId, { 
+        account_status: status,
+        ban_reason: status === 'banned' ? reason : null
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['adminRestaurants']);
+      toast.success('Restaurant status updated');
     }
   });
 
@@ -128,6 +140,12 @@ export default function AdminRestaurants() {
                         <div className="text-xs text-slate-400 mt-1">
                           Registered {format(new Date(r.created_date), 'MMM d, yyyy')} • {r.total_hires || 0} hires
                         </div>
+                        {r.account_status === 'banned' && (
+                          <div className="flex items-center gap-2 mt-2 text-xs text-red-600">
+                            <AlertCircle className="w-3 h-3" />
+                            <span>Banned{r.ban_reason ? `: ${r.ban_reason}` : ''}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
@@ -138,8 +156,40 @@ export default function AdminRestaurants() {
                           onCheckedChange={(checked) => 
                             verifyMutation.mutate({ restaurantId: r.id, verified: checked })
                           }
+                          disabled={r.account_status === 'banned'}
                         />
                       </div>
+                      {r.account_status === 'banned' ? (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-green-600 border-green-600 hover:bg-green-50"
+                          onClick={() => banMutation.mutate({ 
+                            restaurantId: r.id, 
+                            status: 'active',
+                            reason: null
+                          })}
+                        >
+                          Unban
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-red-600 border-red-600 hover:bg-red-50"
+                          onClick={() => {
+                            const reason = prompt('Ban reason (optional):');
+                            banMutation.mutate({ 
+                              restaurantId: r.id, 
+                              status: 'banned',
+                              reason
+                            });
+                          }}
+                        >
+                          <Ban className="w-4 h-4 mr-1" />
+                          Ban
+                        </Button>
+                      )}
                       <Button
                         variant="outline"
                         size="sm"
