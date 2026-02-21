@@ -77,6 +77,9 @@ import WorkerProfile from './pages/WorkerProfile';
 import WriteReview from './pages/WriteReview';
 import AdminAnalytics from './pages/AdminAnalytics';
 import ContentModeration from './pages/ContentModeration';
+import AdminDisputes from './pages/AdminDisputes';
+import ShiftTemplates from './pages/ShiftTemplates';
+import WorkerPerformance from './pages/WorkerPerformance';
 import __Layout from './Layout.jsx';
 
 
@@ -111,6 +114,9 @@ export const PAGES = {
     "WriteReview": WriteReview,
     "AdminAnalytics": AdminAnalytics,
     "ContentModeration": ContentModeration,
+    "AdminDisputes": AdminDisputes,
+    "ShiftTemplates": ShiftTemplates,
+    "WorkerPerformance": WorkerPerformance,
 }
 
 export const pagesConfig = {
