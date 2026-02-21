@@ -20,32 +20,46 @@ import { format, subDays, startOfDay } from 'date-fns';
 const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
 export default function AdminAnalytics() {
-  const { data: user } = useQuery({
+  const { data: user, isLoading: userLoading } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me()
   });
 
+  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin';
+
   const { data: jobs = [], isLoading: jobsLoading } = useQuery({
     queryKey: ['adminJobs'],
-    queryFn: () => base44.entities.JobPosting.list()
+    queryFn: () => base44.entities.JobPosting.list(),
+    enabled: isAdmin
   });
 
   const { data: applications = [] } = useQuery({
     queryKey: ['adminApplications'],
-    queryFn: () => base44.entities.Application.list()
+    queryFn: () => base44.entities.Application.list(),
+    enabled: isAdmin
   });
 
   const { data: workers = [] } = useQuery({
     queryKey: ['adminWorkers'],
-    queryFn: () => base44.entities.WorkerProfile.list()
+    queryFn: () => base44.entities.WorkerProfile.list(),
+    enabled: isAdmin
   });
 
   const { data: restaurants = [] } = useQuery({
     queryKey: ['adminRestaurants'],
-    queryFn: () => base44.entities.Restaurant.list()
+    queryFn: () => base44.entities.Restaurant.list(),
+    enabled: isAdmin
   });
 
-  if (user && user.role !== 'admin') {
+  if (userLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+      </div>
+    );
+  }
+
+  if (user && !isAdmin) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <Card className="max-w-md">

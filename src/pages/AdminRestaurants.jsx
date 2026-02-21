@@ -17,14 +17,17 @@ export default function AdminRestaurants() {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const { data: user } = useQuery({
+  const { data: user, isLoading: userLoading } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me()
   });
 
+  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin';
+
   const { data: restaurants = [], isLoading } = useQuery({
     queryKey: ['adminRestaurants'],
-    queryFn: () => base44.entities.Restaurant.list('-created_date')
+    queryFn: () => base44.entities.Restaurant.list('-created_date'),
+    enabled: isAdmin
   });
 
   const verifyMutation = useMutation({
@@ -48,9 +51,26 @@ export default function AdminRestaurants() {
     }
   });
 
-  if (user && user.role !== 'admin') {
-    navigate(createPageUrl('Home'));
-    return null;
+  if (userLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+      </div>
+    );
+  }
+
+  if (user && !isAdmin) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <Card className="max-w-md">
+          <CardContent className="p-8 text-center">
+            <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+            <h2 className="text-xl font-bold text-slate-900 mb-2">Access Denied</h2>
+            <p className="text-slate-600">You don't have permission to access this page.</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   const filteredRestaurants = restaurants.filter(r =>
