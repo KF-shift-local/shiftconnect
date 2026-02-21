@@ -20,42 +20,58 @@ import {
 import { format } from 'date-fns';
 
 export default function AdminDashboard() {
-  const { data: user } = useQuery({
+  const { data: user, isLoading: userLoading } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me()
   });
 
+  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin';
+
   const { data: allUsers = [], isLoading: usersLoading } = useQuery({
     queryKey: ['adminAllUsers'],
-    queryFn: () => base44.entities.User.list()
+    queryFn: () => base44.entities.User.list(),
+    enabled: isAdmin
   });
 
   const { data: restaurants = [] } = useQuery({
     queryKey: ['adminRestaurants'],
-    queryFn: () => base44.entities.Restaurant.list()
+    queryFn: () => base44.entities.Restaurant.list(),
+    enabled: isAdmin
   });
 
   const { data: workers = [] } = useQuery({
     queryKey: ['adminWorkers'],
-    queryFn: () => base44.entities.WorkerProfile.list()
+    queryFn: () => base44.entities.WorkerProfile.list(),
+    enabled: isAdmin
   });
 
   const { data: jobs = [] } = useQuery({
     queryKey: ['adminJobs'],
-    queryFn: () => base44.entities.JobPosting.list()
+    queryFn: () => base44.entities.JobPosting.list(),
+    enabled: isAdmin
   });
 
   const { data: applications = [] } = useQuery({
     queryKey: ['adminApplications'],
-    queryFn: () => base44.entities.Application.list()
+    queryFn: () => base44.entities.Application.list(),
+    enabled: isAdmin
   });
 
   const { data: reviews = [] } = useQuery({
     queryKey: ['adminReviews'],
-    queryFn: () => base44.entities.Review.list()
+    queryFn: () => base44.entities.Review.list(),
+    enabled: isAdmin
   });
 
-  if (user && user.role !== 'admin' && user.role !== 'super_admin') {
+  if (userLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+      </div>
+    );
+  }
+
+  if (user && !isAdmin) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <Card className="max-w-md">
