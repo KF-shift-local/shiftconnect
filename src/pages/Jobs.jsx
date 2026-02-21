@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import JobCard from '@/components/common/JobCard';
 
-const JOB_TYPES = ['Server', 'Bartender', 'Line Cook', 'Prep Cook', 'Host/Hostess', 'Busser', 'Dishwasher', 'Barista', 'Food Runner', 'Kitchen Manager', 'Other'];
+const JOB_TYPES = ['Server', 'Bartender', 'Line Cook', 'Prep Cook', 'Host/Hostess', 'Busser', 'Dishwasher', 'Barista', 'Food Runner', 'Kitchen Manager', 'Catering Staff', 'Other'];
 const EMPLOYMENT_TYPES = ['temporary', 'seasonal', 'part-time', 'full-time', 'on-call'];
 const CUISINE_TYPES = ['American', 'Italian', 'Mexican', 'Chinese', 'Japanese', 'Thai', 'Indian', 'Mediterranean', 'French', 'Korean', 'Seafood', 'Steakhouse', 'BBQ', 'Fine Dining', 'Cafe/Bakery', 'Other'];
 const SHIFT_TYPES = ['morning', 'afternoon', 'evening', 'night', 'flexible'];
@@ -35,7 +35,8 @@ export default function Jobs() {
     payRange: [0, 50],
     distance: 25,
     urgentOnly: false,
-    transitOnly: false
+    transitOnly: false,
+    cateringOnly: false
   });
 
   const { data: jobs = [], isLoading } = useQuery({
@@ -101,6 +102,11 @@ export default function Jobs() {
         return false;
       }
 
+      // Catering only
+      if (filters.cateringOnly && job.job_type !== 'Catering Staff') {
+        return false;
+      }
+
       return true;
     });
   }, [jobs, searchQuery, location, filters]);
@@ -150,7 +156,8 @@ export default function Jobs() {
       payRange: [0, 50],
       distance: 25,
       urgentOnly: false,
-      transitOnly: false
+      transitOnly: false,
+      cateringOnly: false
     });
     setSearchQuery('');
     setLocation('');
@@ -164,7 +171,8 @@ export default function Jobs() {
     (filters.payRange[0] > 0 || filters.payRange[1] < 50 ? 1 : 0) + 
     (filters.distance < 25 ? 1 : 0) +
     (filters.urgentOnly ? 1 : 0) +
-    (filters.transitOnly ? 1 : 0);
+    (filters.transitOnly ? 1 : 0) +
+    (filters.cateringOnly ? 1 : 0);
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -329,6 +337,13 @@ export default function Jobs() {
                         onCheckedChange={(checked) => setFilters(prev => ({ ...prev, urgentOnly: checked }))}
                       />
                       <span className="text-sm text-slate-600">Urgent positions only</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <Checkbox
+                        checked={filters.cateringOnly}
+                        onCheckedChange={(checked) => setFilters(prev => ({ ...prev, cateringOnly: checked }))}
+                      />
+                      <span className="text-sm text-slate-600">Catering events only</span>
                     </label>
                   </div>
                 </div>
