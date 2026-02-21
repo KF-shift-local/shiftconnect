@@ -8,7 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Search, Users, Mail, Calendar, Loader2 } from 'lucide-react';
+import { ArrowLeft, Search, Users, Mail, Calendar, Loader2, Ban, ShieldAlert } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 
@@ -17,6 +20,9 @@ export default function AdminUsers() {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showBanDialog, setShowBanDialog] = useState(false);
+  const [banReason, setBanReason] = useState('');
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
@@ -40,10 +46,51 @@ export default function AdminUsers() {
     }
   });
 
-  if (user && user.role !== 'admin') {
+  const banUserMutation = useMutation({
+    mutationFn: ({ userId, reason }) => base44.entities.User.update(userId, { 
+      account_status: 'banned',
+      ban_reason: reason,
+      banned_by: user.email,
+      banned_date: new Date().toISOString()
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['adminAllUsers']);
+      setShowBanDialog(false);
+      setSelectedUser(null);
+      setBanReason('');
+      toast.success('User banned successfully');
+    },
+    onError: () => {
+      toast.error('Failed to ban user');
+    }
+  });
+
+  const unbanUserMutation = useMutation({
+    mutationFn: ({ userId }) => base44.entities.User.update(userId, { 
+      account_status: 'active',
+      ban_reason: null,
+      banned_by: null,
+      banned_date: null
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['adminAllUsers']);
+      toast.success('User unbanned successfully');
+    },
+    onError: () => {
+      toast.error('Failed to unban user');
+    }
+  });
+
+  if (user && user.role !== 'admin' && user.role !== 'super_admin') {
     navigate(createPageUrl('Home'));
     return null;
   }
+
+  const handleBanUser = () => {
+    if (selectedUser && banReason.trim()) {
+      banUserMutation.mutate({ userId: selectedUser.id, reason: banReason });
+    }
+  };
 
   const filteredUsers = allUsers.filter(u => {
     const matchesSearch = !searchQuery || 
@@ -137,22 +184,56 @@ export default function AdminUsers() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <Select
-                        value={u.role}
-                        onValueChange={(newRole) => updateRoleMutation.mutate({ userId: u.id, newRole })}
-                        disabled={u.id === user?.id}
-                      >
-                        <SelectTrigger className="w-32">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="admin">Admin</SelectItem>
-                          <SelectItem value="user">User</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <Badge variant={u.role === 'admin' ? 'default' : 'secondary'}>
-                        {u.role}
-                      </Badge>
+                      {u.account_status === 'banned' ? (
+                        <>
+                          <Badge className="bg-red-100 text-red-800">Banned</Badge>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => unbanUserMutation.mutate({ userId: u.id })}
+                            disabled={unbanUserMutation.isPending}
+                            className="border-green-600 text-green-600 hover:bg-green-50"
+                          >
+                            Unban
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          {u.role !== 'super_admin' && u.role !== 'admin' && (
+                            <>
+                              <Select
+                                value={u.role}
+                                onValueChange={(newRole) => updateRoleMutation.mutate({ userId: u.id, newRole })}
+                                disabled={u.id === user?.id}
+                              >
+                                <SelectTrigger className="w-32">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="user">User</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  setSelectedUser(u);
+                                  setShowBanDialog(true);
+                                }}
+                                disabled={u.id === user?.id}
+                                className="border-red-600 text-red-600 hover:bg-red-50"
+                              >
+                                <Ban className="w-4 h-4" />
+                              </Button>
+                            </>
+                          )}
+                          {(u.role === 'admin' || u.role === 'super_admin') && (
+                            <Badge variant={u.role === 'admin' ? 'default' : 'secondary'} className="bg-purple-100 text-purple-800">
+                              {u.role === 'super_admin' ? 'Super Admin' : 'Admin'}
+                            </Badge>
+                          )}
+                        </>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -160,6 +241,62 @@ export default function AdminUsers() {
             )}
           </CardContent>
         </Card>
+
+        {/* Ban User Dialog */}
+        <Dialog open={showBanDialog} onOpenChange={setShowBanDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <ShieldAlert className="w-5 h-5 text-red-600" />
+                Ban User
+              </DialogTitle>
+              <DialogDescription>
+                This will prevent the user from accessing the platform.
+              </DialogDescription>
+            </DialogHeader>
+
+            {selectedUser && (
+              <div className="space-y-4">
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="font-medium text-slate-900">{selectedUser.full_name || 'No name'}</p>
+                  <p className="text-sm text-slate-600">{selectedUser.email}</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Ban Reason *</Label>
+                  <Textarea
+                    value={banReason}
+                    onChange={(e) => setBanReason(e.target.value)}
+                    placeholder="Provide a reason for banning this user..."
+                    className="min-h-[100px]"
+                  />
+                </div>
+              </div>
+            )}
+
+            <DialogFooter>
+              <Button variant="outline" onClick={() => {
+                setShowBanDialog(false);
+                setBanReason('');
+                setSelectedUser(null);
+              }}>
+                Cancel
+              </Button>
+              <Button
+                onClick={handleBanUser}
+                disabled={!banReason.trim() || banUserMutation.isPending}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {banUserMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Ban className="w-4 h-4 mr-2" />
+                )}
+                Ban User
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

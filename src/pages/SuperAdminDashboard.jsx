@@ -31,9 +31,12 @@ import {
   Clock,
   MapPin,
   DollarSign,
-  Target
+  Target,
+  UserX,
+  ShieldAlert
 } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { format, subDays, startOfDay } from 'date-fns';
@@ -45,6 +48,8 @@ export default function SuperAdminDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState('user');
+  const [banReason, setBanReason] = useState('');
+  const [showBanDialog, setShowBanDialog] = useState(false);
 
   const { data: currentUser, isLoading: loadingCurrentUser } = useQuery({
     queryKey: ['currentUser'],
@@ -114,6 +119,36 @@ export default function SuperAdminDashboard() {
     }
   });
 
+  const banUserMutation = useMutation({
+    mutationFn: ({ userId, reason }) => base44.entities.User.update(userId, { 
+      account_status: 'banned',
+      ban_reason: reason,
+      banned_by: currentUser.email,
+      banned_date: new Date().toISOString()
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['allUsers'] });
+      setShowBanDialog(false);
+      setShowUserDialog(false);
+      setSelectedUser(null);
+      setBanReason('');
+    }
+  });
+
+  const unbanUserMutation = useMutation({
+    mutationFn: ({ userId }) => base44.entities.User.update(userId, { 
+      account_status: 'active',
+      ban_reason: null,
+      banned_by: null,
+      banned_date: null
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['allUsers'] });
+      setShowUserDialog(false);
+      setSelectedUser(null);
+    }
+  });
+
   const inviteUserMutation = useMutation({
     mutationFn: ({ email, role }) => base44.users.inviteUser(email, role),
     onSuccess: () => {
@@ -125,6 +160,18 @@ export default function SuperAdminDashboard() {
   const handleUpdateUserRole = (newRole) => {
     if (selectedUser) {
       updateUserRoleMutation.mutate({ userId: selectedUser.id, role: newRole });
+    }
+  };
+
+  const handleBanUser = () => {
+    if (selectedUser && banReason.trim()) {
+      banUserMutation.mutate({ userId: selectedUser.id, reason: banReason });
+    }
+  };
+
+  const handleUnbanUser = () => {
+    if (selectedUser) {
+      unbanUserMutation.mutate({ userId: selectedUser.id });
     }
   };
 
@@ -709,6 +756,61 @@ export default function SuperAdminDashboard() {
           </TabsContent>
         </Tabs>
 
+        {/* Ban User Dialog */}
+        <Dialog open={showBanDialog} onOpenChange={setShowBanDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <ShieldAlert className="w-5 h-5 text-red-600" />
+                Ban User
+              </DialogTitle>
+              <DialogDescription>
+                This will prevent the user from accessing the platform.
+              </DialogDescription>
+            </DialogHeader>
+
+            {selectedUser && (
+              <div className="space-y-4">
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="font-medium text-slate-900">{selectedUser.full_name}</p>
+                  <p className="text-sm text-slate-600">{selectedUser.email}</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Ban Reason *</Label>
+                  <Textarea
+                    value={banReason}
+                    onChange={(e) => setBanReason(e.target.value)}
+                    placeholder="Provide a reason for banning this user..."
+                    className="min-h-[100px]"
+                  />
+                </div>
+              </div>
+            )}
+
+            <DialogFooter>
+              <Button variant="outline" onClick={() => {
+                setShowBanDialog(false);
+                setBanReason('');
+              }}>
+                Cancel
+              </Button>
+              <Button
+                onClick={handleBanUser}
+                disabled={!banReason.trim() || banUserMutation.isPending}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {banUserMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Ban className="w-4 h-4 mr-2" />
+                )}
+                Ban User
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
         {/* User Management Dialog */}
         <Dialog open={showUserDialog} onOpenChange={setShowUserDialog}>
           <DialogContent>
@@ -721,42 +823,85 @@ export default function SuperAdminDashboard() {
                 <div className="p-4 bg-slate-50 rounded-lg">
                   <p className="font-semibold text-slate-900">{selectedUser.full_name}</p>
                   <p className="text-sm text-slate-600">{selectedUser.email}</p>
-                  <Badge className={`mt-2 ${roleColors[selectedUser.role]}`}>
-                    Current: {selectedUser.role}
-                  </Badge>
+                  <div className="flex gap-2 mt-2">
+                    <Badge className={roleColors[selectedUser.role]}>
+                      {selectedUser.role === 'super_admin' ? 'Super Admin' : selectedUser.role === 'admin' ? 'Admin' : 'User'}
+                    </Badge>
+                    {selectedUser.account_status === 'banned' && (
+                      <Badge className="bg-red-100 text-red-800">Banned</Badge>
+                    )}
+                  </div>
+                  {selectedUser.account_status === 'banned' && selectedUser.ban_reason && (
+                    <div className="mt-3 p-2 bg-red-50 border border-red-200 rounded">
+                      <p className="text-xs text-red-900"><strong>Ban Reason:</strong> {selectedUser.ban_reason}</p>
+                      <p className="text-xs text-red-700 mt-1">Banned by: {selectedUser.banned_by}</p>
+                    </div>
+                  )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label>Change User Role</Label>
+                {selectedUser.account_status !== 'banned' && (
                   <div className="space-y-2">
-                    <Button
-                      variant={selectedUser.role === 'user' ? 'default' : 'outline'}
-                      className="w-full justify-start"
-                      onClick={() => handleUpdateUserRole('user')}
-                      disabled={selectedUser.role === 'user'}
-                    >
-                      <Users className="w-4 h-4 mr-2" />
-                      Regular User
-                    </Button>
-                    <Button
-                      variant={selectedUser.role === 'admin' ? 'default' : 'outline'}
-                      className="w-full justify-start"
-                      onClick={() => handleUpdateUserRole('admin')}
-                      disabled={selectedUser.role === 'admin'}
-                    >
-                      <Shield className="w-4 h-4 mr-2" />
-                      Admin
-                    </Button>
-                    <Button
-                      variant={selectedUser.role === 'super_admin' ? 'default' : 'outline'}
-                      className="w-full justify-start bg-purple-600 hover:bg-purple-700"
-                      onClick={() => handleUpdateUserRole('super_admin')}
-                      disabled={selectedUser.role === 'super_admin'}
-                    >
-                      <Crown className="w-4 h-4 mr-2" />
-                      Super Admin
-                    </Button>
+                    <Label>Change User Role</Label>
+                    <div className="space-y-2">
+                      <Button
+                        variant={selectedUser.role === 'user' ? 'default' : 'outline'}
+                        className="w-full justify-start"
+                        onClick={() => handleUpdateUserRole('user')}
+                        disabled={selectedUser.role === 'user'}
+                      >
+                        <Users className="w-4 h-4 mr-2" />
+                        Demote to Regular User
+                      </Button>
+                      <Button
+                        variant={selectedUser.role === 'admin' ? 'default' : 'outline'}
+                        className="w-full justify-start"
+                        onClick={() => handleUpdateUserRole('admin')}
+                        disabled={selectedUser.role === 'admin'}
+                      >
+                        <Shield className="w-4 h-4 mr-2" />
+                        {selectedUser.role === 'super_admin' ? 'Demote to Admin' : 'Promote to Admin'}
+                      </Button>
+                      <Button
+                        variant={selectedUser.role === 'super_admin' ? 'default' : 'outline'}
+                        className="w-full justify-start bg-purple-600 hover:bg-purple-700"
+                        onClick={() => handleUpdateUserRole('super_admin')}
+                        disabled={selectedUser.role === 'super_admin'}
+                      >
+                        <Crown className="w-4 h-4 mr-2" />
+                        Promote to Super Admin
+                      </Button>
+                    </div>
                   </div>
+                )}
+
+                <div className="border-t pt-4">
+                  {selectedUser.account_status === 'banned' ? (
+                    <Button
+                      variant="outline"
+                      className="w-full border-green-600 text-green-600 hover:bg-green-50"
+                      onClick={handleUnbanUser}
+                      disabled={unbanUserMutation.isPending}
+                    >
+                      {unbanUserMutation.isPending ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                      )}
+                      Unban User
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      className="w-full border-red-600 text-red-600 hover:bg-red-50"
+                      onClick={() => {
+                        setShowBanDialog(true);
+                      }}
+                      disabled={selectedUser.id === currentUser?.id}
+                    >
+                      <Ban className="w-4 h-4 mr-2" />
+                      Ban User
+                    </Button>
+                  )}
                 </div>
               </div>
             )}
