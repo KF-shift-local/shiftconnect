@@ -47,10 +47,8 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import AdminAnalytics from './pages/AdminAnalytics';
 import AdminApplications from './pages/AdminApplications';
 import AdminDashboard from './pages/AdminDashboard';
-import AdminDisputes from './pages/AdminDisputes';
 import AdminRestaurants from './pages/AdminRestaurants';
 import AdminReviews from './pages/AdminReviews';
 import AdminUsers from './pages/AdminUsers';
@@ -59,7 +57,6 @@ import Analytics from './pages/Analytics';
 import ApplicationQuestions from './pages/ApplicationQuestions';
 import BrowseWorkers from './pages/BrowseWorkers';
 import Calendar from './pages/Calendar';
-import ContentModeration from './pages/ContentModeration';
 import EditRestaurant from './pages/EditRestaurant';
 import EditWorkerProfile from './pages/EditWorkerProfile';
 import Home from './pages/Home';
@@ -74,21 +71,21 @@ import RestaurantDashboard from './pages/RestaurantDashboard';
 import RestaurantOnboarding from './pages/RestaurantOnboarding';
 import RestaurantProfile from './pages/RestaurantProfile';
 import Settings from './pages/Settings';
-import ShiftTemplates from './pages/ShiftTemplates';
 import WorkerDashboard from './pages/WorkerDashboard';
 import WorkerOnboarding from './pages/WorkerOnboarding';
-import WorkerPerformance from './pages/WorkerPerformance';
 import WorkerProfile from './pages/WorkerProfile';
 import WriteReview from './pages/WriteReview';
-import SuperAdminPanel from './pages/SuperAdminPanel';
+import AdminAnalytics from './pages/AdminAnalytics';
+import ContentModeration from './pages/ContentModeration';
+import AdminDisputes from './pages/AdminDisputes';
+import ShiftTemplates from './pages/ShiftTemplates';
+import WorkerPerformance from './pages/WorkerPerformance';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "AdminAnalytics": AdminAnalytics,
     "AdminApplications": AdminApplications,
     "AdminDashboard": AdminDashboard,
-    "AdminDisputes": AdminDisputes,
     "AdminRestaurants": AdminRestaurants,
     "AdminReviews": AdminReviews,
     "AdminUsers": AdminUsers,
@@ -97,7 +94,6 @@ export const PAGES = {
     "ApplicationQuestions": ApplicationQuestions,
     "BrowseWorkers": BrowseWorkers,
     "Calendar": Calendar,
-    "ContentModeration": ContentModeration,
     "EditRestaurant": EditRestaurant,
     "EditWorkerProfile": EditWorkerProfile,
     "Home": Home,
@@ -112,13 +108,15 @@ export const PAGES = {
     "RestaurantOnboarding": RestaurantOnboarding,
     "RestaurantProfile": RestaurantProfile,
     "Settings": Settings,
-    "ShiftTemplates": ShiftTemplates,
     "WorkerDashboard": WorkerDashboard,
     "WorkerOnboarding": WorkerOnboarding,
-    "WorkerPerformance": WorkerPerformance,
     "WorkerProfile": WorkerProfile,
     "WriteReview": WriteReview,
-    "SuperAdminPanel": SuperAdminPanel,
+    "AdminAnalytics": AdminAnalytics,
+    "ContentModeration": ContentModeration,
+    "AdminDisputes": AdminDisputes,
+    "ShiftTemplates": ShiftTemplates,
+    "WorkerPerformance": WorkerPerformance,
 }
 
 export const pagesConfig = {
