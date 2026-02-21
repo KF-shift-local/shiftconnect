@@ -93,7 +93,7 @@ export default function Layout({ children, currentPageName }) {
               >
                 Find Jobs
               </Link>
-              {restaurant && (
+              {(restaurant || user?.role === 'super_admin') && (
                 <Link 
                   to={createPageUrl('BrowseWorkers')}
                   className={`text-sm font-medium transition-colors ${
@@ -105,7 +105,7 @@ export default function Layout({ children, currentPageName }) {
                   Find Workers
                 </Link>
               )}
-              {(workerProfile || restaurant) && (
+              {(workerProfile || restaurant || user?.role === 'super_admin') && (
                 <>
                   <Link 
                     to={createPageUrl('Messages')}
@@ -149,7 +149,7 @@ export default function Layout({ children, currentPageName }) {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
-                    {workerProfile && (
+                    {(workerProfile || user?.role === 'super_admin') && (
                       <>
                         <DropdownMenuItem onClick={() => navigate(createPageUrl('WorkerDashboard'))}>
                           <User className="w-4 h-4 mr-2" />
@@ -162,7 +162,7 @@ export default function Layout({ children, currentPageName }) {
                         <DropdownMenuSeparator />
                       </>
                     )}
-                    {(workerProfile || restaurant) && (
+                    {(workerProfile || restaurant || user?.role === 'super_admin') && (
                       <>
                         <DropdownMenuItem onClick={() => navigate(createPageUrl('Messages'))}>
                           <MessageCircle className="w-4 h-4 mr-2" />
@@ -175,7 +175,7 @@ export default function Layout({ children, currentPageName }) {
                         <DropdownMenuSeparator />
                       </>
                     )}
-                    {restaurant && (
+                    {(restaurant || user?.role === 'super_admin') && (
                       <>
                         <DropdownMenuItem onClick={() => navigate(createPageUrl('RestaurantDashboard'))}>
                           <Building2 className="w-4 h-4 mr-2" />
@@ -297,7 +297,7 @@ export default function Layout({ children, currentPageName }) {
               >
                 Find Jobs
               </Link>
-              {restaurant && (
+              {(restaurant || user?.role === 'super_admin') && (
                 <Link
                   to={createPageUrl('BrowseWorkers')}
                   className="block px-4 py-2 text-slate-700 hover:bg-slate-50 rounded-lg"
@@ -306,7 +306,7 @@ export default function Layout({ children, currentPageName }) {
                   Find Workers
                 </Link>
               )}
-              {(workerProfile || restaurant) && (
+              {(workerProfile || restaurant || user?.role === 'super_admin') && (
                 <>
                   <Link
                     to={createPageUrl('Messages')}
@@ -324,7 +324,7 @@ export default function Layout({ children, currentPageName }) {
                   </Link>
                 </>
               )}
-              {workerProfile && (
+              {(workerProfile || user?.role === 'super_admin') && (
                 <Link
                   to={createPageUrl('WorkerDashboard')}
                   className="block px-4 py-2 text-slate-700 hover:bg-slate-50 rounded-lg"
@@ -333,7 +333,7 @@ export default function Layout({ children, currentPageName }) {
                   Worker Dashboard
                 </Link>
               )}
-              {restaurant && (
+              {(restaurant || user?.role === 'super_admin') && (
                 <Link
                   to={createPageUrl('RestaurantDashboard')}
                   className="block px-4 py-2 text-slate-700 hover:bg-slate-50 rounded-lg"
