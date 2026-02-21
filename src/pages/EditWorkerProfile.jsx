@@ -19,7 +19,12 @@ import {
   User,
   Save,
   Palette,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Facebook,
+  Instagram,
+  Twitter,
+  Linkedin,
+  Globe
 } from 'lucide-react';
 import AvailabilitySelector from '@/components/common/AvailabilitySelector';
 import ExperienceForm from '@/components/common/ExperienceForm';
@@ -76,6 +81,13 @@ export default function EditWorkerProfile() {
         theme_style: profile.theme_style || 'modern',
         headline: profile.headline || '',
         bio: profile.bio || '',
+        social_media: profile.social_media || {
+          facebook: '',
+          instagram: '',
+          twitter: '',
+          linkedin: '',
+          tiktok: ''
+        },
         resume_url: profile.resume_url || '',
         work_authorization_status: profile.work_authorization_status || '',
         work_authorization_document_url: profile.work_authorization_document_url || '',
@@ -200,6 +212,7 @@ export default function EditWorkerProfile() {
           <TabsList>
             <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="branding">Appearance</TabsTrigger>
+            <TabsTrigger value="social">Social Media</TabsTrigger>
             <TabsTrigger value="experience">Experience</TabsTrigger>
             <TabsTrigger value="availability">Availability</TabsTrigger>
           </TabsList>
@@ -465,6 +478,81 @@ export default function EditWorkerProfile() {
                   <p className="text-sm text-slate-500">
                     Choose a visual style for your profile page
                   </p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="social">
+            <Card className="border-slate-200">
+              <CardHeader>
+                <CardTitle>Social Media Links</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-slate-500 mb-4">
+                  Add your social media profiles to showcase your professional presence
+                </p>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Facebook className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                    <Input
+                      value={formData.social_media?.facebook || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        social_media: { ...formData.social_media, facebook: e.target.value }
+                      })}
+                      placeholder="https://facebook.com/yourprofile"
+                      className="border-slate-200"
+                    />
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Instagram className="w-5 h-5 text-pink-600 flex-shrink-0" />
+                    <Input
+                      value={formData.social_media?.instagram || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        social_media: { ...formData.social_media, instagram: e.target.value }
+                      })}
+                      placeholder="https://instagram.com/yourprofile"
+                      className="border-slate-200"
+                    />
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Twitter className="w-5 h-5 text-sky-500 flex-shrink-0" />
+                    <Input
+                      value={formData.social_media?.twitter || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        social_media: { ...formData.social_media, twitter: e.target.value }
+                      })}
+                      placeholder="https://twitter.com/yourprofile"
+                      className="border-slate-200"
+                    />
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Linkedin className="w-5 h-5 text-blue-700 flex-shrink-0" />
+                    <Input
+                      value={formData.social_media?.linkedin || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        social_media: { ...formData.social_media, linkedin: e.target.value }
+                      })}
+                      placeholder="https://linkedin.com/in/yourprofile"
+                      className="border-slate-200"
+                    />
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Globe className="w-5 h-5 text-slate-600 flex-shrink-0" />
+                    <Input
+                      value={formData.social_media?.tiktok || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        social_media: { ...formData.social_media, tiktok: e.target.value }
+                      })}
+                      placeholder="https://tiktok.com/@yourprofile"
+                      className="border-slate-200"
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>
