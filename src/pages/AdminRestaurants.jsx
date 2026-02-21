@@ -64,7 +64,7 @@ export default function AdminRestaurants() {
     onSuccess: () => {
       queryClient.invalidateQueries(['adminRestaurants']);
       queryClient.invalidateQueries(['adminJobs']);
-      toast.success('Restaurant status updated and jobs removed');
+      toast.success('Restaurant status updated');
     }
   });
 
