@@ -2,16 +2,19 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Search, FileText, Loader2, AlertCircle } from 'lucide-react';
+import { toast } from 'sonner';
+import { ArrowLeft, Search, FileText, Loader2, AlertCircle, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function AdminApplications() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -27,6 +30,20 @@ export default function AdminApplications() {
     queryFn: () => base44.entities.Application.list('-created_date'),
     enabled: isAdmin
   });
+
+  const deleteMutation = useMutation({
+    mutationFn: (applicationId) => base44.entities.Application.delete(applicationId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminApplications'] });
+      toast.success('Application deleted');
+    }
+  });
+
+  const handleDelete = (app) => {
+    if (window.confirm(`Delete application from ${app.worker_name} to ${app.restaurant_name}?`)) {
+      deleteMutation.mutate(app.id);
+    }
+  };
 
   if (userLoading) {
     return (
@@ -147,9 +164,20 @@ export default function AdminApplications() {
                         )}
                       </div>
                     </div>
-                    <Badge className={statusColors[app.status]}>
-                      {app.status}
-                    </Badge>
+                    <div className="flex items-center gap-3">
+                      <Badge className={statusColors[app.status]}>
+                        {app.status}
+                      </Badge>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-red-600 border-red-600 hover:bg-red-50"
+                        onClick={() => handleDelete(app)}
+                        disabled={deleteMutation.isPending}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
                 ))}
               </div>
