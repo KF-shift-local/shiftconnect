@@ -17,7 +17,9 @@ import {
   X,
   Plus,
   User,
-  Save
+  Save,
+  Palette,
+  Image as ImageIcon
 } from 'lucide-react';
 import AvailabilitySelector from '@/components/common/AvailabilitySelector';
 import ExperienceForm from '@/components/common/ExperienceForm';
@@ -30,6 +32,17 @@ const SKILLS = [
 ];
 
 const JOB_TYPES = ['Server', 'Bartender', 'Line Cook', 'Prep Cook', 'Host/Hostess', 'Busser', 'Dishwasher', 'Barista', 'Food Runner', 'Kitchen Manager'];
+
+const BRAND_COLORS = [
+  { name: 'Emerald', value: '#10b981' },
+  { name: 'Blue', value: '#3b82f6' },
+  { name: 'Purple', value: '#8b5cf6' },
+  { name: 'Rose', value: '#f43f5e' },
+  { name: 'Orange', value: '#f97316' },
+  { name: 'Teal', value: '#14b8a6' },
+  { name: 'Indigo', value: '#6366f1' },
+  { name: 'Pink', value: '#ec4899' }
+];
 
 export default function EditWorkerProfile() {
   const navigate = useNavigate();
@@ -58,6 +71,9 @@ export default function EditWorkerProfile() {
         full_name: profile.full_name || '',
         phone: profile.phone || '',
         photo_url: profile.photo_url || '',
+        cover_photo_url: profile.cover_photo_url || '',
+        brand_color: profile.brand_color || '#10b981',
+        theme_style: profile.theme_style || 'modern',
         headline: profile.headline || '',
         bio: profile.bio || '',
         resume_url: profile.resume_url || '',
@@ -105,6 +121,15 @@ export default function EditWorkerProfile() {
     setUploading(true);
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
     setFormData(prev => ({ ...prev, resume_url: file_url }));
+    setUploading(false);
+  };
+
+  const handleCoverUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    setFormData(prev => ({ ...prev, cover_photo_url: file_url }));
     setUploading(false);
   };
 
@@ -174,6 +199,7 @@ export default function EditWorkerProfile() {
         <Tabs defaultValue="profile" className="space-y-6">
           <TabsList>
             <TabsTrigger value="profile">Profile</TabsTrigger>
+            <TabsTrigger value="branding">Appearance</TabsTrigger>
             <TabsTrigger value="experience">Experience</TabsTrigger>
             <TabsTrigger value="availability">Availability</TabsTrigger>
           </TabsList>
@@ -348,6 +374,97 @@ export default function EditWorkerProfile() {
                       </>
                     )}
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="branding">
+            <Card className="border-slate-200">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Palette className="w-5 h-5 text-emerald-600" />
+                  Profile Appearance
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-4">
+                  <Label>Cover Photo</Label>
+                  <div className="relative h-48 rounded-xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
+                    {formData.cover_photo_url ? (
+                      <img src={formData.cover_photo_url} alt="Cover" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <ImageIcon className="w-16 h-16 text-slate-300" />
+                      </div>
+                    )}
+                    <label className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 hover:opacity-100 transition-opacity cursor-pointer">
+                      <input type="file" accept="image/*" onChange={handleCoverUpload} className="hidden" />
+                      {uploading ? (
+                        <Loader2 className="w-8 h-8 animate-spin text-white" />
+                      ) : (
+                        <div className="text-white text-center">
+                          <Upload className="w-8 h-8 mx-auto mb-2" />
+                          <span>Upload Cover Photo</span>
+                        </div>
+                      )}
+                    </label>
+                  </div>
+                  <p className="text-sm text-slate-500">
+                    Add a banner image to personalize your profile
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <Label>Accent Color</Label>
+                  <p className="text-sm text-slate-500">Choose a color to personalize your profile</p>
+                  <div className="grid grid-cols-4 gap-3">
+                    {BRAND_COLORS.map((color) => (
+                      <button
+                        key={color.value}
+                        onClick={() => setFormData({ ...formData, brand_color: color.value })}
+                        className={`h-16 rounded-xl border-2 transition-all ${
+                          formData.brand_color === color.value
+                            ? 'border-slate-900 scale-105'
+                            : 'border-slate-200 hover:border-slate-300'
+                        }`}
+                        style={{ backgroundColor: color.value }}
+                      >
+                        <span className="sr-only">{color.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="color"
+                      value={formData.brand_color}
+                      onChange={(e) => setFormData({ ...formData, brand_color: e.target.value })}
+                      className="w-20 h-10"
+                    />
+                    <Input
+                      value={formData.brand_color}
+                      onChange={(e) => setFormData({ ...formData, brand_color: e.target.value })}
+                      placeholder="#10b981"
+                      className="flex-1"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Profile Style</Label>
+                  <select
+                    value={formData.theme_style}
+                    onChange={(e) => setFormData({ ...formData, theme_style: e.target.value })}
+                    className="w-full h-9 px-3 py-1 rounded-md border border-slate-200 bg-white text-sm"
+                  >
+                    <option value="modern">Modern</option>
+                    <option value="classic">Classic</option>
+                    <option value="elegant">Elegant</option>
+                    <option value="casual">Casual</option>
+                  </select>
+                  <p className="text-sm text-slate-500">
+                    Choose a visual style for your profile page
+                  </p>
                 </div>
               </CardContent>
             </Card>
