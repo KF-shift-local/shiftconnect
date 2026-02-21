@@ -41,10 +41,29 @@ export default function Analytics() {
     enabled: !!user?.email
   });
 
+  const { data: workerProfile, isLoading: workerLoading } = useQuery({
+    queryKey: ['workerProfile', user?.email],
+    queryFn: async () => {
+      const profiles = await base44.entities.WorkerProfile.filter({ created_by: user.email });
+      return profiles[0];
+    },
+    enabled: !!user?.email
+  });
+
+  const isWorker = !!workerProfile;
+  const isRestaurant = !!restaurant;
+
   const { data: applications = [], isLoading: appsLoading } = useQuery({
-    queryKey: ['allApplications', restaurant?.id],
-    queryFn: () => base44.entities.Application.filter({ restaurant_id: restaurant.id }),
-    enabled: !!restaurant?.id
+    queryKey: ['allApplications', restaurant?.id, workerProfile?.id],
+    queryFn: () => {
+      if (restaurant?.id) {
+        return base44.entities.Application.filter({ restaurant_id: restaurant.id });
+      } else if (workerProfile?.id) {
+        return base44.entities.Application.filter({ worker_id: workerProfile.id });
+      }
+      return [];
+    },
+    enabled: !!(restaurant?.id || workerProfile?.id)
   });
 
   const { data: jobs = [] } = useQuery({
@@ -54,18 +73,47 @@ export default function Analytics() {
   });
 
   const { data: reviews = [] } = useQuery({
-    queryKey: ['allReviews', restaurant?.id],
-    queryFn: () => base44.entities.Review.filter({ 
-      reviewee_id: restaurant.id,
-      is_published: true
-    }),
-    enabled: !!restaurant?.id
+    queryKey: ['allReviews', restaurant?.id, workerProfile?.id],
+    queryFn: () => {
+      if (restaurant?.id) {
+        return base44.entities.Review.filter({ 
+          reviewee_id: restaurant.id,
+          is_published: true
+        });
+      } else if (workerProfile?.id) {
+        return base44.entities.Review.filter({ 
+          reviewee_id: workerProfile.id,
+          is_published: true
+        });
+      }
+      return [];
+    },
+    enabled: !!(restaurant?.id || workerProfile?.id)
   });
 
   const { data: interviews = [] } = useQuery({
-    queryKey: ['allInterviews', restaurant?.id],
-    queryFn: () => base44.entities.Interview.filter({ restaurant_id: restaurant.id }),
-    enabled: !!restaurant?.id
+    queryKey: ['allInterviews', restaurant?.id, workerProfile?.id],
+    queryFn: () => {
+      if (restaurant?.id) {
+        return base44.entities.Interview.filter({ restaurant_id: restaurant.id });
+      } else if (workerProfile?.id) {
+        return base44.entities.Interview.filter({ worker_id: workerProfile.id });
+      }
+      return [];
+    },
+    enabled: !!(restaurant?.id || workerProfile?.id)
+  });
+
+  const { data: allJobs = [] } = useQuery({
+    queryKey: ['allJobsForWorker'],
+    queryFn: () => base44.entities.JobPosting.list(),
+    enabled: isWorker
+  });
+
+  const { data: performanceNotes = [] } = useQuery({
+    queryKey: ['performanceNotes', workerProfile?.id],
+    queryFn: () => base44.entities.WorkerPerformanceNote.filter({ worker_id: workerProfile.id }),
+    enabled: !!workerProfile?.id
   });
 
   // Calculate date range
@@ -92,23 +140,52 @@ export default function Analytics() {
 
   // Key Metrics
   const metrics = useMemo(() => {
-    const totalApps = filteredApplications.length;
-    const hiredApps = filteredApplications.filter(a => a.status === 'accepted' || a.status === 'completed').length;
-    const interviewedApps = filteredApplications.filter(a => 
-      a.status === 'interview' || a.status === 'offered' || a.status === 'accepted' || a.status === 'completed'
-    ).length;
-    const avgRating = reviews.length > 0 
-      ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
-      : 0;
+    if (isRestaurant) {
+      const totalApps = filteredApplications.length;
+      const hiredApps = filteredApplications.filter(a => a.status === 'accepted' || a.status === 'completed').length;
+      const interviewedApps = filteredApplications.filter(a => 
+        a.status === 'interview' || a.status === 'offered' || a.status === 'accepted' || a.status === 'completed'
+      ).length;
+      const avgRating = reviews.length > 0 
+        ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+        : 0;
+      
+      const completedJobs = applications.filter(a => a.status === 'completed').length;
+      const acceptedJobs = applications.filter(a => a.status === 'accepted').length;
+      const retentionRate = completedJobs > 0 ? ((completedJobs / (completedJobs + acceptedJobs)) * 100).toFixed(0) : 0;
 
-    return {
-      totalApplications: totalApps,
-      interviewRate: totalApps > 0 ? ((interviewedApps / totalApps) * 100).toFixed(0) : 0,
-      hireRate: interviewedApps > 0 ? ((hiredApps / interviewedApps) * 100).toFixed(0) : 0,
-      avgRating,
-      activeJobs: jobs.filter(j => j.status === 'active').length
-    };
-  }, [filteredApplications, reviews, jobs]);
+      return {
+        totalApplications: totalApps,
+        interviewRate: totalApps > 0 ? ((interviewedApps / totalApps) * 100).toFixed(0) : 0,
+        hireRate: interviewedApps > 0 ? ((hiredApps / interviewedApps) * 100).toFixed(0) : 0,
+        avgRating,
+        activeJobs: jobs.filter(j => j.status === 'active').length,
+        retentionRate
+      };
+    } else {
+      // Worker metrics
+      const totalApps = filteredApplications.length;
+      const interviewedApps = filteredApplications.filter(a => 
+        a.status === 'interview' || a.status === 'offered' || a.status === 'accepted' || a.status === 'completed'
+      ).length;
+      const hiredApps = filteredApplications.filter(a => a.status === 'accepted' || a.status === 'completed').length;
+      const avgRating = reviews.length > 0 
+        ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+        : 0;
+      const avgPerformance = performanceNotes.length > 0
+        ? (performanceNotes.reduce((sum, n) => sum + (n.performance_rating || 0), 0) / performanceNotes.length).toFixed(1)
+        : 0;
+
+      return {
+        totalApplications: totalApps,
+        interviewRate: totalApps > 0 ? ((interviewedApps / totalApps) * 100).toFixed(0) : 0,
+        successRate: totalApps > 0 ? ((hiredApps / totalApps) * 100).toFixed(0) : 0,
+        avgRating,
+        completedJobs: applications.filter(a => a.status === 'completed').length,
+        avgPerformance
+      };
+    }
+  }, [filteredApplications, reviews, jobs, applications, isRestaurant, performanceNotes]);
 
   // Application Status Breakdown
   const statusData = useMemo(() => {
@@ -143,21 +220,38 @@ export default function Analytics() {
     return data;
   }, [applications, timeRange]);
 
-  // Most Popular Jobs
+  // Most Popular Jobs (Restaurant) or Job Types (Worker)
   const popularJobs = useMemo(() => {
-    const jobCounts = applications.reduce((acc, app) => {
-      acc[app.job_id] = (acc[app.job_id] || 0) + 1;
-      return acc;
-    }, {});
+    if (isRestaurant) {
+      const jobCounts = applications.reduce((acc, app) => {
+        acc[app.job_id] = (acc[app.job_id] || 0) + 1;
+        return acc;
+      }, {});
 
-    return jobs
-      .map(job => ({
-        ...job,
-        applicationCount: jobCounts[job.id] || 0
-      }))
-      .sort((a, b) => b.applicationCount - a.applicationCount)
-      .slice(0, 5);
-  }, [applications, jobs]);
+      return jobs
+        .map(job => ({
+          ...job,
+          applicationCount: jobCounts[job.id] || 0
+        }))
+        .sort((a, b) => b.applicationCount - a.applicationCount)
+        .slice(0, 5);
+    } else {
+      // Worker: Popular job types applied to
+      const jobTypeCounts = applications.reduce((acc, app) => {
+        const jobType = app.job_title || 'Unknown';
+        acc[jobType] = (acc[jobType] || 0) + 1;
+        return acc;
+      }, {});
+
+      return Object.entries(jobTypeCounts)
+        .map(([type, count]) => ({
+          title: type,
+          applicationCount: count
+        }))
+        .sort((a, b) => b.applicationCount - a.applicationCount)
+        .slice(0, 5);
+    }
+  }, [applications, jobs, isRestaurant]);
 
   // Review Trends
   const reviewTrends = useMemo(() => {
@@ -188,7 +282,7 @@ export default function Analytics() {
     return data;
   }, [reviews]);
 
-  if (restaurantLoading || appsLoading) {
+  if (restaurantLoading || workerLoading || appsLoading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
@@ -196,10 +290,16 @@ export default function Analytics() {
     );
   }
 
-  if (!restaurant) {
+  if (!restaurant && !workerProfile) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <p className="text-slate-600">Restaurant not found</p>
+        <Card className="max-w-md w-full">
+          <CardContent className="p-8 text-center">
+            <TrendingUp className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+            <h2 className="text-xl font-bold text-slate-900 mb-2">Analytics Unavailable</h2>
+            <p className="text-slate-600">Create a profile to view analytics</p>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -210,14 +310,16 @@ export default function Analytics() {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
             <button
-              onClick={() => navigate(createPageUrl('RestaurantDashboard'))}
+              onClick={() => navigate(createPageUrl(isRestaurant ? 'RestaurantDashboard' : 'WorkerDashboard'))}
               className="text-slate-600 hover:text-slate-900"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
             <div>
               <h1 className="text-3xl font-bold text-slate-900">Analytics</h1>
-              <p className="text-slate-600">Track your hiring performance</p>
+              <p className="text-slate-600">
+                {isRestaurant ? 'Track your hiring performance' : 'Track your career performance'}
+              </p>
             </div>
           </div>
           
@@ -247,7 +349,9 @@ export default function Analytics() {
                 <Users className="w-8 h-8 text-emerald-600" />
               </div>
               <div className="text-3xl font-bold text-slate-900">{metrics.totalApplications}</div>
-              <div className="text-sm text-slate-600">Applications</div>
+              <div className="text-sm text-slate-600">
+                {isRestaurant ? 'Applications Received' : 'Applications Sent'}
+              </div>
             </CardContent>
           </Card>
 
@@ -266,8 +370,12 @@ export default function Analytics() {
               <div className="flex items-center justify-between mb-2">
                 <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
-              <div className="text-3xl font-bold text-slate-900">{metrics.hireRate}%</div>
-              <div className="text-sm text-slate-600">Hire Rate</div>
+              <div className="text-3xl font-bold text-slate-900">
+                {isRestaurant ? metrics.hireRate : metrics.successRate}%
+              </div>
+              <div className="text-sm text-slate-600">
+                {isRestaurant ? 'Hire Rate' : 'Success Rate'}
+              </div>
             </CardContent>
           </Card>
 
@@ -286,8 +394,12 @@ export default function Analytics() {
               <div className="flex items-center justify-between mb-2">
                 <Briefcase className="w-8 h-8 text-purple-600" />
               </div>
-              <div className="text-3xl font-bold text-slate-900">{metrics.activeJobs}</div>
-              <div className="text-sm text-slate-600">Active Jobs</div>
+              <div className="text-3xl font-bold text-slate-900">
+                {isRestaurant ? metrics.activeJobs : metrics.completedJobs}
+              </div>
+              <div className="text-sm text-slate-600">
+                {isRestaurant ? 'Active Jobs' : 'Jobs Completed'}
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -360,7 +472,7 @@ export default function Analytics() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Briefcase className="w-5 h-5 text-purple-600" />
-                Most Popular Job Postings
+                {isRestaurant ? 'Most Popular Job Postings' : 'Job Types Applied To'}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -430,21 +542,25 @@ export default function Analytics() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <Card className="border-slate-200">
             <CardHeader>
-              <CardTitle className="text-lg">Top Performing Jobs</CardTitle>
+              <CardTitle className="text-lg">
+                {isRestaurant ? 'Top Performing Jobs' : 'Most Applied Job Types'}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 {popularJobs.slice(0, 3).map((job, idx) => (
-                  <div key={job.id} className="flex items-center justify-between">
+                  <div key={idx} className="flex items-center justify-between">
                     <div className="flex-1">
                       <p className="font-medium text-slate-900 text-sm">{job.title}</p>
-                      <p className="text-xs text-slate-500">{job.job_type}</p>
+                      {isRestaurant && job.job_type && (
+                        <p className="text-xs text-slate-500">{job.job_type}</p>
+                      )}
                     </div>
                     <Badge variant="secondary">{job.applicationCount} apps</Badge>
                   </div>
                 ))}
                 {popularJobs.length === 0 && (
-                  <p className="text-slate-500 text-sm text-center py-4">No jobs yet</p>
+                  <p className="text-slate-500 text-sm text-center py-4">No data yet</p>
                 )}
               </div>
             </CardContent>
@@ -460,18 +576,45 @@ export default function Analytics() {
                   <span className="text-slate-600 text-sm">Total Reviews</span>
                   <span className="font-semibold text-slate-900">{reviews.length}</span>
                 </div>
+                {isRestaurant ? (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-600 text-sm">Total Jobs Posted</span>
+                      <span className="font-semibold text-slate-900">{jobs.length}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-600 text-sm">Total Hires</span>
+                      <span className="font-semibold text-slate-900">
+                        {applications.filter(a => a.status === 'accepted' || a.status === 'completed').length}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-600 text-sm">Worker Retention</span>
+                      <span className="font-semibold text-slate-900">{metrics.retentionRate}%</span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-600 text-sm">Jobs Completed</span>
+                      <span className="font-semibold text-slate-900">{metrics.completedJobs}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-600 text-sm">Avg Performance</span>
+                      <span className="font-semibold text-slate-900">
+                        {metrics.avgPerformance > 0 ? `${metrics.avgPerformance}/5` : '—'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-600 text-sm">Active Applications</span>
+                      <span className="font-semibold text-slate-900">
+                        {applications.filter(a => ['pending', 'reviewing', 'interview', 'offered'].includes(a.status)).length}
+                      </span>
+                    </div>
+                  </>
+                )}
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-600 text-sm">Total Jobs Posted</span>
-                  <span className="font-semibold text-slate-900">{jobs.length}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-600 text-sm">Total Hires</span>
-                  <span className="font-semibold text-slate-900">
-                    {applications.filter(a => a.status === 'accepted' || a.status === 'completed').length}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-600 text-sm">Interviews Scheduled</span>
+                  <span className="text-slate-600 text-sm">Interviews</span>
                   <span className="font-semibold text-slate-900">{interviews.length}</span>
                 </div>
               </div>
@@ -502,10 +645,23 @@ export default function Analytics() {
                       {metrics.avgRating} average rating
                     </p>
                     <p className="text-xs text-slate-600">
-                      Based on {reviews.length} worker reviews
+                      Based on {reviews.length} {isRestaurant ? 'worker' : 'employer'} reviews
                     </p>
                   </div>
                 </div>
+                {isWorker && metrics.avgPerformance > 0 && (
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium text-slate-900">
+                        {metrics.avgPerformance}/5 performance score
+                      </p>
+                      <p className="text-xs text-slate-600">
+                        From {performanceNotes.length} employer evaluations
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
