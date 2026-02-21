@@ -45,8 +45,11 @@ export default function MessagesPage() {
 
   // Fetch conversations
   const { data: conversations = [] } = useQuery({
-    queryKey: ['conversations', user?.email, isWorker],
+    queryKey: ['conversations', user?.email, isWorker, user?.role],
     queryFn: async () => {
+      if (user?.role === 'super_admin') {
+        return await base44.entities.Conversation.list('-last_message_date');
+      }
       if (isWorker) {
         return await base44.entities.Conversation.filter({ worker_id: user.email }, '-last_message_date');
       } else if (isRestaurant) {
@@ -54,7 +57,7 @@ export default function MessagesPage() {
       }
       return [];
     },
-    enabled: !!(user?.email && (isWorker || isRestaurant)),
+    enabled: !!(user?.email && (isWorker || isRestaurant || user?.role === 'super_admin')),
     refetchInterval: 3000
   });
 
@@ -135,11 +138,19 @@ export default function MessagesPage() {
   const handleSendMessage = () => {
     if (!newMessage.trim() || !selectedConversation) return;
 
+    const senderName = user?.role === 'super_admin' 
+      ? 'Super Admin' 
+      : (isWorker ? workerProfile.full_name : restaurant.name);
+    
+    const senderType = user?.role === 'super_admin'
+      ? 'restaurant'
+      : (isWorker ? 'worker' : 'restaurant');
+
     sendMessageMutation.mutate({
       conversation_id: selectedConversation.id,
       sender_email: user.email,
-      sender_name: isWorker ? workerProfile.full_name : restaurant.name,
-      sender_type: isWorker ? 'worker' : 'restaurant',
+      sender_name: senderName,
+      sender_type: senderType,
       message: newMessage.trim()
     });
   };
@@ -153,7 +164,7 @@ export default function MessagesPage() {
     return sum + (isWorker ? (conv.unread_count_worker || 0) : (conv.unread_count_restaurant || 0));
   }, 0);
 
-  if (!user || (!workerProfile && !restaurant)) {
+  if (!user || (!workerProfile && !restaurant && user?.role !== 'super_admin')) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
@@ -178,6 +189,7 @@ export default function MessagesPage() {
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-slate-900 mb-2">Messages</h1>
           <p className="text-slate-600">
+            {user?.role === 'super_admin' && <span className="text-purple-600 font-semibold">Super Admin View - All Conversations • </span>}
             {unreadCount > 0 && `${unreadCount} unread message${unreadCount > 1 ? 's' : ''}`}
           </p>
         </div>

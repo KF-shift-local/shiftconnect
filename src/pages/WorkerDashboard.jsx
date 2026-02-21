@@ -118,7 +118,7 @@ export default function WorkerDashboard() {
       {/* Header */}
       <div className="bg-white border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-4 py-6">
-          {adminWorkerId && user?.role === 'admin' && (
+          {adminWorkerId && (user?.role === 'admin' || user?.role === 'super_admin') && (
             <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
               🔐 Admin View: Viewing {profile?.full_name}'s dashboard
             </div>
