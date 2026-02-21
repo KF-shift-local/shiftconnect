@@ -221,23 +221,14 @@ export default function Layout({ children, currentPageName }) {
                      <Settings className="w-4 h-4 mr-2" />
                      Account Settings
                     </DropdownMenuItem>
-                    {user?.role === 'super_admin' && (
-                    <>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => navigate(createPageUrl('SuperAdminDashboard'))} className="text-amber-700 font-semibold">
-                        <Star className="w-4 h-4 mr-2" />
-                        Super Admin
-                      </DropdownMenuItem>
-                    </>
-                    )}
-                    {(user?.role === 'admin' || user?.role === 'super_admin') && (
-                    <>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => navigate(createPageUrl('AdminDashboard'))} className="text-emerald-700 font-semibold">
-                        <Star className="w-4 h-4 mr-2" />
-                        Admin Panel
-                      </DropdownMenuItem>
-                    </>
+                    {user?.role === 'admin' && (
+                     <>
+                       <DropdownMenuSeparator />
+                       <DropdownMenuItem onClick={() => navigate(createPageUrl('AdminDashboard'))} className="text-emerald-700 font-semibold">
+                         <Star className="w-4 h-4 mr-2" />
+                         Admin Panel
+                       </DropdownMenuItem>
+                     </>
                     )}
                     {workerProfile && !restaurant && user?.role !== 'admin' && (
                       <>
@@ -342,16 +333,7 @@ export default function Layout({ children, currentPageName }) {
                   Restaurant Dashboard
                 </Link>
               )}
-              {user?.role === 'super_admin' && (
-                <Link
-                  to={createPageUrl('SuperAdminDashboard')}
-                  className="block px-4 py-2 text-amber-700 font-semibold hover:bg-amber-50 rounded-lg"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Super Admin
-                </Link>
-              )}
-              {(user?.role === 'admin' || user?.role === 'super_admin') && (
+              {user?.role === 'admin' && (
                 <Link
                   to={createPageUrl('AdminDashboard')}
                   className="block px-4 py-2 text-emerald-700 font-semibold hover:bg-emerald-50 rounded-lg"
