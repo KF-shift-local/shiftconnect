@@ -21,7 +21,8 @@ import {
   TrendingUp,
   Loader2,
   FileText,
-  Calendar
+  Calendar,
+  BarChart3
 } from 'lucide-react';
 import { format } from 'date-fns';
 import StarRating from '@/components/ui/StarRating';
