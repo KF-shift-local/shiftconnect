@@ -50,6 +50,7 @@
 import ApplicationQuestions from './pages/ApplicationQuestions';
 import BrowseWorkers from './pages/BrowseWorkers';
 import Calendar from './pages/Calendar';
+import EditRestaurant from './pages/EditRestaurant';
 import EditWorkerProfile from './pages/EditWorkerProfile';
 import Home from './pages/Home';
 import JobDetails from './pages/JobDetails';
@@ -67,7 +68,7 @@ import WorkerDashboard from './pages/WorkerDashboard';
 import WorkerOnboarding from './pages/WorkerOnboarding';
 import WorkerProfile from './pages/WorkerProfile';
 import WriteReview from './pages/WriteReview';
-import EditRestaurant from './pages/EditRestaurant';
+import Analytics from './pages/Analytics';
 import __Layout from './Layout.jsx';
 
 
@@ -75,6 +76,7 @@ export const PAGES = {
     "ApplicationQuestions": ApplicationQuestions,
     "BrowseWorkers": BrowseWorkers,
     "Calendar": Calendar,
+    "EditRestaurant": EditRestaurant,
     "EditWorkerProfile": EditWorkerProfile,
     "Home": Home,
     "JobDetails": JobDetails,
@@ -92,7 +94,7 @@ export const PAGES = {
     "WorkerOnboarding": WorkerOnboarding,
     "WorkerProfile": WorkerProfile,
     "WriteReview": WriteReview,
-    "EditRestaurant": EditRestaurant,
+    "Analytics": Analytics,
 }
 
 export const pagesConfig = {
