@@ -119,15 +119,15 @@ export default function SuperAdminDashboard() {
     }
   });
 
-  const banUserMutation = useMutation({
-    mutationFn: ({ userId, reason }) => base44.entities.User.update(userId, { 
-      account_status: 'banned',
-      ban_reason: reason,
-      banned_by: currentUser.email,
-      banned_date: new Date().toISOString()
-    }),
+  const banWorkerMutation = useMutation({
+    mutationFn: async ({ workerId, reason }) => {
+      await base44.entities.WorkerProfile.update(workerId, { 
+        account_status: 'banned',
+        ban_reason: reason
+      });
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['allUsers'] });
+      queryClient.invalidateQueries({ queryKey: ['allWorkers'] });
       setShowBanDialog(false);
       setShowUserDialog(false);
       setSelectedUser(null);
@@ -135,15 +135,45 @@ export default function SuperAdminDashboard() {
     }
   });
 
-  const unbanUserMutation = useMutation({
-    mutationFn: ({ userId }) => base44.entities.User.update(userId, { 
-      account_status: 'active',
-      ban_reason: null,
-      banned_by: null,
-      banned_date: null
-    }),
+  const banRestaurantMutation = useMutation({
+    mutationFn: async ({ restaurantId, reason }) => {
+      await base44.entities.Restaurant.update(restaurantId, { 
+        account_status: 'banned',
+        ban_reason: reason
+      });
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['allUsers'] });
+      queryClient.invalidateQueries({ queryKey: ['allRestaurants'] });
+      setShowBanDialog(false);
+      setShowUserDialog(false);
+      setSelectedUser(null);
+      setBanReason('');
+    }
+  });
+
+  const unbanWorkerMutation = useMutation({
+    mutationFn: async ({ workerId }) => {
+      await base44.entities.WorkerProfile.update(workerId, { 
+        account_status: 'active',
+        ban_reason: null
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['allWorkers'] });
+      setShowUserDialog(false);
+      setSelectedUser(null);
+    }
+  });
+
+  const unbanRestaurantMutation = useMutation({
+    mutationFn: async ({ restaurantId }) => {
+      await base44.entities.Restaurant.update(restaurantId, { 
+        account_status: 'active',
+        ban_reason: null
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['allRestaurants'] });
       setShowUserDialog(false);
       setSelectedUser(null);
     }
@@ -164,15 +194,13 @@ export default function SuperAdminDashboard() {
   };
 
   const handleBanUser = () => {
-    if (selectedUser && banReason.trim()) {
-      banUserMutation.mutate({ userId: selectedUser.id, reason: banReason });
-    }
+    // This is not supported - users can't be banned, only workers and restaurants
+    // Commenting out for clarity
   };
 
   const handleUnbanUser = () => {
-    if (selectedUser) {
-      unbanUserMutation.mutate({ userId: selectedUser.id });
-    }
+    // This is not supported - users can't be banned, only workers and restaurants
+    // Commenting out for clarity
   };
 
   const handleInviteUser = () => {
@@ -756,60 +784,7 @@ export default function SuperAdminDashboard() {
           </TabsContent>
         </Tabs>
 
-        {/* Ban User Dialog */}
-        <Dialog open={showBanDialog} onOpenChange={setShowBanDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <ShieldAlert className="w-5 h-5 text-red-600" />
-                Ban User
-              </DialogTitle>
-              <DialogDescription>
-                This will prevent the user from accessing the platform.
-              </DialogDescription>
-            </DialogHeader>
 
-            {selectedUser && (
-              <div className="space-y-4">
-                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="font-medium text-slate-900">{selectedUser.full_name}</p>
-                  <p className="text-sm text-slate-600">{selectedUser.email}</p>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Ban Reason *</Label>
-                  <Textarea
-                    value={banReason}
-                    onChange={(e) => setBanReason(e.target.value)}
-                    placeholder="Provide a reason for banning this user..."
-                    className="min-h-[100px]"
-                  />
-                </div>
-              </div>
-            )}
-
-            <DialogFooter>
-              <Button variant="outline" onClick={() => {
-                setShowBanDialog(false);
-                setBanReason('');
-              }}>
-                Cancel
-              </Button>
-              <Button
-                onClick={handleBanUser}
-                disabled={!banReason.trim() || banUserMutation.isPending}
-                className="bg-red-600 hover:bg-red-700"
-              >
-                {banUserMutation.isPending ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <Ban className="w-4 h-4 mr-2" />
-                )}
-                Ban User
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
 
         {/* User Management Dialog */}
         <Dialog open={showUserDialog} onOpenChange={setShowUserDialog}>
@@ -827,20 +802,10 @@ export default function SuperAdminDashboard() {
                     <Badge className={roleColors[selectedUser.role]}>
                       {selectedUser.role === 'super_admin' ? 'Super Admin' : selectedUser.role === 'admin' ? 'Admin' : 'User'}
                     </Badge>
-                    {selectedUser.account_status === 'banned' && (
-                      <Badge className="bg-red-100 text-red-800">Banned</Badge>
-                    )}
                   </div>
-                  {selectedUser.account_status === 'banned' && selectedUser.ban_reason && (
-                    <div className="mt-3 p-2 bg-red-50 border border-red-200 rounded">
-                      <p className="text-xs text-red-900"><strong>Ban Reason:</strong> {selectedUser.ban_reason}</p>
-                      <p className="text-xs text-red-700 mt-1">Banned by: {selectedUser.banned_by}</p>
-                    </div>
-                  )}
                 </div>
 
-                {selectedUser.account_status !== 'banned' && (
-                  <div className="space-y-2">
+                <div className="space-y-2">
                     <Label>Change User Role</Label>
                     <div className="space-y-2">
                       <Button
@@ -872,36 +837,12 @@ export default function SuperAdminDashboard() {
                       </Button>
                     </div>
                   </div>
-                )}
+                </div>
 
                 <div className="border-t pt-4">
-                  {selectedUser.account_status === 'banned' ? (
-                    <Button
-                      variant="outline"
-                      className="w-full border-green-600 text-green-600 hover:bg-green-50"
-                      onClick={handleUnbanUser}
-                      disabled={unbanUserMutation.isPending}
-                    >
-                      {unbanUserMutation.isPending ? (
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      ) : (
-                        <CheckCircle className="w-4 h-4 mr-2" />
-                      )}
-                      Unban User
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      className="w-full border-red-600 text-red-600 hover:bg-red-50"
-                      onClick={() => {
-                        setShowBanDialog(true);
-                      }}
-                      disabled={selectedUser.id === currentUser?.id}
-                    >
-                      <Ban className="w-4 h-4 mr-2" />
-                      Ban User
-                    </Button>
-                  )}
+                  <p className="text-sm text-slate-600 text-center p-2 bg-slate-50 rounded">
+                    Note: Users cannot be banned from this panel. Ban workers or restaurants from their respective management pages.
+                  </p>
                 </div>
               </div>
             )}
