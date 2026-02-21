@@ -120,9 +120,9 @@ export default function RestaurantDashboard() {
       {/* Header */}
       <div className="bg-white border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-4 py-6">
-          {adminRestaurantId && user?.role === 'admin' && (
+          {adminRestaurantId && (user?.role === 'admin' || user?.role === 'super_admin') && (
             <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
-              🔐 Admin View: Viewing {restaurant?.name}'s dashboard
+              🔐 {user?.role === 'super_admin' ? 'Super Admin' : 'Admin'} View: Viewing {restaurant?.name}'s dashboard
             </div>
           )}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
