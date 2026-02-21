@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -120,6 +121,15 @@ export default function SuperAdminPanel() {
     }
   };
 
+  const filteredUsers = allUsers.filter(user =>
+    user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const superAdmins = filteredUsers.filter(u => u.role === 'super_admin');
+  const admins = filteredUsers.filter(u => u.role === 'admin');
+  const regularUsers = filteredUsers.filter(u => u.role === 'user');
+
   // Access control
   if (!currentUser || currentUser.role !== 'super_admin') {
     return (
@@ -139,15 +149,6 @@ export default function SuperAdminPanel() {
       </div>
     );
   }
-
-  const filteredUsers = allUsers.filter(user =>
-    user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const superAdmins = filteredUsers.filter(u => u.role === 'super_admin');
-  const admins = filteredUsers.filter(u => u.role === 'admin');
-  const regularUsers = filteredUsers.filter(u => u.role === 'user');
 
   const bannedRestaurants = allRestaurants.filter(r => r.account_status === 'banned');
   const bannedWorkers = allWorkers.filter(w => w.account_status === 'banned');
