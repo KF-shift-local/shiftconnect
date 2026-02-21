@@ -36,7 +36,9 @@ export default function AdminUsers() {
 
   const updateRoleMutation = useMutation({
     mutationFn: ({ userId, newRole }) => 
-      base44.entities.User.update(userId, { role: newRole }),
+      base44.entities.User.update(userId, { 
+        role: newRole
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries(['adminAllUsers']);
       toast.success('User role updated');
