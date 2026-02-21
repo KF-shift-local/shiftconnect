@@ -272,7 +272,7 @@ export default function SuperAdminDashboard() {
                       <div key={admin.id} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
                         <div>
                           <p className="font-medium text-white">{admin.full_name || admin.email}</p>
-                          <p className="text-xs text-purple-200">{admin.email}</p>
+                          <p className="text-xs text-emerald-200">{admin.email}</p>
                         </div>
                         <div className="flex items-center gap-2">
                           <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30">
