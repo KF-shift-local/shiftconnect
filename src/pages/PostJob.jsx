@@ -23,7 +23,7 @@ import {
   Zap
 } from 'lucide-react';
 
-const JOB_TYPES = ['Server', 'Bartender', 'Line Cook', 'Prep Cook', 'Host/Hostess', 'Busser', 'Dishwasher', 'Barista', 'Food Runner', 'Kitchen Manager', 'Other'];
+const JOB_TYPES = ['Server', 'Bartender', 'Line Cook', 'Prep Cook', 'Host/Hostess', 'Busser', 'Dishwasher', 'Barista', 'Food Runner', 'Kitchen Manager', 'Catering Staff', 'Other'];
 const EMPLOYMENT_TYPES = ['temporary', 'seasonal', 'part-time', 'full-time', 'on-call'];
 const DURATION_TYPES = ['one-time', 'few-days', '1-week', '2-weeks', '1-month', '2-3-months', 'seasonal', 'ongoing'];
 const EXPERIENCE_LEVELS = ['none', '1-year', '2-years', '3-years', '5-years'];
