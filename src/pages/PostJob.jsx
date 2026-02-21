@@ -66,6 +66,14 @@ export default function PostJob() {
     title: '',
     description: '',
     job_type: '',
+    is_catering: false,
+    catering_type: '',
+    event_type: '',
+    event_date: '',
+    event_location: '',
+    guest_count: '',
+    setup_time: '',
+    event_duration_hours: '',
     employment_type: 'temporary',
     hourly_rate_min: '',
     hourly_rate_max: '',
@@ -125,8 +133,10 @@ export default function PostJob() {
         hours_per_week_max: parseInt(formData.hours_per_week_max) || parseInt(formData.hours_per_week_min) || 0,
         positions_available: parseInt(formData.positions_available) || 1,
         positions_filled: 0,
+        guest_count: formData.guest_count ? parseInt(formData.guest_count) : undefined,
+        event_duration_hours: formData.event_duration_hours ? parseFloat(formData.event_duration_hours) : undefined,
         status: 'active',
-        location: restaurant.address,
+        location: formData.is_catering && formData.event_location ? formData.event_location : restaurant.address,
         city: restaurant.city
       });
     },
@@ -201,10 +211,159 @@ export default function PostJob() {
         </div>
 
         <div className="space-y-6">
+          {/* Job Type Selection */}
+          <Card className="border-slate-200">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <Label className="text-base font-semibold">Job Category</Label>
+                <div className="flex gap-2">
+                  <Badge
+                    variant={!formData.is_catering ? 'default' : 'outline'}
+                    className={`cursor-pointer px-4 py-2 ${
+                      !formData.is_catering
+                        ? 'bg-emerald-600 hover:bg-emerald-700'
+                        : 'hover:bg-emerald-50'
+                    }`}
+                    onClick={() => setFormData({ ...formData, is_catering: false, catering_type: '', event_type: '', event_date: '', event_location: '', guest_count: '', setup_time: '', event_duration_hours: '' })}
+                  >
+                    Regular Position
+                  </Badge>
+                  <Badge
+                    variant={formData.is_catering ? 'default' : 'outline'}
+                    className={`cursor-pointer px-4 py-2 ${
+                      formData.is_catering
+                        ? 'bg-purple-600 hover:bg-purple-700'
+                        : 'hover:bg-purple-50'
+                    }`}
+                    onClick={() => setFormData({ ...formData, is_catering: true, employment_type: 'temporary', duration_type: 'one-time' })}
+                  >
+                    Catering Event
+                  </Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Catering Type Selection */}
+          {formData.is_catering && (
+            <Card className="border-purple-200 bg-purple-50/50">
+              <CardHeader>
+                <CardTitle className="text-purple-900">Catering Event Details</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-3">
+                  <Label>Catering Type *</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, catering_type: 'front-of-house' })}
+                      className={`p-4 rounded-xl border-2 text-left transition-all ${
+                        formData.catering_type === 'front-of-house'
+                          ? 'border-purple-600 bg-purple-100'
+                          : 'border-slate-200 bg-white hover:border-purple-300'
+                      }`}
+                    >
+                      <h3 className="font-semibold text-slate-900 mb-1">Front-of-House</h3>
+                      <p className="text-sm text-slate-600">Servers, bartenders, hosts, event coordinators</p>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, catering_type: 'back-of-house' })}
+                      className={`p-4 rounded-xl border-2 text-left transition-all ${
+                        formData.catering_type === 'back-of-house'
+                          ? 'border-purple-600 bg-purple-100'
+                          : 'border-slate-200 bg-white hover:border-purple-300'
+                      }`}
+                    >
+                      <h3 className="font-semibold text-slate-900 mb-1">Back-of-House</h3>
+                      <p className="text-sm text-slate-600">Chefs, line cooks, prep cooks, kitchen staff</p>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label>Event Type *</Label>
+                    <Select
+                      value={formData.event_type}
+                      onValueChange={(value) => setFormData({ ...formData, event_type: value })}
+                    >
+                      <SelectTrigger className="border-slate-200">
+                        <SelectValue placeholder="Select event type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="wedding">Wedding</SelectItem>
+                        <SelectItem value="corporate">Corporate Event</SelectItem>
+                        <SelectItem value="birthday">Birthday Party</SelectItem>
+                        <SelectItem value="private_party">Private Party</SelectItem>
+                        <SelectItem value="festival">Festival</SelectItem>
+                        <SelectItem value="fundraiser">Fundraiser</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Event Date *</Label>
+                    <Input
+                      type="date"
+                      value={formData.event_date}
+                      onChange={(e) => setFormData({ ...formData, event_date: e.target.value, start_date: e.target.value })}
+                      className="border-slate-200"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Event Location *</Label>
+                  <Input
+                    value={formData.event_location}
+                    onChange={(e) => setFormData({ ...formData, event_location: e.target.value })}
+                    placeholder="Full address of event venue"
+                    className="border-slate-200"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="space-y-2">
+                    <Label>Expected Guests</Label>
+                    <Input
+                      type="number"
+                      value={formData.guest_count}
+                      onChange={(e) => setFormData({ ...formData, guest_count: e.target.value })}
+                      placeholder="e.g. 150"
+                      className="border-slate-200"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Setup Time</Label>
+                    <Input
+                      type="time"
+                      value={formData.setup_time}
+                      onChange={(e) => setFormData({ ...formData, setup_time: e.target.value })}
+                      className="border-slate-200"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Total Duration (hours)</Label>
+                    <Input
+                      type="number"
+                      step="0.5"
+                      value={formData.event_duration_hours}
+                      onChange={(e) => setFormData({ ...formData, event_duration_hours: e.target.value })}
+                      placeholder="e.g. 6"
+                      className="border-slate-200"
+                    />
+                    <p className="text-xs text-slate-500">Including setup and breakdown</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Basic Info */}
           <Card className="border-slate-200">
             <CardHeader>
-              <CardTitle>Job Details</CardTitle>
+              <CardTitle>{formData.is_catering ? 'Position Details' : 'Job Details'}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -245,42 +404,44 @@ export default function PostJob() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label>Employment Type</Label>
-                  <Select
-                    value={formData.employment_type}
-                    onValueChange={(value) => setFormData({ ...formData, employment_type: value })}
-                  >
-                    <SelectTrigger className="border-slate-200">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {EMPLOYMENT_TYPES.map((type) => (
-                        <SelectItem key={type} value={type} className="capitalize">{type}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+              {!formData.is_catering && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label>Employment Type</Label>
+                    <Select
+                      value={formData.employment_type}
+                      onValueChange={(value) => setFormData({ ...formData, employment_type: value })}
+                    >
+                      <SelectTrigger className="border-slate-200">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {EMPLOYMENT_TYPES.map((type) => (
+                          <SelectItem key={type} value={type} className="capitalize">{type}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Duration</Label>
+                    <Select
+                      value={formData.duration_type}
+                      onValueChange={(value) => setFormData({ ...formData, duration_type: value })}
+                    >
+                      <SelectTrigger className="border-slate-200">
+                        <SelectValue placeholder="Select duration" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {DURATION_TYPES.map((type) => (
+                          <SelectItem key={type} value={type} className="capitalize">
+                            {type.replace(/-/g, ' ')}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label>Duration</Label>
-                  <Select
-                    value={formData.duration_type}
-                    onValueChange={(value) => setFormData({ ...formData, duration_type: value })}
-                  >
-                    <SelectTrigger className="border-slate-200">
-                      <SelectValue placeholder="Select duration" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {DURATION_TYPES.map((type) => (
-                        <SelectItem key={type} value={type} className="capitalize">
-                          {type.replace(/-/g, ' ')}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+              )}
 
               <div className="flex items-center gap-4">
                 <Label>Urgency Level</Label>
@@ -412,101 +573,121 @@ export default function PostJob() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="space-y-2">
-                  <Label>Min Hours/Week</Label>
-                  <Input
-                    type="number"
-                    value={formData.hours_per_week_min}
-                    onChange={(e) => setFormData({ ...formData, hours_per_week_min: e.target.value })}
-                    placeholder="20"
-                    className="border-slate-200"
-                  />
+              {!formData.is_catering && (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="space-y-2">
+                    <Label>Min Hours/Week</Label>
+                    <Input
+                      type="number"
+                      value={formData.hours_per_week_min}
+                      onChange={(e) => setFormData({ ...formData, hours_per_week_min: e.target.value })}
+                      placeholder="20"
+                      className="border-slate-200"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Max Hours/Week</Label>
+                    <Input
+                      type="number"
+                      value={formData.hours_per_week_max}
+                      onChange={(e) => setFormData({ ...formData, hours_per_week_max: e.target.value })}
+                      placeholder="40"
+                      className="border-slate-200"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Shift Type</Label>
+                    <Select
+                      value={formData.shift_type}
+                      onValueChange={(value) => setFormData({ ...formData, shift_type: value })}
+                    >
+                      <SelectTrigger className="border-slate-200">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {SHIFT_TYPES.map((type) => (
+                          <SelectItem key={type} value={type} className="capitalize">{type}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Positions Available</Label>
+                    <Input
+                      type="number"
+                      value={formData.positions_available}
+                      onChange={(e) => setFormData({ ...formData, positions_available: e.target.value })}
+                      min="1"
+                      className="border-slate-200"
+                    />
+                  </div>
                 </div>
+              )}
+
+              {formData.is_catering && (
                 <div className="space-y-2">
-                  <Label>Max Hours/Week</Label>
-                  <Input
-                    type="number"
-                    value={formData.hours_per_week_max}
-                    onChange={(e) => setFormData({ ...formData, hours_per_week_max: e.target.value })}
-                    placeholder="40"
-                    className="border-slate-200"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Shift Type</Label>
-                  <Select
-                    value={formData.shift_type}
-                    onValueChange={(value) => setFormData({ ...formData, shift_type: value })}
-                  >
-                    <SelectTrigger className="border-slate-200">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {SHIFT_TYPES.map((type) => (
-                        <SelectItem key={type} value={type} className="capitalize">{type}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Positions Available</Label>
+                  <Label>Staff Needed</Label>
                   <Input
                     type="number"
                     value={formData.positions_available}
                     onChange={(e) => setFormData({ ...formData, positions_available: e.target.value })}
                     min="1"
+                    placeholder="Number of staff needed"
                     className="border-slate-200"
                   />
                 </div>
-              </div>
+              )}
 
-              <div className="space-y-3">
-                <Label>Days Needed *</Label>
-                <p className="text-sm text-slate-500">
-                  Select which days you need workers for this position
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {DAYS.map((day) => (
-                    <Badge
-                      key={day}
-                      variant={formData.schedule[day] ? 'default' : 'outline'}
-                      className={`cursor-pointer capitalize px-4 py-2 ${
-                        formData.schedule[day]
-                          ? 'bg-emerald-600 hover:bg-emerald-700'
-                          : 'hover:bg-emerald-50'
-                      }`}
-                      onClick={() => toggleDay(day)}
-                    >
-                      {day.slice(0, 3)}
-                    </Badge>
-                  ))}
-                </div>
-                <p className="text-xs text-slate-500 mt-2">
-                  Workers will see this schedule when applying and it will be compared with their availability
-                </p>
-              </div>
+              {!formData.is_catering && (
+                <>
+                  <div className="space-y-3">
+                    <Label>Days Needed *</Label>
+                    <p className="text-sm text-slate-500">
+                      Select which days you need workers for this position
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {DAYS.map((day) => (
+                        <Badge
+                          key={day}
+                          variant={formData.schedule[day] ? 'default' : 'outline'}
+                          className={`cursor-pointer capitalize px-4 py-2 ${
+                            formData.schedule[day]
+                              ? 'bg-emerald-600 hover:bg-emerald-700'
+                              : 'hover:bg-emerald-50'
+                          }`}
+                          onClick={() => toggleDay(day)}
+                        >
+                          {day.slice(0, 3)}
+                        </Badge>
+                      ))}
+                    </div>
+                    <p className="text-xs text-slate-500 mt-2">
+                      Workers will see this schedule when applying and it will be compared with their availability
+                    </p>
+                  </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Start Date</Label>
-                  <Input
-                    type="date"
-                    value={formData.start_date}
-                    onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-                    className="border-slate-200"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>End Date (optional)</Label>
-                  <Input
-                    type="date"
-                    value={formData.end_date}
-                    onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
-                    className="border-slate-200"
-                  />
-                </div>
-              </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Start Date</Label>
+                      <Input
+                        type="date"
+                        value={formData.start_date}
+                        onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
+                        className="border-slate-200"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>End Date (optional)</Label>
+                      <Input
+                        type="date"
+                        value={formData.end_date}
+                        onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
+                        className="border-slate-200"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
             </CardContent>
           </Card>
 

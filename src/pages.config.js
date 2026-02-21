@@ -62,6 +62,7 @@ import Calendar from './pages/Calendar';
 import ContentModeration from './pages/ContentModeration';
 import EditRestaurant from './pages/EditRestaurant';
 import EditWorkerProfile from './pages/EditWorkerProfile';
+import EmploymentVerification from './pages/EmploymentVerification';
 import Home from './pages/Home';
 import JobDetails from './pages/JobDetails';
 import JobMap from './pages/JobMap';
@@ -73,16 +74,15 @@ import PostJob from './pages/PostJob';
 import RestaurantDashboard from './pages/RestaurantDashboard';
 import RestaurantOnboarding from './pages/RestaurantOnboarding';
 import RestaurantProfile from './pages/RestaurantProfile';
+import RestaurantVerifications from './pages/RestaurantVerifications';
 import Settings from './pages/Settings';
 import ShiftTemplates from './pages/ShiftTemplates';
+import SuperAdminDashboard from './pages/SuperAdminDashboard';
 import WorkerDashboard from './pages/WorkerDashboard';
 import WorkerOnboarding from './pages/WorkerOnboarding';
 import WorkerPerformance from './pages/WorkerPerformance';
 import WorkerProfile from './pages/WorkerProfile';
 import WriteReview from './pages/WriteReview';
-import SuperAdminDashboard from './pages/SuperAdminDashboard';
-import EmploymentVerification from './pages/EmploymentVerification';
-import RestaurantVerifications from './pages/RestaurantVerifications';
 import __Layout from './Layout.jsx';
 
 
@@ -102,6 +102,7 @@ export const PAGES = {
     "ContentModeration": ContentModeration,
     "EditRestaurant": EditRestaurant,
     "EditWorkerProfile": EditWorkerProfile,
+    "EmploymentVerification": EmploymentVerification,
     "Home": Home,
     "JobDetails": JobDetails,
     "JobMap": JobMap,
@@ -113,16 +114,15 @@ export const PAGES = {
     "RestaurantDashboard": RestaurantDashboard,
     "RestaurantOnboarding": RestaurantOnboarding,
     "RestaurantProfile": RestaurantProfile,
+    "RestaurantVerifications": RestaurantVerifications,
     "Settings": Settings,
     "ShiftTemplates": ShiftTemplates,
+    "SuperAdminDashboard": SuperAdminDashboard,
     "WorkerDashboard": WorkerDashboard,
     "WorkerOnboarding": WorkerOnboarding,
     "WorkerPerformance": WorkerPerformance,
     "WorkerProfile": WorkerProfile,
     "WriteReview": WriteReview,
-    "SuperAdminDashboard": SuperAdminDashboard,
-    "EmploymentVerification": EmploymentVerification,
-    "RestaurantVerifications": RestaurantVerifications,
 }
 
 export const pagesConfig = {
