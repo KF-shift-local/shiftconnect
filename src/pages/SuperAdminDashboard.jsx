@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import PlatformHealthMonitor from '@/components/superadmin/PlatformHealthMonitor';
+import SystemAlertManager from '@/components/superadmin/SystemAlertManager';
 import { 
   Shield,
   Users,
@@ -94,6 +96,12 @@ export default function SuperAdminDashboard() {
   const { data: notifications = [] } = useQuery({
     queryKey: ['allNotifications'],
     queryFn: () => base44.entities.Notification.list(),
+    enabled: currentUser?.role === 'super_admin'
+  });
+
+  const { data: systemLogs = [] } = useQuery({
+    queryKey: ['systemLogs'],
+    queryFn: () => base44.entities.SystemLog.list('-created_date', 100),
     enabled: currentUser?.role === 'super_admin'
   });
 
@@ -245,11 +253,12 @@ export default function SuperAdminDashboard() {
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="users">User Management</TabsTrigger>
-            <TabsTrigger value="health">Platform Health</TabsTrigger>
+            <TabsTrigger value="health">System Health</TabsTrigger>
+            <TabsTrigger value="alerts">Alerts</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
@@ -570,6 +579,18 @@ export default function SuperAdminDashboard() {
           </TabsContent>
 
           <TabsContent value="health" className="space-y-6">
+            <PlatformHealthMonitor 
+              systemLogs={systemLogs}
+              applications={applications}
+              jobs={jobs}
+            />
+          </TabsContent>
+
+          <TabsContent value="alerts" className="space-y-6">
+            <SystemAlertManager />
+          </TabsContent>
+
+          <TabsContent value="legacy-health" className="space-y-6">
             {/* Platform Health Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <Card>
