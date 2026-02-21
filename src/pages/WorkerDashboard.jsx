@@ -152,6 +152,12 @@ export default function WorkerDashboard() {
                   Find Jobs
                 </Button>
               </Link>
+              <Link to={createPageUrl('Analytics')}>
+                <Button variant="outline">
+                  <TrendingUp className="w-4 h-4 mr-2" />
+                  Analytics
+                </Button>
+              </Link>
               <Link to={createPageUrl('EditWorkerProfile')}>
                 <Button variant="outline">
                   <Settings className="w-4 h-4 mr-2" />
