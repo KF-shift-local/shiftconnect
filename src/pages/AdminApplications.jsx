@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Search, FileText, Loader2 } from 'lucide-react';
+import { ArrowLeft, Search, FileText, Loader2, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function AdminApplications() {
@@ -15,19 +15,39 @@ export default function AdminApplications() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
-  const { data: user } = useQuery({
+  const { data: user, isLoading: userLoading } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me()
   });
 
+  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin';
+
   const { data: applications = [], isLoading } = useQuery({
     queryKey: ['adminApplications'],
-    queryFn: () => base44.entities.Application.list('-created_date')
+    queryFn: () => base44.entities.Application.list('-created_date'),
+    enabled: isAdmin
   });
 
-  if (user && user.role !== 'admin') {
-    navigate(createPageUrl('Home'));
-    return null;
+  if (userLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+      </div>
+    );
+  }
+
+  if (user && !isAdmin) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <Card className="max-w-md">
+          <CardContent className="p-8 text-center">
+            <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+            <h2 className="text-xl font-bold text-slate-900 mb-2">Access Denied</h2>
+            <p className="text-slate-600">You don't have permission to access this page.</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   const filteredApplications = applications.filter(a => {
