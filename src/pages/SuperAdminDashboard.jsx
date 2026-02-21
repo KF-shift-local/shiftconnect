@@ -837,7 +837,6 @@ export default function SuperAdminDashboard() {
                       </Button>
                     </div>
                   </div>
-                </div>
 
                 <div className="border-t pt-4">
                   <p className="text-sm text-slate-600 text-center p-2 bg-slate-50 rounded">
