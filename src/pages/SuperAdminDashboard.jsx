@@ -28,15 +28,10 @@ import {
   Activity,
   BarChart3,
   Database,
-  Clock,
   MapPin,
-  DollarSign,
-  Target,
-  UserX,
-  ShieldAlert
+  Target
 } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { format, subDays, startOfDay } from 'date-fns';
@@ -48,8 +43,6 @@ export default function SuperAdminDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState('user');
-  const [banReason, setBanReason] = useState('');
-  const [showBanDialog, setShowBanDialog] = useState(false);
 
   const { data: currentUser, isLoading: loadingCurrentUser } = useQuery({
     queryKey: ['currentUser'],
@@ -119,65 +112,7 @@ export default function SuperAdminDashboard() {
     }
   });
 
-  const banWorkerMutation = useMutation({
-    mutationFn: async ({ workerId, reason }) => {
-      await base44.entities.WorkerProfile.update(workerId, { 
-        account_status: 'banned',
-        ban_reason: reason
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['allWorkers'] });
-      setShowBanDialog(false);
-      setShowUserDialog(false);
-      setSelectedUser(null);
-      setBanReason('');
-    }
-  });
 
-  const banRestaurantMutation = useMutation({
-    mutationFn: async ({ restaurantId, reason }) => {
-      await base44.entities.Restaurant.update(restaurantId, { 
-        account_status: 'banned',
-        ban_reason: reason
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['allRestaurants'] });
-      setShowBanDialog(false);
-      setShowUserDialog(false);
-      setSelectedUser(null);
-      setBanReason('');
-    }
-  });
-
-  const unbanWorkerMutation = useMutation({
-    mutationFn: async ({ workerId }) => {
-      await base44.entities.WorkerProfile.update(workerId, { 
-        account_status: 'active',
-        ban_reason: null
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['allWorkers'] });
-      setShowUserDialog(false);
-      setSelectedUser(null);
-    }
-  });
-
-  const unbanRestaurantMutation = useMutation({
-    mutationFn: async ({ restaurantId }) => {
-      await base44.entities.Restaurant.update(restaurantId, { 
-        account_status: 'active',
-        ban_reason: null
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['allRestaurants'] });
-      setShowUserDialog(false);
-      setSelectedUser(null);
-    }
-  });
 
   const inviteUserMutation = useMutation({
     mutationFn: ({ email, role }) => base44.users.inviteUser(email, role),
@@ -193,15 +128,7 @@ export default function SuperAdminDashboard() {
     }
   };
 
-  const handleBanUser = () => {
-    // This is not supported - users can't be banned, only workers and restaurants
-    // Commenting out for clarity
-  };
 
-  const handleUnbanUser = () => {
-    // This is not supported - users can't be banned, only workers and restaurants
-    // Commenting out for clarity
-  };
 
   const handleInviteUser = () => {
     if (inviteEmail) {
