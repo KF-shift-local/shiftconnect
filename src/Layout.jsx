@@ -193,6 +193,14 @@ export default function Layout({ children, currentPageName }) {
                           <FileText className="w-4 h-4 mr-2" />
                           Application Questions
                         </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate(createPageUrl('ShiftTemplates'))}>
+                          <CalendarIcon className="w-4 h-4 mr-2" />
+                          Shift Templates
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate(createPageUrl('WorkerPerformance'))}>
+                          <Star className="w-4 h-4 mr-2" />
+                          Worker Performance
+                        </DropdownMenuItem>
                         <DropdownMenuSeparator />
                       </>
                     )}

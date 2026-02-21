@@ -14,7 +14,8 @@ import {
   TrendingUp,
   AlertCircle,
   CheckCircle,
-  Loader2
+  Loader2,
+  Shield
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -166,6 +167,24 @@ export default function AdminDashboard() {
                 <Button variant="outline" className="w-full justify-start">
                   <Star className="w-4 h-4 mr-2" />
                   Moderate Reviews
+                </Button>
+              </Link>
+              <Link to={createPageUrl('AdminAnalytics')}>
+                <Button variant="outline" className="w-full justify-start">
+                  <TrendingUp className="w-4 h-4 mr-2" />
+                  Analytics
+                </Button>
+              </Link>
+              <Link to={createPageUrl('ContentModeration')}>
+                <Button variant="outline" className="w-full justify-start">
+                  <AlertCircle className="w-4 h-4 mr-2" />
+                  Content Moderation
+                </Button>
+              </Link>
+              <Link to={createPageUrl('AdminDisputes')}>
+                <Button variant="outline" className="w-full justify-start">
+                  <Shield className="w-4 h-4 mr-2" />
+                  Dispute Resolution
                 </Button>
               </Link>
             </CardContent>
