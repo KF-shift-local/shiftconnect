@@ -17,6 +17,7 @@ import {
   Eye,
   Clock,
   CheckCircle,
+  CheckCircle2,
   XCircle,
   TrendingUp,
   Loader2,
@@ -154,6 +155,12 @@ export default function RestaurantDashboard() {
                 <Button variant="outline">
                   <BarChart3 className="w-4 h-4 mr-2" />
                   Analytics
+                </Button>
+              </Link>
+              <Link to={createPageUrl('RestaurantVerifications')}>
+                <Button variant="outline">
+                  <CheckCircle2 className="w-4 h-4 mr-2" />
+                  Verifications
                 </Button>
               </Link>
               <Link to={createPageUrl('EditRestaurant')}>
