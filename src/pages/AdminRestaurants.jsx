@@ -193,6 +193,13 @@ export default function AdminRestaurants() {
                       <Button
                         variant="outline"
                         size="sm"
+                        onClick={() => navigate(createPageUrl(`RestaurantDashboard?restaurant_id=${r.id}`))}
+                      >
+                        View Dashboard
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => window.open(createPageUrl(`RestaurantProfile?id=${r.id}`), '_blank')}
                       >
                         View Profile

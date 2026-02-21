@@ -178,6 +178,13 @@ export default function AdminWorkers() {
                       <Button
                         variant="outline"
                         size="sm"
+                        onClick={() => navigate(createPageUrl(`WorkerDashboard?worker_id=${w.id}`))}
+                      >
+                        View Dashboard
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => window.open(createPageUrl(`WorkerProfile?id=${w.id}`), '_blank')}
                       >
                         View Profile
