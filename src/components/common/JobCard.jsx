@@ -57,9 +57,21 @@ export default function JobCard({ job }) {
             </div>
 
             <div className="flex flex-wrap gap-2 mb-4">
-              <Badge variant="secondary" className={typeColors[job.employment_type]}>
-                {job.employment_type}
-              </Badge>
+              {job.is_catering && (
+                <Badge className="bg-purple-600 text-white">
+                  🎉 Catering Event
+                </Badge>
+              )}
+              {job.is_catering && job.catering_type && (
+                <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                  {job.catering_type === 'front-of-house' ? 'Front-of-House' : 'Back-of-House'}
+                </Badge>
+              )}
+              {!job.is_catering && (
+                <Badge variant="secondary" className={typeColors[job.employment_type]}>
+                  {job.employment_type}
+                </Badge>
+              )}
               <Badge variant="outline" className="bg-white">
                 {job.job_type}
               </Badge>
@@ -80,20 +92,39 @@ export default function JobCard({ job }) {
                   {job.tips_included && ' + tips'}
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-blue-500" />
-                <span>{job.hours_per_week_min}-{job.hours_per_week_max} hrs/wk</span>
-              </div>
+              {!job.is_catering && job.hours_per_week_min && (
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-blue-500" />
+                  <span>{job.hours_per_week_min}-{job.hours_per_week_max} hrs/wk</span>
+                </div>
+              )}
+              {job.is_catering && job.event_duration_hours && (
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-blue-500" />
+                  <span>{job.event_duration_hours} hours total</span>
+                </div>
+              )}
+              {job.is_catering && job.event_type && (
+                <div className="flex items-center gap-2 col-span-2">
+                  <span className="text-purple-600 font-medium capitalize">{job.event_type.replace('_', ' ')}</span>
+                  {job.guest_count && <span>• {job.guest_count} guests</span>}
+                </div>
+              )}
               {job.city && (
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-rose-500" />
                   <span>{job.city}</span>
                 </div>
               )}
-              {job.start_date && (
+              {(job.is_catering ? job.event_date : job.start_date) && (
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-violet-500" />
-                  <span>Starts {format(new Date(job.start_date), 'MMM d')}</span>
+                  <span>
+                    {job.is_catering 
+                      ? format(new Date(job.event_date), 'MMM d, yyyy')
+                      : `Starts ${format(new Date(job.start_date), 'MMM d')}`
+                    }
+                  </span>
                 </div>
               )}
             </div>
@@ -101,7 +132,7 @@ export default function JobCard({ job }) {
 
           <div className="px-5 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
             <span className="text-xs text-slate-500">
-              {job.duration_type?.replace('-', ' ')}
+              {job.is_catering ? 'One-time event' : job.duration_type?.replace('-', ' ')}
             </span>
             <div className="flex items-center gap-2">
               <Link 
