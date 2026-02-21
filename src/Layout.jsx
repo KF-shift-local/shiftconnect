@@ -210,9 +210,18 @@ export default function Layout({ children, currentPageName }) {
                       </>
                     )}
                     <DropdownMenuItem onClick={() => navigate(createPageUrl('Settings'))}>
-                      <Settings className="w-4 h-4 mr-2" />
-                      Account Settings
+                     <Settings className="w-4 h-4 mr-2" />
+                     Account Settings
                     </DropdownMenuItem>
+                    {user?.role === 'admin' && (
+                     <>
+                       <DropdownMenuSeparator />
+                       <DropdownMenuItem onClick={() => navigate(createPageUrl('AdminDashboard'))} className="text-emerald-700 font-semibold">
+                         <Star className="w-4 h-4 mr-2" />
+                         Admin Panel
+                       </DropdownMenuItem>
+                     </>
+                    )}
                     {workerProfile && !restaurant && user?.role !== 'admin' && (
                       <>
                         <DropdownMenuSeparator />
@@ -314,6 +323,15 @@ export default function Layout({ children, currentPageName }) {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Restaurant Dashboard
+                </Link>
+              )}
+              {user?.role === 'admin' && (
+                <Link
+                  to={createPageUrl('AdminDashboard')}
+                  className="block px-4 py-2 text-emerald-700 font-semibold hover:bg-emerald-50 rounded-lg"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Admin Panel
                 </Link>
               )}
             </div>
