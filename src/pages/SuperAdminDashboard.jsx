@@ -191,7 +191,7 @@ export default function SuperAdminDashboard() {
   const pendingPromotions = promotionRequests.filter(r => r.status === 'pending');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-900 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
@@ -199,7 +199,7 @@ export default function SuperAdminDashboard() {
               <Crown className="w-8 h-8 text-amber-400" />
               <h1 className="text-3xl font-bold text-white">Super Admin Control Center</h1>
             </div>
-            <p className="text-emerald-200">Complete platform oversight and admin management</p>
+            <p className="text-purple-200">Complete platform oversight and admin management</p>
           </div>
           <Badge className="bg-amber-500 text-white text-sm px-4 py-2">
             <Crown className="w-4 h-4 mr-2" />
@@ -215,7 +215,7 @@ export default function SuperAdminDashboard() {
                 <Shield className="w-8 h-8 text-amber-400" />
               </div>
               <div className="text-3xl font-bold">{superAdmins.length}</div>
-              <div className="text-sm text-emerald-200">Super Admins</div>
+              <div className="text-sm text-purple-200">Super Admins</div>
             </CardContent>
           </Card>
 
@@ -225,7 +225,7 @@ export default function SuperAdminDashboard() {
                 <Users className="w-8 h-8 text-blue-400" />
               </div>
               <div className="text-3xl font-bold">{admins.length}</div>
-              <div className="text-sm text-emerald-200">Regular Admins</div>
+              <div className="text-sm text-purple-200">Regular Admins</div>
             </CardContent>
           </Card>
 
@@ -235,7 +235,7 @@ export default function SuperAdminDashboard() {
                 <Building2 className="w-8 h-8 text-emerald-400" />
               </div>
               <div className="text-3xl font-bold">{restaurants.length}</div>
-              <div className="text-sm text-emerald-200">Total Restaurants</div>
+              <div className="text-sm text-purple-200">Total Restaurants</div>
             </CardContent>
           </Card>
 
@@ -245,7 +245,7 @@ export default function SuperAdminDashboard() {
                 <Briefcase className="w-8 h-8 text-purple-400" />
               </div>
               <div className="text-3xl font-bold">{jobs.length}</div>
-              <div className="text-sm text-emerald-200">Total Jobs</div>
+              <div className="text-sm text-purple-200">Total Jobs</div>
             </CardContent>
           </Card>
         </div>
@@ -272,7 +272,7 @@ export default function SuperAdminDashboard() {
                       <div key={admin.id} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
                         <div>
                           <p className="font-medium text-white">{admin.full_name || admin.email}</p>
-                          <p className="text-xs text-emerald-200">{admin.email}</p>
+                          <p className="text-xs text-purple-200">{admin.email}</p>
                         </div>
                         <div className="flex items-center gap-2">
                           <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30">
@@ -304,7 +304,7 @@ export default function SuperAdminDashboard() {
                       <div key={admin.id} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
                         <div>
                           <p className="font-medium text-white">{admin.full_name || admin.email}</p>
-                          <p className="text-xs text-emerald-200">{admin.email}</p>
+                          <p className="text-xs text-purple-200">{admin.email}</p>
                         </div>
                         <Button
                           size="sm"
@@ -328,7 +328,7 @@ export default function SuperAdminDashboard() {
                       <div key={u.id} className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/10">
                         <div>
                           <p className="text-sm font-medium text-white">{u.full_name || u.email}</p>
-                          <p className="text-xs text-emerald-200">{u.email}</p>
+                          <p className="text-xs text-purple-200">{u.email}</p>
                         </div>
                         <Button
                           size="sm"
@@ -442,9 +442,9 @@ export default function SuperAdminDashboard() {
             
             {selectedAdmin && (
               <div className="space-y-4">
-                <div className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+                <div className="p-4 rounded-lg bg-purple-500/10 border border-purple-500/30">
                   <p className="font-medium text-white">{selectedAdmin.full_name || selectedAdmin.email}</p>
-                  <p className="text-sm text-emerald-200">{selectedAdmin.email}</p>
+                  <p className="text-sm text-purple-200">{selectedAdmin.email}</p>
                 </div>
 
                 <div className="p-4 rounded-lg bg-amber-500/10 border border-amber-500/30">
@@ -509,9 +509,9 @@ export default function SuperAdminDashboard() {
                   </p>
                 </div>
 
-                <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+                <div className="p-3 rounded-lg bg-purple-500/10 border border-purple-500/30">
                   <p className="text-sm text-white">Promoting: <span className="font-semibold">{selectedRequest.admin_name}</span></p>
-                  <p className="text-xs text-emerald-200 mt-1">{selectedRequest.reason}</p>
+                  <p className="text-xs text-purple-200 mt-1">{selectedRequest.reason}</p>
                 </div>
 
                 <div className="space-y-2">
