@@ -81,6 +81,8 @@ import WorkerPerformance from './pages/WorkerPerformance';
 import WorkerProfile from './pages/WorkerProfile';
 import WriteReview from './pages/WriteReview';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
+import EmploymentVerification from './pages/EmploymentVerification';
+import RestaurantVerifications from './pages/RestaurantVerifications';
 import __Layout from './Layout.jsx';
 
 
@@ -119,6 +121,8 @@ export const PAGES = {
     "WorkerProfile": WorkerProfile,
     "WriteReview": WriteReview,
     "SuperAdminDashboard": SuperAdminDashboard,
+    "EmploymentVerification": EmploymentVerification,
+    "RestaurantVerifications": RestaurantVerifications,
 }
 
 export const pagesConfig = {

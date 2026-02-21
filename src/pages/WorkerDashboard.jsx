@@ -158,6 +158,12 @@ export default function WorkerDashboard() {
                   Analytics
                 </Button>
               </Link>
+              <Link to={createPageUrl('EmploymentVerification')}>
+                <Button variant="outline">
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Verify Employment
+                </Button>
+              </Link>
               <Link to={createPageUrl('EditWorkerProfile')}>
                 <Button variant="outline">
                   <Settings className="w-4 h-4 mr-2" />
