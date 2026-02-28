@@ -35,6 +35,8 @@ export default function AdminRestaurants() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
+  const [rejectTarget, setRejectTarget] = useState(null);
+  const [adminNotes, setAdminNotes] = useState('');
 
   const { data: user, isLoading: userLoading } = useQuery({
     queryKey: ['currentUser'],
