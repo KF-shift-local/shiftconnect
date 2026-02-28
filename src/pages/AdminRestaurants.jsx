@@ -398,6 +398,50 @@ export default function AdminRestaurants() {
             )}
           </CardContent>
         </Card>
+          </TabsContent>
+        </Tabs>
+
+        {/* Reject Dialog */}
+        <Dialog open={!!rejectTarget} onOpenChange={() => setRejectTarget(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-red-600">
+                <XCircle className="w-5 h-5" /> Reject Document
+              </DialogTitle>
+              <DialogDescription>
+                Provide a reason so the restaurant knows what to resubmit.
+              </DialogDescription>
+            </DialogHeader>
+            {rejectTarget && (
+              <div className="space-y-4 py-2">
+                <div className="p-3 bg-slate-50 rounded-lg text-sm">
+                  <p className="font-semibold text-slate-800">{rejectTarget.restaurant_name}</p>
+                  <p className="text-slate-500">{DOC_TYPE_LABELS[rejectTarget.document_type] || rejectTarget.document_label}</p>
+                </div>
+                <div className="space-y-2">
+                  <Label>Rejection Reason *</Label>
+                  <Textarea
+                    value={adminNotes}
+                    onChange={e => setAdminNotes(e.target.value)}
+                    placeholder="e.g., Document is expired, please upload a current version..."
+                    rows={3}
+                  />
+                </div>
+              </div>
+            )}
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setRejectTarget(null)}>Cancel</Button>
+              <Button
+                onClick={handleRejectDoc}
+                disabled={reviewVerificationMutation.isPending}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {reviewVerificationMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <XCircle className="w-4 h-4 mr-2" />}
+                Confirm Rejection
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
