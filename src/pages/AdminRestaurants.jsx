@@ -262,21 +262,21 @@ export default function AdminRestaurants() {
           </TabsContent>
 
           <TabsContent value="restaurants">
-        <Card className="border-slate-200 mb-6">
-          <CardContent className="p-6">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by name or city..."
-                className="pl-10"
-              />
-            </div>
-          </CardContent>
-        </Card>
+            <Card className="border-slate-200 mb-6">
+              <CardContent className="p-6">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <Input
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search by name or city..."
+                    className="pl-10"
+                  />
+                </div>
+              </CardContent>
+            </Card>
 
-        <Card className="border-slate-200">
+            <Card className="border-slate-200">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>Restaurants ({filteredRestaurants.length})</span>
