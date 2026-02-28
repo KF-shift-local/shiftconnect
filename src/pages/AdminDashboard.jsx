@@ -203,6 +203,12 @@ export default function AdminDashboard() {
                   Dispute Resolution
                 </Button>
               </Link>
+              <Link to={createPageUrl('AdminVerifications')}>
+                <Button variant="outline" className="w-full justify-start">
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Restaurant Verifications
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 
