@@ -380,18 +380,32 @@ export default function AdminRestaurants() {
                         </Button>
                       )}
                       <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => navigate(createPageUrl(`RestaurantDashboard?restaurant_id=${r.id}`))}
+                       variant="outline"
+                       size="sm"
+                       className="text-emerald-700 border-emerald-300 hover:bg-emerald-50"
+                       onClick={() => setVerificationDrawerRestaurant(r)}
                       >
-                        View Dashboard
+                       <FileText className="w-3.5 h-3.5 mr-1" />
+                       Documents
+                       {verificationRequests.filter(v => v.restaurant_id === r.id && v.status === 'pending').length > 0 && (
+                         <Badge className="ml-1.5 bg-amber-500 text-white text-xs px-1.5 py-0">
+                           {verificationRequests.filter(v => v.restaurant_id === r.id && v.status === 'pending').length}
+                         </Badge>
+                       )}
                       </Button>
                       <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => window.open(createPageUrl(`RestaurantProfile?id=${r.id}`), '_blank')}
+                       variant="outline"
+                       size="sm"
+                       onClick={() => navigate(createPageUrl(`RestaurantDashboard?restaurant_id=${r.id}`))}
                       >
-                        View Profile
+                       View Dashboard
+                      </Button>
+                      <Button
+                       variant="outline"
+                       size="sm"
+                       onClick={() => window.open(createPageUrl(`RestaurantProfile?id=${r.id}`), '_blank')}
+                      >
+                       View Profile
                       </Button>
                     </div>
                   </div>
