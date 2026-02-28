@@ -66,6 +66,34 @@ export default function AdminRestaurants() {
     }
   });
 
+  const { data: verificationRequests = [] } = useQuery({
+    queryKey: ['allVerificationRequests'],
+    queryFn: () => base44.entities.RestaurantVerificationRequest.list('-created_date'),
+    enabled: isAdmin
+  });
+
+  const reviewVerificationMutation = useMutation({
+    mutationFn: ({ id, status, admin_notes }) =>
+      base44.entities.RestaurantVerificationRequest.update(id, {
+        status,
+        admin_notes: admin_notes || null,
+        reviewed_by: user.email,
+        reviewed_date: new Date().toISOString()
+      }),
+    onSuccess: (_, { status }) => {
+      queryClient.invalidateQueries(['allVerificationRequests']);
+      setRejectTarget(null);
+      setAdminNotes('');
+      toast.success(`Document ${status === 'approved' ? 'approved' : 'rejected'}`);
+    }
+  });
+
+  const handleApproveDoc = (req) => reviewVerificationMutation.mutate({ id: req.id, status: 'approved' });
+  const handleRejectDoc = () => {
+    if (!adminNotes.trim()) { toast.error('Please provide a rejection reason'); return; }
+    reviewVerificationMutation.mutate({ id: rejectTarget.id, status: 'rejected', admin_notes: adminNotes });
+  };
+
   const banMutation = useMutation({
     mutationFn: async ({ restaurantId, status, reason }) => {
       // Update restaurant status
