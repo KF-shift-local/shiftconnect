@@ -403,6 +403,7 @@ export default function AdminRestaurants() {
 
         {/* Reject Dialog */}
 
+
         <Dialog open={!!rejectTarget} onOpenChange={() => setRejectTarget(null)}>
           <DialogContent>
             <DialogHeader>
