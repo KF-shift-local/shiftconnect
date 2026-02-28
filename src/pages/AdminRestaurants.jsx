@@ -396,8 +396,8 @@ export default function AdminRestaurants() {
                 ))}
               </div>
             )}
-          </CardContent>
-        </Card>
+            </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
 
