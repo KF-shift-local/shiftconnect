@@ -157,10 +157,10 @@ export default function RestaurantDashboard() {
                   Analytics
                 </Button>
               </Link>
-              <Link to={createPageUrl('RestaurantVerifications')}>
+              <Link to={createPageUrl('RestaurantVerificationCenter')}>
                 <Button variant="outline">
                   <CheckCircle2 className="w-4 h-4 mr-2" />
-                  Verifications
+                  Verification
                 </Button>
               </Link>
               <Link to={createPageUrl('EditRestaurant')}>
