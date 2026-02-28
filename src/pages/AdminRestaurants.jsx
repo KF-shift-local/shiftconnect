@@ -8,9 +8,28 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, Search, Building2, MapPin, Star, CheckCircle, Loader2, Ban, AlertCircle } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { ArrowLeft, Search, Building2, MapPin, Star, CheckCircle, XCircle, Clock, Loader2, Ban, AlertCircle, FileText, ShieldCheck } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+
+const DOC_TYPE_LABELS = {
+  business_license: 'Business License',
+  health_permit: 'Health Permit',
+  food_safety_certificate: 'Food Safety Certificate',
+  liquor_license: 'Liquor License',
+  insurance: 'Insurance Certificate',
+  other: 'Other',
+};
+
+const VREQ_STATUS = {
+  pending:  { icon: Clock,       color: 'bg-amber-100 text-amber-700',    label: 'Pending' },
+  approved: { icon: CheckCircle, color: 'bg-emerald-100 text-emerald-700', label: 'Approved' },
+  rejected: { icon: XCircle,     color: 'bg-red-100 text-red-700',        label: 'Rejected' },
+};
 
 export default function AdminRestaurants() {
   const navigate = useNavigate();
