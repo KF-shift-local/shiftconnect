@@ -12,9 +12,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Search, Building2, MapPin, Star, CheckCircle, XCircle, Clock, Loader2, Ban, AlertCircle, FileText, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, Search, Building2, MapPin, Star, CheckCircle, XCircle, Clock, Loader2, Ban, AlertCircle, FileText, ShieldCheck, ShieldCheck as ShieldIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import RestaurantVerificationDrawer from '@/components/admin/RestaurantVerificationDrawer';
 
 const DOC_TYPE_LABELS = {
   business_license: 'Business License',
