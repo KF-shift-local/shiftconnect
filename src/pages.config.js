@@ -84,6 +84,8 @@ import WorkerPerformance from './pages/WorkerPerformance';
 import WorkerProfile from './pages/WorkerProfile';
 import WriteReview from './pages/WriteReview';
 import RestaurantAnalytics from './pages/RestaurantAnalytics';
+import RestaurantVerificationCenter from './pages/RestaurantVerificationCenter';
+import AdminVerifications from './pages/AdminVerifications';
 import __Layout from './Layout.jsx';
 
 
@@ -125,6 +127,8 @@ export const PAGES = {
     "WorkerProfile": WorkerProfile,
     "WriteReview": WriteReview,
     "RestaurantAnalytics": RestaurantAnalytics,
+    "RestaurantVerificationCenter": RestaurantVerificationCenter,
+    "AdminVerifications": AdminVerifications,
 }
 
 export const pagesConfig = {
