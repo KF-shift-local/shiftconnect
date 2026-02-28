@@ -161,6 +161,107 @@ export default function AdminRestaurants() {
           </div>
         </div>
 
+        <Tabs defaultValue="restaurants">
+          <TabsList className="mb-6">
+            <TabsTrigger value="restaurants">Restaurants</TabsTrigger>
+            <TabsTrigger value="verifications">
+              Verification Requests
+              {verificationRequests.filter(r => r.status === 'pending').length > 0 && (
+                <Badge className="ml-2 bg-amber-600 text-white text-xs">
+                  {verificationRequests.filter(r => r.status === 'pending').length}
+                </Badge>
+              )}
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="verifications">
+            {verificationRequests.length === 0 ? (
+              <Card className="border-slate-200">
+                <CardContent className="p-12 text-center">
+                  <ShieldCheck className="w-14 h-14 text-slate-300 mx-auto mb-3" />
+                  <p className="text-slate-500">No verification documents submitted yet</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-3">
+                {verificationRequests.map(req => {
+                  const cfg = VREQ_STATUS[req.status];
+                  const StatusIcon = cfg.icon;
+                  const docLabel = DOC_TYPE_LABELS[req.document_type] || req.document_label || req.document_type;
+                  return (
+                    <Card key={req.id} className="border-slate-200">
+                      <CardContent className="p-5">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-start gap-3 flex-1">
+                            <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
+                              <FileText className="w-4 h-4 text-slate-500" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex flex-wrap items-center gap-2 mb-1">
+                                <p className="font-semibold text-slate-900">{req.restaurant_name}</p>
+                                <Badge variant="secondary">{docLabel}</Badge>
+                                <Badge className={cfg.color}>
+                                  <StatusIcon className="w-3 h-3 mr-1" />
+                                  {cfg.label}
+                                </Badge>
+                              </div>
+                              <p className="text-xs text-slate-400">
+                                Submitted {format(new Date(req.created_date), 'MMM d, yyyy')}
+                                {req.reviewed_date && ` · Reviewed ${format(new Date(req.reviewed_date), 'MMM d, yyyy')}`}
+                              </p>
+                              {req.notes && <p className="text-sm text-slate-500 mt-1">Notes: <em>{req.notes}</em></p>}
+                              {req.admin_notes && (
+                                <div className="mt-2 p-2 bg-red-50 border border-red-100 rounded text-sm text-red-600">
+                                  Rejection reason: {req.admin_notes}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex flex-col gap-2 items-end shrink-0">
+                            <a href={req.document_url} target="_blank" rel="noopener noreferrer">
+                              <Button variant="outline" size="sm">View Doc</Button>
+                            </a>
+                            {req.status === 'pending' && (
+                              <>
+                                <Button
+                                  size="sm"
+                                  className="bg-emerald-600 hover:bg-emerald-700"
+                                  disabled={reviewVerificationMutation.isPending}
+                                  onClick={() => handleApproveDoc(req)}
+                                >
+                                  <CheckCircle className="w-3 h-3 mr-1" /> Approve
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-red-600 border-red-300 hover:bg-red-50"
+                                  onClick={() => { setRejectTarget(req); setAdminNotes(''); }}
+                                >
+                                  <XCircle className="w-3 h-3 mr-1" /> Reject
+                                </Button>
+                              </>
+                            )}
+                            {req.status !== 'pending' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-amber-600 border-amber-300 hover:bg-amber-50"
+                                onClick={() => reviewVerificationMutation.mutate({ id: req.id, status: 'pending', admin_notes: null })}
+                              >
+                                <Clock className="w-3 h-3 mr-1" /> Set Pending
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="restaurants">
         <Card className="border-slate-200 mb-6">
           <CardContent className="p-6">
             <div className="relative">
