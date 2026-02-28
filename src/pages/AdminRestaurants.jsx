@@ -38,6 +38,7 @@ export default function AdminRestaurants() {
   const [searchQuery, setSearchQuery] = useState('');
   const [rejectTarget, setRejectTarget] = useState(null);
   const [adminNotes, setAdminNotes] = useState('');
+  const [verificationDrawerRestaurant, setVerificationDrawerRestaurant] = useState(null);
 
   const { data: user, isLoading: userLoading } = useQuery({
     queryKey: ['currentUser'],
