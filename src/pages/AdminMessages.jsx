@@ -96,15 +96,8 @@ export default function AdminMessages() {
         {/* Header */}
         <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
-              All Messages
-              {newCount > 0 && (
-                <Badge className="bg-emerald-600 text-white text-xs animate-pulse">
-                  +{newCount} new
-                </Badge>
-              )}
-            </h1>
-            <p className="text-slate-600">{displayMessages.length} total · {flaggedCount} flagged</p>
+            <h1 className="text-3xl font-bold text-slate-900">All Messages</h1>
+            <p className="text-slate-600">{messages.length} total · {flaggedCount} flagged</p>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -116,12 +109,6 @@ export default function AdminMessages() {
               <Flag className="w-4 h-4 mr-1.5" />
               Flagged{flaggedCount > 0 ? ` (${flaggedCount})` : ''}
             </Button>
-            {newCount > 0 && (
-              <Button variant="outline" size="sm" onClick={() => setNewCount(0)}>
-                <BellOff className="w-4 h-4 mr-1.5" />
-                Clear badge
-              </Button>
-            )}
           </div>
         </div>
 
