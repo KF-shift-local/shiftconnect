@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, Loader2, MessageCircle, Search, Flag, Bell, BellOff } from 'lucide-react';
+import { AlertCircle, Loader2, MessageCircle, Search, Flag } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 
