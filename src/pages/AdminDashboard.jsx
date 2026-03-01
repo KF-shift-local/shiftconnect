@@ -210,6 +210,12 @@ export default function AdminDashboard() {
                   Restaurant Verifications
                 </Button>
               </Link>
+              <Link to={createPageUrl('AdminMessages')}>
+                <Button variant="outline" className="w-full justify-start">
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  All Messages
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 
