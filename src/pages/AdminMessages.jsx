@@ -75,9 +75,7 @@ export default function AdminMessages() {
     );
   }
 
-  const displayMessages = (messages.length > 0 ? messages : initialMessages);
-
-  const filteredMessages = displayMessages.filter(msg => {
+  const filteredMessages = messages.filter(msg => {
     if (showFlaggedOnly && !flagged.has(msg.id)) return false;
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
