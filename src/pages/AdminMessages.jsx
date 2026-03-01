@@ -24,10 +24,6 @@ export default function AdminMessages() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showFlaggedOnly, setShowFlaggedOnly] = useState(false);
   const [flagged, setFlagged] = useState(getFlagged);
-  const [messages, setMessages] = useState([]);
-  const [newCount, setNewCount] = useState(0);
-  const queryClient = useQueryClient();
-  const isFirstLoad = useRef(true);
 
   const { data: user, isLoading: userLoading } = useQuery({
     queryKey: ['currentUser'],
