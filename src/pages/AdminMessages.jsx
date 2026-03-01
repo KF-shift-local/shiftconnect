@@ -1,14 +1,33 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, Loader2, MessageCircle, Search } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { AlertCircle, Loader2, MessageCircle, Search, Flag, Bell, BellOff } from 'lucide-react';
 import { format } from 'date-fns';
+import { toast } from 'sonner';
+
+const FLAGGED_KEY = 'admin_flagged_messages';
+
+function getFlagged() {
+  try { return new Set(JSON.parse(localStorage.getItem(FLAGGED_KEY) || '[]')); }
+  catch { return new Set(); }
+}
+
+function saveFlagged(set) {
+  localStorage.setItem(FLAGGED_KEY, JSON.stringify([...set]));
+}
 
 export default function AdminMessages() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [showFlaggedOnly, setShowFlaggedOnly] = useState(false);
+  const [flagged, setFlagged] = useState(getFlagged);
+  const [messages, setMessages] = useState([]);
+  const [newCount, setNewCount] = useState(0);
+  const queryClient = useQueryClient();
+  const isFirstLoad = useRef(true);
 
   const { data: user, isLoading: userLoading } = useQuery({
     queryKey: ['currentUser'],
@@ -17,11 +36,58 @@ export default function AdminMessages() {
 
   const isAdmin = user?.role === 'admin' || user?.role === 'super_admin';
 
-  const { data: messages = [], isLoading: messagesLoading } = useQuery({
+  // Initial load
+  const { data: initialMessages = [], isLoading: messagesLoading } = useQuery({
     queryKey: ['adminDirectMessages'],
     queryFn: () => base44.entities.DirectMessage.list('-created_date'),
     enabled: isAdmin
   });
+
+  useEffect(() => {
+    if (initialMessages.length > 0 && isFirstLoad.current) {
+      setMessages(initialMessages);
+      isFirstLoad.current = false;
+    }
+  }, [initialMessages]);
+
+  // Real-time subscription
+  useEffect(() => {
+    if (!isAdmin) return;
+
+    const unsubscribe = base44.entities.DirectMessage.subscribe((event) => {
+      if (event.type === 'create') {
+        const newMsg = event.data;
+        setMessages(prev => [newMsg, ...prev]);
+        setNewCount(c => c + 1);
+        toast.info(`New message from ${newMsg.sender_name || newMsg.sender_email}`, {
+          description: newMsg.message?.slice(0, 80) + (newMsg.message?.length > 80 ? '…' : ''),
+          icon: <MessageCircle className="w-4 h-4 text-emerald-600" />,
+          duration: 5000,
+        });
+      } else if (event.type === 'update') {
+        setMessages(prev => prev.map(m => m.id === event.id ? event.data : m));
+      } else if (event.type === 'delete') {
+        setMessages(prev => prev.filter(m => m.id !== event.id));
+      }
+    });
+
+    return unsubscribe;
+  }, [isAdmin]);
+
+  const toggleFlag = (id) => {
+    setFlagged(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+        toast.success('Flag removed');
+      } else {
+        next.add(id);
+        toast.success('Message flagged for follow-up');
+      }
+      saveFlagged(next);
+      return next;
+    });
+  };
 
   if (userLoading) {
     return (
@@ -45,7 +111,10 @@ export default function AdminMessages() {
     );
   }
 
-  const filteredMessages = messages.filter(msg => {
+  const displayMessages = (messages.length > 0 ? messages : initialMessages);
+
+  const filteredMessages = displayMessages.filter(msg => {
+    if (showFlaggedOnly && !flagged.has(msg.id)) return false;
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
     return (
@@ -55,12 +124,41 @@ export default function AdminMessages() {
     );
   });
 
+  const flaggedCount = [...flagged].length;
+
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="max-w-5xl mx-auto px-4 py-8">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-slate-900">All Messages</h1>
-          <p className="text-slate-600">Platform-wide message history ({messages.length} total)</p>
+        {/* Header */}
+        <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
+              All Messages
+              {newCount > 0 && (
+                <Badge className="bg-emerald-600 text-white text-xs animate-pulse">
+                  +{newCount} new
+                </Badge>
+              )}
+            </h1>
+            <p className="text-slate-600">{displayMessages.length} total · {flaggedCount} flagged</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant={showFlaggedOnly ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setShowFlaggedOnly(v => !v)}
+              className={showFlaggedOnly ? 'bg-amber-500 hover:bg-amber-600 text-white border-0' : ''}
+            >
+              <Flag className="w-4 h-4 mr-1.5" />
+              Flagged{flaggedCount > 0 ? ` (${flaggedCount})` : ''}
+            </Button>
+            {newCount > 0 && (
+              <Button variant="outline" size="sm" onClick={() => setNewCount(0)}>
+                <BellOff className="w-4 h-4 mr-1.5" />
+                Clear badge
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Search */}
@@ -74,7 +172,7 @@ export default function AdminMessages() {
           />
         </div>
 
-        {messagesLoading ? (
+        {messagesLoading && displayMessages.length === 0 ? (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
           </div>
@@ -82,51 +180,73 @@ export default function AdminMessages() {
           <Card className="border-slate-200">
             <CardContent className="p-12 text-center">
               <MessageCircle className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-500">No messages found</p>
+              <p className="text-slate-500">
+                {showFlaggedOnly ? 'No flagged messages' : 'No messages found'}
+              </p>
             </CardContent>
           </Card>
         ) : (
           <Card className="border-slate-200">
-            <CardHeader>
+            <CardHeader className="pb-2">
               <CardTitle className="text-base">{filteredMessages.length} messages</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               <div className="divide-y divide-slate-100">
-                {filteredMessages.map(msg => (
-                  <div key={msg.id} className="p-4 hover:bg-slate-50 transition-colors">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex items-start gap-3 flex-1 min-w-0">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-bold ${
-                          msg.sender_type === 'restaurant' 
-                            ? 'bg-emerald-100 text-emerald-700' 
-                            : 'bg-blue-100 text-blue-700'
-                        }`}>
-                          {msg.sender_name?.charAt(0) || '?'}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1 flex-wrap">
-                            <span className="font-medium text-slate-900 text-sm">{msg.sender_name || msg.sender_email}</span>
-                            <Badge variant="outline" className={`text-xs capitalize ${
-                              msg.sender_type === 'restaurant' 
-                                ? 'border-emerald-300 text-emerald-700' 
-                                : 'border-blue-300 text-blue-700'
-                            }`}>
-                              {msg.sender_type}
-                            </Badge>
-                            {!msg.is_read && (
-                              <Badge className="text-xs bg-amber-100 text-amber-700 border-amber-200">Unread</Badge>
-                            )}
+                {filteredMessages.map(msg => {
+                  const isFlagged = flagged.has(msg.id);
+                  return (
+                    <div
+                      key={msg.id}
+                      className={`p-4 hover:bg-slate-50 transition-colors ${isFlagged ? 'bg-amber-50 border-l-4 border-l-amber-400' : ''}`}
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-start gap-3 flex-1 min-w-0">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-bold ${
+                            msg.sender_type === 'restaurant'
+                              ? 'bg-emerald-100 text-emerald-700'
+                              : 'bg-blue-100 text-blue-700'
+                          }`}>
+                            {msg.sender_name?.charAt(0) || '?'}
                           </div>
-                          <p className="text-sm text-slate-700 break-words">{msg.message}</p>
-                          <p className="text-xs text-slate-400 mt-1">{msg.sender_email}</p>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1 flex-wrap">
+                              <span className="font-medium text-slate-900 text-sm">{msg.sender_name || msg.sender_email}</span>
+                              <Badge variant="outline" className={`text-xs capitalize ${
+                                msg.sender_type === 'restaurant'
+                                  ? 'border-emerald-300 text-emerald-700'
+                                  : 'border-blue-300 text-blue-700'
+                              }`}>
+                                {msg.sender_type}
+                              </Badge>
+                              {!msg.is_read && (
+                                <Badge className="text-xs bg-amber-100 text-amber-700 border-amber-200">Unread</Badge>
+                              )}
+                              {isFlagged && (
+                                <Badge className="text-xs bg-amber-500 text-white">Flagged</Badge>
+                              )}
+                            </div>
+                            <p className="text-sm text-slate-700 break-words">{msg.message}</p>
+                            <p className="text-xs text-slate-400 mt-1">{msg.sender_email}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <span className="text-xs text-slate-400">
+                            {format(new Date(msg.created_date), 'MMM d, h:mm a')}
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className={`h-7 w-7 ${isFlagged ? 'text-amber-500 hover:text-amber-600' : 'text-slate-300 hover:text-amber-500'}`}
+                            onClick={() => toggleFlag(msg.id)}
+                            title={isFlagged ? 'Remove flag' : 'Flag for follow-up'}
+                          >
+                            <Flag className="w-4 h-4" fill={isFlagged ? 'currentColor' : 'none'} />
+                          </Button>
                         </div>
                       </div>
-                      <span className="text-xs text-slate-400 flex-shrink-0">
-                        {format(new Date(msg.created_date), 'MMM d, yyyy h:mm a')}
-                      </span>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </CardContent>
           </Card>
