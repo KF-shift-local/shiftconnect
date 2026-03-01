@@ -15,7 +15,8 @@ import {
   AlertCircle,
   CheckCircle,
   Loader2,
-  Shield
+  Shield,
+  MessageCircle
 } from 'lucide-react';
 import { format } from 'date-fns';
 
