@@ -54,6 +54,7 @@ import AdminDisputes from './pages/AdminDisputes';
 import AdminRestaurants from './pages/AdminRestaurants';
 import AdminReviews from './pages/AdminReviews';
 import AdminUsers from './pages/AdminUsers';
+import AdminVerifications from './pages/AdminVerifications';
 import AdminWorkers from './pages/AdminWorkers';
 import Analytics from './pages/Analytics';
 import ApplicationQuestions from './pages/ApplicationQuestions';
@@ -71,9 +72,11 @@ import ManageApplications from './pages/ManageApplications';
 import Messages from './pages/Messages';
 import MyApplications from './pages/MyApplications';
 import PostJob from './pages/PostJob';
+import RestaurantAnalytics from './pages/RestaurantAnalytics';
 import RestaurantDashboard from './pages/RestaurantDashboard';
 import RestaurantOnboarding from './pages/RestaurantOnboarding';
 import RestaurantProfile from './pages/RestaurantProfile';
+import RestaurantVerificationCenter from './pages/RestaurantVerificationCenter';
 import RestaurantVerifications from './pages/RestaurantVerifications';
 import Settings from './pages/Settings';
 import ShiftTemplates from './pages/ShiftTemplates';
@@ -83,9 +86,6 @@ import WorkerOnboarding from './pages/WorkerOnboarding';
 import WorkerPerformance from './pages/WorkerPerformance';
 import WorkerProfile from './pages/WorkerProfile';
 import WriteReview from './pages/WriteReview';
-import RestaurantAnalytics from './pages/RestaurantAnalytics';
-import RestaurantVerificationCenter from './pages/RestaurantVerificationCenter';
-import AdminVerifications from './pages/AdminVerifications';
 import __Layout from './Layout.jsx';
 
 
@@ -97,6 +97,7 @@ export const PAGES = {
     "AdminRestaurants": AdminRestaurants,
     "AdminReviews": AdminReviews,
     "AdminUsers": AdminUsers,
+    "AdminVerifications": AdminVerifications,
     "AdminWorkers": AdminWorkers,
     "Analytics": Analytics,
     "ApplicationQuestions": ApplicationQuestions,
@@ -114,9 +115,11 @@ export const PAGES = {
     "Messages": Messages,
     "MyApplications": MyApplications,
     "PostJob": PostJob,
+    "RestaurantAnalytics": RestaurantAnalytics,
     "RestaurantDashboard": RestaurantDashboard,
     "RestaurantOnboarding": RestaurantOnboarding,
     "RestaurantProfile": RestaurantProfile,
+    "RestaurantVerificationCenter": RestaurantVerificationCenter,
     "RestaurantVerifications": RestaurantVerifications,
     "Settings": Settings,
     "ShiftTemplates": ShiftTemplates,
@@ -126,9 +129,6 @@ export const PAGES = {
     "WorkerPerformance": WorkerPerformance,
     "WorkerProfile": WorkerProfile,
     "WriteReview": WriteReview,
-    "RestaurantAnalytics": RestaurantAnalytics,
-    "RestaurantVerificationCenter": RestaurantVerificationCenter,
-    "AdminVerifications": AdminVerifications,
 }
 
 export const pagesConfig = {
