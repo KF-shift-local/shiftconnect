@@ -417,9 +417,15 @@ export default function AdminRestaurants() {
           </TabsContent>
         </Tabs>
 
+        {/* Restaurant Verification Drawer */}
+        <RestaurantVerificationDrawer
+          restaurant={verificationDrawerRestaurant}
+          open={!!verificationDrawerRestaurant}
+          onClose={() => setVerificationDrawerRestaurant(null)}
+          currentUser={user}
+        />
+
         {/* Reject Dialog */}
-
-
         <Dialog open={!!rejectTarget} onOpenChange={() => setRejectTarget(null)}>
           <DialogContent>
             <DialogHeader>
