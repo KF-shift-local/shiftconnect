@@ -83,7 +83,9 @@ export default function RestaurantProfile() {
     );
   }
 
-  if (!restaurant) {
+  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin';
+
+  if (!restaurant || (restaurant.account_status === 'banned' && !isAdmin)) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <Card className="max-w-md w-full">
