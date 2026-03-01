@@ -41,7 +41,14 @@ export default function Home() {
 
   const { data: featuredJobs = [] } = useQuery({
     queryKey: ['featuredJobs'],
-    queryFn: () => base44.entities.JobPosting.filter({ status: 'active' }, '-created_date', 6)
+    queryFn: async () => {
+      const [allJobs, bannedRestaurants] = await Promise.all([
+        base44.entities.JobPosting.filter({ status: 'active' }, '-created_date', 20),
+        base44.entities.Restaurant.filter({ account_status: 'banned' })
+      ]);
+      const bannedIds = new Set(bannedRestaurants.map(r => r.id));
+      return allJobs.filter(job => !bannedIds.has(job.restaurant_id)).slice(0, 6);
+    }
   });
 
   const stats = [
