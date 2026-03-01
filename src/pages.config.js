@@ -51,6 +51,7 @@ import AdminAnalytics from './pages/AdminAnalytics';
 import AdminApplications from './pages/AdminApplications';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminDisputes from './pages/AdminDisputes';
+import AdminMessages from './pages/AdminMessages';
 import AdminRestaurants from './pages/AdminRestaurants';
 import AdminReviews from './pages/AdminReviews';
 import AdminUsers from './pages/AdminUsers';
@@ -86,7 +87,6 @@ import WorkerOnboarding from './pages/WorkerOnboarding';
 import WorkerPerformance from './pages/WorkerPerformance';
 import WorkerProfile from './pages/WorkerProfile';
 import WriteReview from './pages/WriteReview';
-import AdminMessages from './pages/AdminMessages';
 import __Layout from './Layout.jsx';
 
 
@@ -95,6 +95,7 @@ export const PAGES = {
     "AdminApplications": AdminApplications,
     "AdminDashboard": AdminDashboard,
     "AdminDisputes": AdminDisputes,
+    "AdminMessages": AdminMessages,
     "AdminRestaurants": AdminRestaurants,
     "AdminReviews": AdminReviews,
     "AdminUsers": AdminUsers,
@@ -130,7 +131,6 @@ export const PAGES = {
     "WorkerPerformance": WorkerPerformance,
     "WorkerProfile": WorkerProfile,
     "WriteReview": WriteReview,
-    "AdminMessages": AdminMessages,
 }
 
 export const pagesConfig = {
