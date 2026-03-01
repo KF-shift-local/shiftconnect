@@ -32,43 +32,11 @@ export default function AdminMessages() {
 
   const isAdmin = user?.role === 'admin' || user?.role === 'super_admin';
 
-  // Initial load
-  const { data: initialMessages = [], isLoading: messagesLoading } = useQuery({
+  const { data: messages = [], isLoading: messagesLoading } = useQuery({
     queryKey: ['adminDirectMessages'],
     queryFn: () => base44.entities.DirectMessage.list('-created_date'),
     enabled: isAdmin
   });
-
-  useEffect(() => {
-    if (initialMessages.length > 0 && isFirstLoad.current) {
-      setMessages(initialMessages);
-      isFirstLoad.current = false;
-    }
-  }, [initialMessages]);
-
-  // Real-time subscription
-  useEffect(() => {
-    if (!isAdmin) return;
-
-    const unsubscribe = base44.entities.DirectMessage.subscribe((event) => {
-      if (event.type === 'create') {
-        const newMsg = event.data;
-        setMessages(prev => [newMsg, ...prev]);
-        setNewCount(c => c + 1);
-        toast.info(`New message from ${newMsg.sender_name || newMsg.sender_email}`, {
-          description: newMsg.message?.slice(0, 80) + (newMsg.message?.length > 80 ? '…' : ''),
-          icon: <MessageCircle className="w-4 h-4 text-emerald-600" />,
-          duration: 5000,
-        });
-      } else if (event.type === 'update') {
-        setMessages(prev => prev.map(m => m.id === event.id ? event.data : m));
-      } else if (event.type === 'delete') {
-        setMessages(prev => prev.filter(m => m.id !== event.id));
-      }
-    });
-
-    return unsubscribe;
-  }, [isAdmin]);
 
   const toggleFlag = (id) => {
     setFlagged(prev => {
