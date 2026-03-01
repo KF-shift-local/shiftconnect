@@ -86,6 +86,7 @@ import WorkerOnboarding from './pages/WorkerOnboarding';
 import WorkerPerformance from './pages/WorkerPerformance';
 import WorkerProfile from './pages/WorkerProfile';
 import WriteReview from './pages/WriteReview';
+import AdminMessages from './pages/AdminMessages';
 import __Layout from './Layout.jsx';
 
 
@@ -129,6 +130,7 @@ export const PAGES = {
     "WorkerPerformance": WorkerPerformance,
     "WorkerProfile": WorkerProfile,
     "WriteReview": WriteReview,
+    "AdminMessages": AdminMessages,
 }
 
 export const pagesConfig = {
