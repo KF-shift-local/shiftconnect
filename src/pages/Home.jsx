@@ -42,6 +42,34 @@ export default function Home() {
     enabled: !!user?.email
   });
 
+  const { data: workerProfile } = useQuery({
+    queryKey: ['workerProfile', user?.email],
+    queryFn: async () => {
+      const profiles = await base44.entities.WorkerProfile.filter({ created_by: user.email });
+      return profiles[0];
+    },
+    enabled: !!user?.email
+  });
+
+  // Show walkthrough for brand new users (no profile yet)
+  useEffect(() => {
+    if (!user) return;
+    const dismissed = localStorage.getItem(`guide_dismissed_${user.email}`);
+    if (dismissed) return;
+    // Wait until profile queries have resolved
+    if (workerProfile === undefined || restaurant === undefined) return;
+    if (!workerProfile && !restaurant) {
+      // New user — show role chooser by defaulting to worker guide (user can navigate)
+      setGuideType('worker');
+      setShowGuide(true);
+    }
+  }, [user, workerProfile, restaurant]);
+
+  const handleDismissGuide = () => {
+    setShowGuide(false);
+    if (user?.email) localStorage.setItem(`guide_dismissed_${user.email}`, '1');
+  };
+
   const { data: featuredJobs = [] } = useQuery({
     queryKey: ['featuredJobs'],
     queryFn: async () => {
