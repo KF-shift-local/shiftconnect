@@ -20,6 +20,7 @@ import {
   Shield
 } from 'lucide-react';
 import JobCard from '@/components/common/JobCard';
+import WalkthroughGuide from '@/components/onboarding/WalkthroughGuide';
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
