@@ -108,6 +108,13 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-200">
+      {showGuide && guideType && (
+        <WalkthroughGuide
+          type={guideType}
+          userName={user?.full_name}
+          onDismiss={handleDismissGuide}
+        />
+      )}
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=1920')] bg-cover bg-center opacity-10" />
