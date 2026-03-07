@@ -224,6 +224,40 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Getting Started Banner - shown for users with no profile */}
+      {user && !workerProfile && !restaurant && (
+        <section className="max-w-6xl mx-auto px-4 pt-12">
+          <Card className="border-2 border-dashed border-emerald-300 bg-emerald-50">
+            <CardContent className="p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                  <ChefHat className="w-6 h-6 text-emerald-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-900">Welcome to ShiftLocal! 👋</h3>
+                  <p className="text-sm text-slate-600">Get started with our step-by-step guide tailored to your role.</p>
+                </div>
+              </div>
+              <div className="flex gap-2 flex-shrink-0">
+                <Button
+                  variant="outline"
+                  className="border-slate-700 text-slate-700 hover:bg-slate-100"
+                  onClick={() => { setGuideType('restaurant'); setShowGuide(true); }}
+                >
+                  <Building2 className="w-4 h-4 mr-1" /> I'm a Restaurant
+                </Button>
+                <Button
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                  onClick={() => { setGuideType('worker'); setShowGuide(true); }}
+                >
+                  <Utensils className="w-4 h-4 mr-1" /> I'm a Worker
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+      )}
+
       {/* Featured Jobs */}
       {featuredJobs.length > 0 && (
         <section className="bg-white py-20">
