@@ -25,6 +25,8 @@ import WalkthroughGuide from '@/components/onboarding/WalkthroughGuide';
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState('');
+  const [showGuide, setShowGuide] = useState(false);
+  const [guideType, setGuideType] = useState(null);
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
