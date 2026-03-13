@@ -20,13 +20,10 @@ import {
   Shield
 } from 'lucide-react';
 import JobCard from '@/components/common/JobCard';
-import WalkthroughGuide from '@/components/onboarding/WalkthroughGuide';
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState('');
-  const [showGuide, setShowGuide] = useState(false);
-  const [guideType, setGuideType] = useState(null);
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
@@ -41,34 +38,6 @@ export default function Home() {
     },
     enabled: !!user?.email
   });
-
-  const { data: workerProfile } = useQuery({
-    queryKey: ['workerProfile', user?.email],
-    queryFn: async () => {
-      const profiles = await base44.entities.WorkerProfile.filter({ created_by: user.email });
-      return profiles[0];
-    },
-    enabled: !!user?.email
-  });
-
-  // Show walkthrough for brand new users (no profile yet)
-  useEffect(() => {
-    if (!user) return;
-    const dismissed = localStorage.getItem(`guide_dismissed_${user.email}`);
-    if (dismissed) return;
-    // Wait until profile queries have resolved
-    if (workerProfile === undefined || restaurant === undefined) return;
-    if (!workerProfile && !restaurant) {
-      // New user — show role chooser by defaulting to worker guide (user can navigate)
-      setGuideType('worker');
-      setShowGuide(true);
-    }
-  }, [user, workerProfile, restaurant]);
-
-  const handleDismissGuide = () => {
-    setShowGuide(false);
-    if (user?.email) localStorage.setItem(`guide_dismissed_${user.email}`, '1');
-  };
 
   const { data: featuredJobs = [] } = useQuery({
     queryKey: ['featuredJobs'],
@@ -108,13 +77,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-200">
-      {showGuide && guideType && (
-        <WalkthroughGuide
-          type={guideType}
-          userName={user?.full_name}
-          onDismiss={handleDismissGuide}
-        />
-      )}
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=1920')] bg-cover bg-center opacity-10" />
@@ -223,40 +185,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      {/* Getting Started Banner - shown for users with no profile */}
-      {user && !workerProfile && !restaurant && (
-        <section className="max-w-6xl mx-auto px-4 pt-12">
-          <Card className="border-2 border-dashed border-emerald-300 bg-emerald-50">
-            <CardContent className="p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                  <ChefHat className="w-6 h-6 text-emerald-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-slate-900">Welcome to ShiftLocal! 👋</h3>
-                  <p className="text-sm text-slate-600">Get started with our step-by-step guide tailored to your role.</p>
-                </div>
-              </div>
-              <div className="flex gap-2 flex-shrink-0">
-                <Button
-                  variant="outline"
-                  className="border-slate-700 text-slate-700 hover:bg-slate-100"
-                  onClick={() => { setGuideType('restaurant'); setShowGuide(true); }}
-                >
-                  <Building2 className="w-4 h-4 mr-1" /> I'm a Restaurant
-                </Button>
-                <Button
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                  onClick={() => { setGuideType('worker'); setShowGuide(true); }}
-                >
-                  <Utensils className="w-4 h-4 mr-1" /> I'm a Worker
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-      )}
 
       {/* Featured Jobs */}
       {featuredJobs.length > 0 && (
