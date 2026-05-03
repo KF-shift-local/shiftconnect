@@ -185,7 +185,7 @@ export default function MessagesPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="max-w-5xl mx-auto px-4 py-4 sm:py-8">
+      <div className="max-w-4xl mx-auto px-4 py-4 sm:py-8">
         <div className="mb-4 sm:mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">Messages</h1>
           <p className="text-slate-600">
