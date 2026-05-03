@@ -449,7 +449,14 @@ export default function PostJob() {
                   {['normal', 'urgent', 'immediate'].map((level) =>
                   <Badge
                     key={level}
-                    variant={formData.urgency === level ? 'default' : 'outline'} className="text-foreground pl-3 text-xs font-semibold capitalize rounded-md inline-flex items-center border transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer"
+                    variant={formData.urgency === level ? 'default' : 'outline'}
+                    className={`cursor-pointer capitalize px-3 py-1 text-xs font-semibold ${
+                      formData.urgency === level
+                        ? level === 'immediate' ? 'bg-red-600 hover:bg-red-700 text-white border-red-600'
+                          : level === 'urgent' ? 'bg-amber-500 hover:bg-amber-600 text-white border-amber-500'
+                          : 'bg-slate-700 hover:bg-slate-800 text-white border-slate-700'
+                        : 'hover:bg-slate-100'
+                    }`}
 
 
 
