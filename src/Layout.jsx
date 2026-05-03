@@ -75,9 +75,7 @@ export default function Layout({ children, currentPageName }) {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link to={createPageUrl('Home')} className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
-                <ChefHat className="w-5 h-5 text-white" />
-              </div>
+              <img src="https://media.base44.com/images/public/697e9f2dff44f07c56627dfa/78a9cab12_image.png" alt="ShiftLocal Logo" className="w-9 h-9 rounded-xl object-cover" />
               <span className="font-bold text-xl text-slate-900">ShiftLocal</span>
             </Link>
 
