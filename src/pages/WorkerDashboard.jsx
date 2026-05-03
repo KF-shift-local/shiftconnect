@@ -145,29 +145,32 @@ export default function WorkerDashboard() {
                 <p className="text-slate-500">{profile.headline || 'Hospitality Professional'}</p>
               </div>
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-2">
               <Link to={createPageUrl('Jobs')}>
-                <Button className="bg-emerald-600 hover:bg-emerald-700">
-                  <Search className="w-4 h-4 mr-2" />
+                <Button className="bg-emerald-600 hover:bg-emerald-700 text-sm">
+                  <Search className="w-4 h-4 mr-1" />
                   Find Jobs
                 </Button>
               </Link>
               <Link to={createPageUrl('Analytics')}>
-                <Button variant="outline">
-                  <TrendingUp className="w-4 h-4 mr-2" />
-                  Analytics
+                <Button variant="outline" size="sm">
+                  <TrendingUp className="w-4 h-4 mr-1" />
+                  <span className="hidden sm:inline">Analytics</span>
+                  <span className="sm:hidden">Stats</span>
                 </Button>
               </Link>
               <Link to={createPageUrl('EmploymentVerification')}>
-                <Button variant="outline">
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  Verify Employment
+                <Button variant="outline" size="sm">
+                  <CheckCircle className="w-4 h-4 mr-1" />
+                  <span className="hidden sm:inline">Verify Employment</span>
+                  <span className="sm:hidden">Verify</span>
                 </Button>
               </Link>
               <Link to={createPageUrl('EditWorkerProfile')}>
-                <Button variant="outline">
-                  <Settings className="w-4 h-4 mr-2" />
-                  Edit Profile
+                <Button variant="outline" size="sm">
+                  <Settings className="w-4 h-4 mr-1" />
+                  <span className="hidden sm:inline">Edit Profile</span>
+                  <span className="sm:hidden">Edit</span>
                 </Button>
               </Link>
             </div>
