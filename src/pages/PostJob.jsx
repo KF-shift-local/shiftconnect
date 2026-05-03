@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
-import { 
+import {
   ArrowLeft,
   Loader2,
   Plus,
@@ -20,8 +20,8 @@ import {
   DollarSign,
   Clock,
   Calendar,
-  Zap
-} from 'lucide-react';
+  Zap } from
+'lucide-react';
 
 const JOB_TYPES = ['Server', 'Bartender', 'Line Cook', 'Prep Cook', 'Host/Hostess', 'Busser', 'Dishwasher', 'Barista', 'Food Runner', 'Kitchen Manager', 'Catering Staff', 'Other'];
 const EMPLOYMENT_TYPES = ['temporary', 'seasonal', 'part-time', 'full-time', 'on-call'];
@@ -31,34 +31,34 @@ const SHIFT_TYPES = ['morning', 'afternoon', 'evening', 'night', 'flexible'];
 const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
 const COMMON_REQUIREMENTS = [
-  'Must be 18 or older',
-  'Valid work authorization',
-  'Reliable transportation',
-  'Ability to stand for extended periods',
-  'Ability to lift 25+ lbs',
-  'Flexible schedule',
-  'Weekend availability',
-  'Holiday availability'
-];
+'Must be 18 or older',
+'Valid work authorization',
+'Reliable transportation',
+'Ability to stand for extended periods',
+'Ability to lift 25+ lbs',
+'Flexible schedule',
+'Weekend availability',
+'Holiday availability'];
+
 
 const COMMON_CERTIFICATIONS = [
-  'ServSafe Food Handler',
-  'ServSafe Manager',
-  'TIPS Certified',
-  'Food Handler Card',
-  'Alcohol Server Certification',
-  'CPR/First Aid'
-];
+'ServSafe Food Handler',
+'ServSafe Manager',
+'TIPS Certified',
+'Food Handler Card',
+'Alcohol Server Certification',
+'CPR/First Aid'];
+
 
 const COMMON_BENEFITS = [
-  'Meal discounts',
-  'Free shift meals',
-  'Flexible scheduling',
-  'Weekly pay',
-  'Tips',
-  'Potential for permanent hire',
-  'Training provided'
-];
+'Meal discounts',
+'Free shift meals',
+'Flexible scheduling',
+'Weekly pay',
+'Tips',
+'Potential for permanent hire',
+'Training provided'];
+
 
 export default function PostJob() {
   const navigate = useNavigate();
@@ -146,7 +146,7 @@ export default function PostJob() {
   });
 
   const toggleDay = (day) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       schedule: {
         ...prev.schedule,
@@ -156,17 +156,17 @@ export default function PostJob() {
   };
 
   const toggleItem = (field, item) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: prev[field].includes(item)
-        ? prev[field].filter(i => i !== item)
-        : [...prev[field], item]
+      [field]: prev[field].includes(item) ?
+      prev[field].filter((i) => i !== item) :
+      [...prev[field], item]
     }));
   };
 
   const addCustomItem = (field, value, setterFn) => {
     if (value.trim() && !formData[field].includes(value.trim())) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         [field]: [...prev[field], value.trim()]
       }));
@@ -175,9 +175,9 @@ export default function PostJob() {
   };
 
   const removeItem = (field, item) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: prev[field].filter(i => i !== item)
+      [field]: prev[field].filter((i) => i !== item)
     }));
   };
 
@@ -190,8 +190,8 @@ export default function PostJob() {
             <p className="text-slate-600">Loading restaurant...</p>
           </CardContent>
         </Card>
-      </div>
-    );
+      </div>);
+
   }
 
   return (
@@ -199,8 +199,8 @@ export default function PostJob() {
       <div className="max-w-3xl mx-auto px-4">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center text-slate-600 hover:text-slate-900 mb-6"
-        >
+          className="flex items-center text-slate-600 hover:text-slate-900 mb-6">
+          
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back
         </button>
@@ -220,23 +220,23 @@ export default function PostJob() {
                   <Badge
                     variant={!formData.is_catering ? 'default' : 'outline'}
                     className={`cursor-pointer px-4 py-2 ${
-                      !formData.is_catering
-                        ? 'bg-emerald-600 hover:bg-emerald-700'
-                        : 'hover:bg-emerald-50'
-                    }`}
-                    onClick={() => setFormData({ ...formData, is_catering: false, catering_type: '', event_type: '', event_date: '', event_location: '', guest_count: '', setup_time: '', event_duration_hours: '' })}
-                  >
+                    !formData.is_catering ?
+                    'bg-emerald-600 hover:bg-emerald-700' :
+                    'hover:bg-emerald-50'}`
+                    }
+                    onClick={() => setFormData({ ...formData, is_catering: false, catering_type: '', event_type: '', event_date: '', event_location: '', guest_count: '', setup_time: '', event_duration_hours: '' })}>
+                    
                     Regular Position
                   </Badge>
                   <Badge
                     variant={formData.is_catering ? 'default' : 'outline'}
                     className={`cursor-pointer px-4 py-2 ${
-                      formData.is_catering
-                        ? 'bg-purple-600 hover:bg-purple-700'
-                        : 'hover:bg-purple-50'
-                    }`}
-                    onClick={() => setFormData({ ...formData, is_catering: true, employment_type: 'temporary', duration_type: 'one-time' })}
-                  >
+                    formData.is_catering ?
+                    'bg-purple-600 hover:bg-purple-700' :
+                    'hover:bg-purple-50'}`
+                    }
+                    onClick={() => setFormData({ ...formData, is_catering: true, employment_type: 'temporary', duration_type: 'one-time' })}>
+                    
                     Catering Event
                   </Badge>
                 </div>
@@ -245,8 +245,8 @@ export default function PostJob() {
           </Card>
 
           {/* Catering Type Selection */}
-          {formData.is_catering && (
-            <Card className="border-purple-200 bg-purple-50/50">
+          {formData.is_catering &&
+          <Card className="border-purple-200 bg-purple-50/50">
               <CardHeader>
                 <CardTitle className="text-purple-900">Catering Event Details</CardTitle>
               </CardHeader>
@@ -255,26 +255,26 @@ export default function PostJob() {
                   <Label>Catering Type *</Label>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, catering_type: 'front-of-house' })}
-                      className={`p-4 rounded-xl border-2 text-left transition-all ${
-                        formData.catering_type === 'front-of-house'
-                          ? 'border-purple-600 bg-purple-100'
-                          : 'border-slate-200 bg-white hover:border-purple-300'
-                      }`}
-                    >
+                    type="button"
+                    onClick={() => setFormData({ ...formData, catering_type: 'front-of-house' })}
+                    className={`p-4 rounded-xl border-2 text-left transition-all ${
+                    formData.catering_type === 'front-of-house' ?
+                    'border-purple-600 bg-purple-100' :
+                    'border-slate-200 bg-white hover:border-purple-300'}`
+                    }>
+                    
                       <h3 className="font-semibold text-slate-900 mb-1">Front-of-House</h3>
                       <p className="text-sm text-slate-600">Servers, bartenders, hosts, event coordinators</p>
                     </button>
                     <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, catering_type: 'back-of-house' })}
-                      className={`p-4 rounded-xl border-2 text-left transition-all ${
-                        formData.catering_type === 'back-of-house'
-                          ? 'border-purple-600 bg-purple-100'
-                          : 'border-slate-200 bg-white hover:border-purple-300'
-                      }`}
-                    >
+                    type="button"
+                    onClick={() => setFormData({ ...formData, catering_type: 'back-of-house' })}
+                    className={`p-4 rounded-xl border-2 text-left transition-all ${
+                    formData.catering_type === 'back-of-house' ?
+                    'border-purple-600 bg-purple-100' :
+                    'border-slate-200 bg-white hover:border-purple-300'}`
+                    }>
+                    
                       <h3 className="font-semibold text-slate-900 mb-1">Back-of-House</h3>
                       <p className="text-sm text-slate-600">Chefs, line cooks, prep cooks, kitchen staff</p>
                     </button>
@@ -285,9 +285,9 @@ export default function PostJob() {
                   <div className="space-y-2">
                     <Label>Event Type *</Label>
                     <Select
-                      value={formData.event_type}
-                      onValueChange={(value) => setFormData({ ...formData, event_type: value })}
-                    >
+                    value={formData.event_type}
+                    onValueChange={(value) => setFormData({ ...formData, event_type: value })}>
+                    
                       <SelectTrigger className="border-slate-200">
                         <SelectValue placeholder="Select event type" />
                       </SelectTrigger>
@@ -305,60 +305,60 @@ export default function PostJob() {
                   <div className="space-y-2">
                     <Label>Event Date *</Label>
                     <Input
-                      type="date"
-                      value={formData.event_date}
-                      onChange={(e) => setFormData({ ...formData, event_date: e.target.value, start_date: e.target.value })}
-                      className="border-slate-200"
-                    />
+                    type="date"
+                    value={formData.event_date}
+                    onChange={(e) => setFormData({ ...formData, event_date: e.target.value, start_date: e.target.value })}
+                    className="border-slate-200" />
+                  
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label>Event Location *</Label>
                   <Input
-                    value={formData.event_location}
-                    onChange={(e) => setFormData({ ...formData, event_location: e.target.value })}
-                    placeholder="Full address of event venue"
-                    className="border-slate-200"
-                  />
+                  value={formData.event_location}
+                  onChange={(e) => setFormData({ ...formData, event_location: e.target.value })}
+                  placeholder="Full address of event venue"
+                  className="border-slate-200" />
+                
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
                     <Label>Expected Guests</Label>
                     <Input
-                      type="number"
-                      value={formData.guest_count}
-                      onChange={(e) => setFormData({ ...formData, guest_count: e.target.value })}
-                      placeholder="e.g. 150"
-                      className="border-slate-200"
-                    />
+                    type="number"
+                    value={formData.guest_count}
+                    onChange={(e) => setFormData({ ...formData, guest_count: e.target.value })}
+                    placeholder="e.g. 150"
+                    className="border-slate-200" />
+                  
                   </div>
                   <div className="space-y-2">
                     <Label>Setup Time</Label>
                     <Input
-                      type="time"
-                      value={formData.setup_time}
-                      onChange={(e) => setFormData({ ...formData, setup_time: e.target.value })}
-                      className="border-slate-200"
-                    />
+                    type="time"
+                    value={formData.setup_time}
+                    onChange={(e) => setFormData({ ...formData, setup_time: e.target.value })}
+                    className="border-slate-200" />
+                  
                   </div>
                   <div className="space-y-2">
                     <Label>Total Duration (hours)</Label>
                     <Input
-                      type="number"
-                      step="0.5"
-                      value={formData.event_duration_hours}
-                      onChange={(e) => setFormData({ ...formData, event_duration_hours: e.target.value })}
-                      placeholder="e.g. 6"
-                      className="border-slate-200"
-                    />
+                    type="number"
+                    step="0.5"
+                    value={formData.event_duration_hours}
+                    onChange={(e) => setFormData({ ...formData, event_duration_hours: e.target.value })}
+                    placeholder="e.g. 6"
+                    className="border-slate-200" />
+                  
                     <p className="text-xs text-slate-500">Including setup and breakdown</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
-          )}
+          }
 
           {/* Basic Info */}
           <Card className="border-slate-200">
@@ -373,22 +373,22 @@ export default function PostJob() {
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     placeholder="e.g. Experienced Line Cook"
-                    className="border-slate-200"
-                  />
+                    className="border-slate-200" />
+                  
                 </div>
                 <div className="space-y-2">
                   <Label>Position Type *</Label>
                   <Select
                     value={formData.job_type}
-                    onValueChange={(value) => setFormData({ ...formData, job_type: value })}
-                  >
+                    onValueChange={(value) => setFormData({ ...formData, job_type: value })}>
+                    
                     <SelectTrigger className="border-slate-200">
                       <SelectValue placeholder="Select position" />
                     </SelectTrigger>
                     <SelectContent>
-                      {JOB_TYPES.map((type) => (
-                        <SelectItem key={type} value={type}>{type}</SelectItem>
-                      ))}
+                      {JOB_TYPES.map((type) =>
+                      <SelectItem key={type} value={type}>{type}</SelectItem>
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
@@ -400,71 +400,71 @@ export default function PostJob() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="Describe the role, responsibilities, and what makes this a great opportunity..."
-                  className="min-h-[120px] border-slate-200"
-                />
+                  className="min-h-[120px] border-slate-200" />
+                
               </div>
 
-              {!formData.is_catering && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {!formData.is_catering &&
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label>Employment Type</Label>
                     <Select
-                      value={formData.employment_type}
-                      onValueChange={(value) => setFormData({ ...formData, employment_type: value })}
-                    >
+                    value={formData.employment_type}
+                    onValueChange={(value) => setFormData({ ...formData, employment_type: value })}>
+                    
                       <SelectTrigger className="border-slate-200">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {EMPLOYMENT_TYPES.map((type) => (
-                          <SelectItem key={type} value={type} className="capitalize">{type}</SelectItem>
-                        ))}
+                        {EMPLOYMENT_TYPES.map((type) =>
+                      <SelectItem key={type} value={type} className="capitalize">{type}</SelectItem>
+                      )}
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-2">
                     <Label>Duration</Label>
                     <Select
-                      value={formData.duration_type}
-                      onValueChange={(value) => setFormData({ ...formData, duration_type: value })}
-                    >
+                    value={formData.duration_type}
+                    onValueChange={(value) => setFormData({ ...formData, duration_type: value })}>
+                    
                       <SelectTrigger className="border-slate-200">
                         <SelectValue placeholder="Select duration" />
                       </SelectTrigger>
                       <SelectContent>
-                        {DURATION_TYPES.map((type) => (
-                          <SelectItem key={type} value={type} className="capitalize">
+                        {DURATION_TYPES.map((type) =>
+                      <SelectItem key={type} value={type} className="capitalize">
                             {type.replace(/-/g, ' ')}
                           </SelectItem>
-                        ))}
+                      )}
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
-              )}
+              }
 
               <div className="flex items-center gap-4">
                 <Label>Urgency Level</Label>
                 <div className="flex gap-2">
-                  {['normal', 'urgent', 'immediate'].map((level) => (
-                    <Badge
-                      key={level}
-                      variant={formData.urgency === level ? 'default' : 'outline'}
-                      className={`cursor-pointer capitalize ${
-                        formData.urgency === level
-                          ? level === 'immediate' 
-                            ? 'bg-red-600 hover:bg-red-700' 
-                            : level === 'urgent' 
-                              ? 'bg-amber-600 hover:bg-amber-700'
-                              : 'bg-slate-600 hover:bg-slate-700'
-                          : ''
-                      }`}
-                      onClick={() => setFormData({ ...formData, urgency: level })}
-                    >
+                  {['normal', 'urgent', 'immediate'].map((level) =>
+                  <Badge
+                    key={level}
+                    variant={formData.urgency === level ? 'default' : 'outline'} className="text-foreground pl-3 text-xs font-semibold capitalize rounded-md inline-flex items-center border transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer"
+
+
+
+
+
+
+
+
+
+                    onClick={() => setFormData({ ...formData, urgency: level })}>
+                    
                       {level === 'immediate' && <Zap className="w-3 h-3 mr-1" />}
                       {level}
                     </Badge>
-                  ))}
+                  )}
                 </div>
               </div>
 
@@ -475,18 +475,18 @@ export default function PostJob() {
                     type="checkbox"
                     checked={formData.transit_accessible}
                     onChange={(e) => setFormData({ ...formData, transit_accessible: e.target.checked })}
-                    className="w-4 h-4 rounded border-slate-300"
-                  />
+                    className="w-4 h-4 rounded border-slate-300" />
+                  
                   <span className="text-sm text-slate-600">Accessible by public transit</span>
                 </div>
-                {formData.transit_accessible && (
-                  <Input
-                    value={formData.transit_info}
-                    onChange={(e) => setFormData({ ...formData, transit_info: e.target.value })}
-                    placeholder="e.g. Bus lines 15, 22 / 2 blocks from Metro station"
-                    className="border-slate-200"
-                  />
-                )}
+                {formData.transit_accessible &&
+                <Input
+                  value={formData.transit_info}
+                  onChange={(e) => setFormData({ ...formData, transit_info: e.target.value })}
+                  placeholder="e.g. Bus lines 15, 22 / 2 blocks from Metro station"
+                  className="border-slate-200" />
+
+                }
               </div>
             </CardContent>
           </Card>
@@ -508,8 +508,8 @@ export default function PostJob() {
                     value={formData.hourly_rate_min}
                     onChange={(e) => setFormData({ ...formData, hourly_rate_min: e.target.value })}
                     placeholder="18"
-                    className="border-slate-200"
-                  />
+                    className="border-slate-200" />
+                  
                 </div>
                 <div className="space-y-2">
                   <Label>Max Rate ($/hr)</Label>
@@ -518,14 +518,14 @@ export default function PostJob() {
                     value={formData.hourly_rate_max}
                     onChange={(e) => setFormData({ ...formData, hourly_rate_max: e.target.value })}
                     placeholder="25"
-                    className="border-slate-200"
-                  />
+                    className="border-slate-200" />
+                  
                 </div>
                 <div className="col-span-2 flex items-center gap-3 pt-6">
                   <Switch
                     checked={formData.tips_included}
-                    onCheckedChange={(checked) => setFormData({ ...formData, tips_included: checked })}
-                  />
+                    onCheckedChange={(checked) => setFormData({ ...formData, tips_included: checked })} />
+                  
                   <Label>Tips Included</Label>
                 </div>
               </div>
@@ -533,20 +533,20 @@ export default function PostJob() {
               <div className="space-y-3">
                 <Label>Benefits</Label>
                 <div className="flex flex-wrap gap-2">
-                  {COMMON_BENEFITS.map((benefit) => (
-                    <Badge
-                      key={benefit}
-                      variant={formData.benefits.includes(benefit) ? 'default' : 'outline'}
-                      className={`cursor-pointer ${
-                        formData.benefits.includes(benefit)
-                          ? 'bg-emerald-600 hover:bg-emerald-700'
-                          : 'hover:bg-emerald-50'
-                      }`}
-                      onClick={() => toggleItem('benefits', benefit)}
-                    >
+                  {COMMON_BENEFITS.map((benefit) =>
+                  <Badge
+                    key={benefit}
+                    variant={formData.benefits.includes(benefit) ? 'default' : 'outline'}
+                    className={`cursor-pointer ${
+                    formData.benefits.includes(benefit) ?
+                    'bg-emerald-600 hover:bg-emerald-700' :
+                    'hover:bg-emerald-50'}`
+                    }
+                    onClick={() => toggleItem('benefits', benefit)}>
+                    
                       {benefit}
                     </Badge>
-                  ))}
+                  )}
                 </div>
                 <div className="flex gap-2">
                   <Input
@@ -554,8 +554,8 @@ export default function PostJob() {
                     onChange={(e) => setNewBenefit(e.target.value)}
                     placeholder="Add custom benefit"
                     className="border-slate-200"
-                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addCustomItem('benefits', newBenefit, setNewBenefit))}
-                  />
+                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addCustomItem('benefits', newBenefit, setNewBenefit))} />
+                  
                   <Button variant="outline" onClick={() => addCustomItem('benefits', newBenefit, setNewBenefit)}>
                     <Plus className="w-4 h-4" />
                   </Button>
@@ -573,93 +573,93 @@ export default function PostJob() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {!formData.is_catering && (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {!formData.is_catering &&
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="space-y-2">
                     <Label>Min Hours/Week</Label>
                     <Input
-                      type="number"
-                      value={formData.hours_per_week_min}
-                      onChange={(e) => setFormData({ ...formData, hours_per_week_min: e.target.value })}
-                      placeholder="20"
-                      className="border-slate-200"
-                    />
+                    type="number"
+                    value={formData.hours_per_week_min}
+                    onChange={(e) => setFormData({ ...formData, hours_per_week_min: e.target.value })}
+                    placeholder="20"
+                    className="border-slate-200" />
+                  
                   </div>
                   <div className="space-y-2">
                     <Label>Max Hours/Week</Label>
                     <Input
-                      type="number"
-                      value={formData.hours_per_week_max}
-                      onChange={(e) => setFormData({ ...formData, hours_per_week_max: e.target.value })}
-                      placeholder="40"
-                      className="border-slate-200"
-                    />
+                    type="number"
+                    value={formData.hours_per_week_max}
+                    onChange={(e) => setFormData({ ...formData, hours_per_week_max: e.target.value })}
+                    placeholder="40"
+                    className="border-slate-200" />
+                  
                   </div>
                   <div className="space-y-2">
                     <Label>Shift Type</Label>
                     <Select
-                      value={formData.shift_type}
-                      onValueChange={(value) => setFormData({ ...formData, shift_type: value })}
-                    >
+                    value={formData.shift_type}
+                    onValueChange={(value) => setFormData({ ...formData, shift_type: value })}>
+                    
                       <SelectTrigger className="border-slate-200">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {SHIFT_TYPES.map((type) => (
-                          <SelectItem key={type} value={type} className="capitalize">{type}</SelectItem>
-                        ))}
+                        {SHIFT_TYPES.map((type) =>
+                      <SelectItem key={type} value={type} className="capitalize">{type}</SelectItem>
+                      )}
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-2">
                     <Label>Positions Available</Label>
                     <Input
-                      type="number"
-                      value={formData.positions_available}
-                      onChange={(e) => setFormData({ ...formData, positions_available: e.target.value })}
-                      min="1"
-                      className="border-slate-200"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {formData.is_catering && (
-                <div className="space-y-2">
-                  <Label>Staff Needed</Label>
-                  <Input
                     type="number"
                     value={formData.positions_available}
                     onChange={(e) => setFormData({ ...formData, positions_available: e.target.value })}
                     min="1"
-                    placeholder="Number of staff needed"
-                    className="border-slate-200"
-                  />
+                    className="border-slate-200" />
+                  
+                  </div>
                 </div>
-              )}
+              }
 
-              {!formData.is_catering && (
-                <>
+              {formData.is_catering &&
+              <div className="space-y-2">
+                  <Label>Staff Needed</Label>
+                  <Input
+                  type="number"
+                  value={formData.positions_available}
+                  onChange={(e) => setFormData({ ...formData, positions_available: e.target.value })}
+                  min="1"
+                  placeholder="Number of staff needed"
+                  className="border-slate-200" />
+                
+                </div>
+              }
+
+              {!formData.is_catering &&
+              <>
                   <div className="space-y-3">
                     <Label>Days Needed *</Label>
                     <p className="text-sm text-slate-500">
                       Select which days you need workers for this position
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      {DAYS.map((day) => (
-                        <Badge
-                          key={day}
-                          variant={formData.schedule[day] ? 'default' : 'outline'}
-                          className={`cursor-pointer capitalize px-4 py-2 ${
-                            formData.schedule[day]
-                              ? 'bg-emerald-600 hover:bg-emerald-700'
-                              : 'hover:bg-emerald-50'
-                          }`}
-                          onClick={() => toggleDay(day)}
-                        >
+                      {DAYS.map((day) =>
+                    <Badge
+                      key={day}
+                      variant={formData.schedule[day] ? 'default' : 'outline'}
+                      className={`cursor-pointer capitalize px-4 py-2 ${
+                      formData.schedule[day] ?
+                      'bg-emerald-600 hover:bg-emerald-700' :
+                      'hover:bg-emerald-50'}`
+                      }
+                      onClick={() => toggleDay(day)}>
+                      
                           {day.slice(0, 3)}
                         </Badge>
-                      ))}
+                    )}
                     </div>
                     <p className="text-xs text-slate-500 mt-2">
                       Workers will see this schedule when applying and it will be compared with their availability
@@ -670,24 +670,24 @@ export default function PostJob() {
                     <div className="space-y-2">
                       <Label>Start Date</Label>
                       <Input
-                        type="date"
-                        value={formData.start_date}
-                        onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-                        className="border-slate-200"
-                      />
+                      type="date"
+                      value={formData.start_date}
+                      onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
+                      className="border-slate-200" />
+                    
                     </div>
                     <div className="space-y-2">
                       <Label>End Date (optional)</Label>
                       <Input
-                        type="date"
-                        value={formData.end_date}
-                        onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
-                        className="border-slate-200"
-                      />
+                      type="date"
+                      value={formData.end_date}
+                      onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
+                      className="border-slate-200" />
+                    
                     </div>
                   </div>
                 </>
-              )}
+              }
             </CardContent>
           </Card>
 
@@ -701,8 +701,8 @@ export default function PostJob() {
                 <Label>Experience Required</Label>
                 <Select
                   value={formData.experience_required}
-                  onValueChange={(value) => setFormData({ ...formData, experience_required: value })}
-                >
+                  onValueChange={(value) => setFormData({ ...formData, experience_required: value })}>
+                  
                   <SelectTrigger className="border-slate-200 w-full md:w-64">
                     <SelectValue />
                   </SelectTrigger>
@@ -719,41 +719,41 @@ export default function PostJob() {
               <div className="space-y-3">
                 <Label>Job Requirements</Label>
                 <div className="flex flex-wrap gap-2">
-                  {COMMON_REQUIREMENTS.map((req) => (
-                    <Badge
-                      key={req}
-                      variant={formData.requirements.includes(req) ? 'default' : 'outline'}
-                      className={`cursor-pointer ${
-                        formData.requirements.includes(req)
-                          ? 'bg-slate-700 hover:bg-slate-800'
-                          : 'hover:bg-slate-100'
-                      }`}
-                      onClick={() => toggleItem('requirements', req)}
-                    >
+                  {COMMON_REQUIREMENTS.map((req) =>
+                  <Badge
+                    key={req}
+                    variant={formData.requirements.includes(req) ? 'default' : 'outline'}
+                    className={`cursor-pointer ${
+                    formData.requirements.includes(req) ?
+                    'bg-slate-700 hover:bg-slate-800' :
+                    'hover:bg-slate-100'}`
+                    }
+                    onClick={() => toggleItem('requirements', req)}>
+                    
                       {req}
                     </Badge>
-                  ))}
+                  )}
                 </div>
-                {formData.requirements.filter(r => !COMMON_REQUIREMENTS.includes(r)).length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {formData.requirements.filter(r => !COMMON_REQUIREMENTS.includes(r)).map((req) => (
-                      <Badge key={req} className="bg-slate-700">
+                {formData.requirements.filter((r) => !COMMON_REQUIREMENTS.includes(r)).length > 0 &&
+                <div className="flex flex-wrap gap-2">
+                    {formData.requirements.filter((r) => !COMMON_REQUIREMENTS.includes(r)).map((req) =>
+                  <Badge key={req} className="bg-slate-700">
                         {req}
                         <button onClick={() => removeItem('requirements', req)} className="ml-1">
                           <X className="w-3 h-3" />
                         </button>
                       </Badge>
-                    ))}
+                  )}
                   </div>
-                )}
+                }
                 <div className="flex gap-2">
                   <Input
                     value={newRequirement}
                     onChange={(e) => setNewRequirement(e.target.value)}
                     placeholder="Add custom requirement"
                     className="border-slate-200"
-                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addCustomItem('requirements', newRequirement, setNewRequirement))}
-                  />
+                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addCustomItem('requirements', newRequirement, setNewRequirement))} />
+                  
                   <Button variant="outline" onClick={() => addCustomItem('requirements', newRequirement, setNewRequirement)}>
                     <Plus className="w-4 h-4" />
                   </Button>
@@ -763,20 +763,20 @@ export default function PostJob() {
               <div className="space-y-3">
                 <Label>Required Certifications</Label>
                 <div className="flex flex-wrap gap-2">
-                  {COMMON_CERTIFICATIONS.map((cert) => (
-                    <Badge
-                      key={cert}
-                      variant={formData.certifications_required.includes(cert) ? 'default' : 'outline'}
-                      className={`cursor-pointer ${
-                        formData.certifications_required.includes(cert)
-                          ? 'bg-blue-600 hover:bg-blue-700'
-                          : 'hover:bg-blue-50'
-                      }`}
-                      onClick={() => toggleItem('certifications_required', cert)}
-                    >
+                  {COMMON_CERTIFICATIONS.map((cert) =>
+                  <Badge
+                    key={cert}
+                    variant={formData.certifications_required.includes(cert) ? 'default' : 'outline'}
+                    className={`cursor-pointer ${
+                    formData.certifications_required.includes(cert) ?
+                    'bg-blue-600 hover:bg-blue-700' :
+                    'hover:bg-blue-50'}`
+                    }
+                    onClick={() => toggleItem('certifications_required', cert)}>
+                    
                       {cert}
                     </Badge>
-                  ))}
+                  )}
                 </div>
               </div>
             </CardContent>
@@ -790,20 +790,20 @@ export default function PostJob() {
             <Button
               onClick={() => saveMutation.mutate()}
               disabled={!formData.title || !formData.job_type || !formData.hourly_rate_min || saveMutation.isPending}
-              className="bg-emerald-600 hover:bg-emerald-700"
-            >
-              {saveMutation.isPending ? (
-                <>
+              className="bg-emerald-600 hover:bg-emerald-700">
+              
+              {saveMutation.isPending ?
+              <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   Posting...
-                </>
-              ) : (
-                'Post Job'
-              )}
+                </> :
+
+              'Post Job'
+              }
             </Button>
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
