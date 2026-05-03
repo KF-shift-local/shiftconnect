@@ -372,13 +372,13 @@ export default function ManageApplications() {
 
         {/* Status Tabs */}
         <Tabs value={statusFilter} onValueChange={setStatusFilter} className="mb-6">
-          <TabsList className="bg-white border border-slate-200 p-1">
-            <TabsTrigger value="all">All ({statusCounts.all})</TabsTrigger>
-            <TabsTrigger value="pending">Pending ({statusCounts.pending})</TabsTrigger>
-            <TabsTrigger value="reviewing">Reviewing ({statusCounts.reviewing})</TabsTrigger>
-            <TabsTrigger value="interview">Interview ({statusCounts.interview})</TabsTrigger>
-            <TabsTrigger value="offered">Offered ({statusCounts.offered})</TabsTrigger>
-            <TabsTrigger value="accepted">Accepted ({statusCounts.accepted})</TabsTrigger>
+          <TabsList className="bg-white border border-slate-200 p-1 flex flex-wrap h-auto gap-1">
+            <TabsTrigger value="all" className="text-xs sm:text-sm">All ({statusCounts.all})</TabsTrigger>
+            <TabsTrigger value="pending" className="text-xs sm:text-sm">Pending ({statusCounts.pending})</TabsTrigger>
+            <TabsTrigger value="reviewing" className="text-xs sm:text-sm">Reviewing ({statusCounts.reviewing})</TabsTrigger>
+            <TabsTrigger value="interview" className="text-xs sm:text-sm">Interview ({statusCounts.interview})</TabsTrigger>
+            <TabsTrigger value="offered" className="text-xs sm:text-sm">Offered ({statusCounts.offered})</TabsTrigger>
+            <TabsTrigger value="accepted" className="text-xs sm:text-sm">Accepted ({statusCounts.accepted})</TabsTrigger>
           </TabsList>
         </Tabs>
 
