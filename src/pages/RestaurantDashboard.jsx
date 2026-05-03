@@ -126,46 +126,46 @@ export default function RestaurantDashboard() {
               🔐 {user?.role === 'super_admin' ? 'Super Admin' : 'Admin'} View: Viewing {restaurant?.name}'s dashboard
             </div>
           )}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex flex-col gap-4">
             <div className="flex items-center gap-4">
               {restaurant.logo_url ? (
                 <img
                   src={restaurant.logo_url}
                   alt={restaurant.name}
-                  className="w-16 h-16 rounded-2xl object-cover"
+                  className="w-14 h-14 rounded-2xl object-cover"
                 />
               ) : (
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-200 flex items-center justify-center">
-                  <Building2 className="w-8 h-8 text-emerald-600" />
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-200 flex items-center justify-center flex-shrink-0">
+                  <Building2 className="w-7 h-7 text-emerald-600" />
                 </div>
               )}
               <div>
-                <h1 className="text-2xl font-bold text-slate-900">{restaurant.name}</h1>
-                <p className="text-slate-500">{restaurant.cuisine_type || 'Restaurant'} • {restaurant.city}</p>
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-900">{restaurant.name}</h1>
+                <p className="text-slate-500 text-sm">{restaurant.cuisine_type || 'Restaurant'} • {restaurant.city}</p>
               </div>
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-2">
               <Link to={createPageUrl('PostJob')}>
-                <Button className="bg-emerald-600 hover:bg-emerald-700">
-                  <Plus className="w-4 h-4 mr-2" />
+                <Button className="bg-emerald-600 hover:bg-emerald-700 text-sm">
+                  <Plus className="w-4 h-4 mr-1" />
                   Post a Job
                 </Button>
               </Link>
               <Link to={createPageUrl('RestaurantAnalytics')}>
-                <Button variant="outline">
-                  <BarChart3 className="w-4 h-4 mr-2" />
+                <Button variant="outline" size="sm">
+                  <BarChart3 className="w-4 h-4 mr-1" />
                   Analytics
                 </Button>
               </Link>
               <Link to={createPageUrl('RestaurantVerificationCenter')}>
-                <Button variant="outline">
-                  <CheckCircle2 className="w-4 h-4 mr-2" />
+                <Button variant="outline" size="sm">
+                  <CheckCircle2 className="w-4 h-4 mr-1" />
                   Verification
                 </Button>
               </Link>
               <Link to={createPageUrl('EditRestaurant')}>
-                <Button variant="outline">
-                  <Settings className="w-4 h-4 mr-2" />
+                <Button variant="outline" size="sm">
+                  <Settings className="w-4 h-4 mr-1" />
                   Edit Profile
                 </Button>
               </Link>
@@ -176,57 +176,57 @@ export default function RestaurantDashboard() {
 
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
           <Card className="border-slate-200">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-                  <Briefcase className="w-6 h-6 text-blue-600" />
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+                  <Briefcase className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-slate-900">{activeJobs.length}</p>
-                  <p className="text-sm text-slate-500">Active Jobs</p>
+                  <p className="text-xl font-bold text-slate-900">{activeJobs.length}</p>
+                  <p className="text-xs text-slate-500">Active Jobs</p>
                 </div>
               </div>
             </CardContent>
           </Card>
           <Card className="border-slate-200">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
-                  <FileText className="w-6 h-6 text-amber-600" />
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+                  <FileText className="w-5 h-5 text-amber-600" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-slate-900">{pendingApps.length}</p>
-                  <p className="text-sm text-slate-500">New Applications</p>
+                  <p className="text-xl font-bold text-slate-900">{pendingApps.length}</p>
+                  <p className="text-xs text-slate-500">New Applications</p>
                 </div>
               </div>
             </CardContent>
           </Card>
           <Card className="border-slate-200">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
-                  <Users className="w-6 h-6 text-emerald-600" />
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                  <Users className="w-5 h-5 text-emerald-600" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-slate-900">{restaurant.total_hires || 0}</p>
-                  <p className="text-sm text-slate-500">Total Hires</p>
+                  <p className="text-xl font-bold text-slate-900">{restaurant.total_hires || 0}</p>
+                  <p className="text-xs text-slate-500">Total Hires</p>
                 </div>
               </div>
             </CardContent>
           </Card>
           <Card className="border-slate-200">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
-                  <Star className="w-6 h-6 text-purple-600" />
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
+                  <Star className="w-5 h-5 text-purple-600" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-slate-900">
+                  <p className="text-xl font-bold text-slate-900">
                     {restaurant.average_rating?.toFixed(1) || '—'}
                   </p>
-                  <p className="text-sm text-slate-500">Rating</p>
+                  <p className="text-xs text-slate-500">Rating</p>
                 </div>
               </div>
             </CardContent>
