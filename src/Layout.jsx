@@ -375,9 +375,7 @@ export default function Layout({ children, currentPageName }) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
-                  <ChefHat className="w-4 h-4 text-white" />
-                </div>
+                <img src="https://media.base44.com/images/public/697e9f2dff44f07c56627dfa/78a9cab12_image.png" alt="ShiftLocal Logo" className="w-8 h-8 rounded-lg object-cover" />
                 <span className="font-bold text-slate-900">ShiftLocal</span>
               </div>
               <p className="text-sm text-slate-600">
