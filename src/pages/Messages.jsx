@@ -185,16 +185,16 @@ export default function MessagesPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Messages</h1>
+      <div className="max-w-7xl mx-auto px-4 py-4 sm:py-8">
+        <div className="mb-4 sm:mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">Messages</h1>
           <p className="text-slate-600">
             {user?.role === 'super_admin' && <span className="text-purple-600 font-semibold">Super Admin View - All Conversations • </span>}
             {unreadCount > 0 && `${unreadCount} unread message${unreadCount > 1 ? 's' : ''}`}
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
+        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 h-[calc(100vh-160px)] sm:h-[calc(100vh-200px)]">
           {/* Conversations List */}
           <Card className={`lg:col-span-1 ${selectedConversation ? 'hidden lg:block' : ''}`}>
             <CardContent className="p-0 h-full flex flex-col">
@@ -300,7 +300,7 @@ export default function MessagesPage() {
                       const isOwn = msg.sender_type === (isWorker ? 'worker' : 'restaurant');
                       return (
                         <div key={msg.id} className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
-                          <div className={`max-w-[70%] ${isOwn ? 'bg-emerald-600 text-white' : 'bg-white border border-slate-200 text-slate-900'} rounded-2xl px-4 py-2`}>
+                          <div className={`max-w-[85%] sm:max-w-[70%] ${isOwn ? 'bg-emerald-600 text-white' : 'bg-white border border-slate-200 text-slate-900'} rounded-2xl px-4 py-2`}>
                             <p className="text-sm">{msg.message}</p>
                             <p className={`text-xs mt-1 ${isOwn ? 'text-emerald-100' : 'text-slate-400'}`}>
                               {format(new Date(msg.created_date), 'h:mm a')}
